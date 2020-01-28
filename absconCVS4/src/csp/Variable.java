@@ -8,17 +8,21 @@ public class Variable {
 
 	/// Keep a reference to the original variable, just in case it is needed later
 	protected PVariable varRef;
-	/// Best to create a *deep copy* of the data-structures that are needed for the homework
+	/// Best to create a *deep copy* of the data-structures that are needed for the
+	/// homework
 	protected String name;
+
 	public Variable(PVariable var) {
-	varRef = var;
-	name = var.getName();
+		varRef = var;
+		name = var.getName();
 	}
+
 	public String getName() {
-	return name;
+		return name;
 	}
+
 	public String toString() {
-	return "Name: " + name + ", initial-domain: x, constraints: x, neighbors: x";
+		return "Name: " + name + ", initial-domain: x, constraints: x, neighbors: x";
 	}
-	
+
 }
