@@ -1,0 +1,20 @@
+<instance>
+<presentation name="3q-conflict" maxConstraintArity="2" format="XCSP 2.0"/>
+<domains nbDomains="1">
+<domain name="D0" nbValues="3">1..3</domain>
+</domains>
+<variables nbVariables="3">
+<variable name="Q1" domain="D0"/>
+<variable name="Q2" domain="D0"/>
+<variable name="Q3" domain="D0"/>
+</variables>
+<relations nbRelations="2">
+<relation name="dist1" arity="2" nbTuples="7" semantics="conflicts">1 1|1 2|2 1|2 2|2 3|3 2|3 3</relation>
+<relation name="dist2" arity="2" nbTuples="5" semantics="conflicts">1 1|1 3|2 2|3 1|3 3</relation>
+</relations>
+<constraints nbConstraints="3">
+<constraint name="C0" arity="2" scope="Q1 Q2" reference="dist1"/>
+<constraint name="C1" arity="2" scope="Q1 Q3" reference="dist2"/>
+<constraint name="C2" arity="2" scope="Q2 Q3" reference="dist1"/>
+</constraints>
+</instance>

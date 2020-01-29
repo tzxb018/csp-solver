@@ -17,6 +17,15 @@ public class PDomain {
 		return values;
 	}
 
+	public String getValuesString () {
+		String out = "{";
+		for (int i = 0; i < values.length - 1; i++){
+			out += (values[i] + ", ");
+		}
+		out += (values[values.length - 1] + "}");
+		return out;
+	}
+
 	public int getMaxAbsoluteValue() {
 		return Math.max(Math.abs(values[0]), Math.abs(values[values.length - 1]));
 	}

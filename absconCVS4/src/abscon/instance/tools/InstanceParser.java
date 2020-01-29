@@ -44,6 +44,8 @@ public class InstanceParser {
 
 	private String type;
 
+	private String problemName;
+
 	private String format;
 
 	private int maxConstraintArity;
@@ -86,12 +88,20 @@ public class InstanceParser {
 		return type;
 	}
 
+	public String getName() {
+		return problemName;
+	}
+
 	public PVariable[] getVariables() {
 		return variables;
 	}
 
 	public int getMaxConstraintArity() {
 		return maxConstraintArity;
+	}
+
+	public Map<String, PDomain> getMapOfDomains() {
+		return mapOfDomains; 
 	}
 
 	public Map<String, PConstraint> getMapOfConstraints() {
@@ -138,6 +148,7 @@ public class InstanceParser {
 	}
 
 	private void parsePresentation(Element presentationElement) {
+		problemName = presentationElement.getAttribute(InstanceTokens.NAME);
 		String s = presentationElement.getAttribute(InstanceTokens.MAX_CONSTRAINT_ARITY.trim());
 		maxConstraintArity = s.length() == 0 || s.equals("?") ? -1 : Integer.parseInt(s);
 		type = presentationElement.getAttribute(InstanceTokens.TYPE.trim());

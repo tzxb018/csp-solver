@@ -5,6 +5,10 @@ import abscon.instance.tools.InstanceParser;
 import abscon.instance.components.PConstraint;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
+
 
 public class MyParser {
 
@@ -15,12 +19,17 @@ public class MyParser {
 		parser.loadInstance(filename);
 		parser.parse(false);
 		variables = new ArrayList<Variable>();
-		System.out.println("Instance name: <Not currently parsed! Need to modify the InstanceParser()>");
+		
+		String nameOfProblem = parser.getName();
+		System.out.println("Instance name: " +  nameOfProblem);
+
 		System.out.println("Variables");
 		for (int i = 0; i < parser.getVariables().length; i++) {
 
 			// System.out.println(parser.getVariables()[i].getName());
 			Variable newVar = new Variable(parser.getVariables()[i]);
+			Map domains = parser.getMapOfDomains();
+			
 			System.out.println(newVar);
 			variables.add(newVar);
 		}
@@ -34,6 +43,6 @@ public class MyParser {
 	public static void main(String[] args) {
 		// Hardcoded now... but should read in the file through the arguments, -f
 		// <XML-NAME>
-		MyParser parser = new MyParser("./4queens-supports.xml");
+		MyParser parser = new MyParser(args[1]);
 	}
 }
