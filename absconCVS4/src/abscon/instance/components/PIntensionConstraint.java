@@ -8,6 +8,7 @@ public class PIntensionConstraint extends PConstraint {
 	private PFunction function; // a predicate is a kind of function - so function may be a PPredicate
 
 	private String[] universalPostfixExpression;
+	private String params; 
 
 	public PFunction getFunction() {
 		return function;
@@ -20,6 +21,7 @@ public class PIntensionConstraint extends PConstraint {
 	public PIntensionConstraint(String name, PVariable[] scope, PFunction function, String effectiveParametersExpression) {
 		super(name, scope);
 		this.function = function;
+		this.params = effectiveParametersExpression;
 
 		String[] variableNames = new String[scope.length];
 		for (int i = 0; i < variableNames.length; i++)
@@ -40,7 +42,16 @@ public class PIntensionConstraint extends PConstraint {
 	}
 
 	public String toString() {
-		return super.toString() + ", and associated function/predicate " + function.getName() + " and universal expression = " + Toolkit.buildStringFromTokens(universalPostfixExpression);
+		// for (String x : universalPostfixExpression){
+		// 	System.out.println(x);
+		// }
+		String out = super.toString() + ", definition: intension function: "  + function.getFunctionalExpression() + " params: {";
+		for (String s : params.split(" ")){
+			out += s + ",";
+		}
+		out = out.substring(0, out.length() - 1);
+		out += '}';
+		return out;
 	}
 
 	public boolean isGuaranteedToBeDivisionByZeroFree() {

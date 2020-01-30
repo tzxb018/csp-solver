@@ -485,6 +485,8 @@ public class InstanceParser {
 		if (mapOfPredicates.containsKey(reference)) {
 			Element parameters = (Element) constraintElement.getElementsByTagName(InstanceTokens.PARAMETERS).item(0);
 			nbIntensionConstraints++;
+		
+
 			return new PIntensionConstraint(name, scope, mapOfPredicates.get(reference), parameters.getTextContent());
 		}
 

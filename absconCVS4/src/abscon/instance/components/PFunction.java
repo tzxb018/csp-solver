@@ -26,6 +26,10 @@ public class PFunction {
 		return unversalPostfixExpression;
 	}
 
+	public String getFunctionalExpression() {
+		return this.functionalExpression;
+		
+	}
 	public PFunction(String name, String formalParametersExpression, String functionalExpression) {
 		this.name = name;
 		this.formalParameters =  PredicateManager.extractFormalParameters(formalParametersExpression,true);
