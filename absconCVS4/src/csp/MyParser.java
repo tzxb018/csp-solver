@@ -36,7 +36,8 @@ public class MyParser {
 		System.out.println("Constraints");
 		for (String key : parser.getMapOfConstraints().keySet()) {
 			PConstraint con = parser.getMapOfConstraints().get(key);
-			System.out.println(con.getName());
+			
+			System.out.println(con.toString());
 		}
 	}
 

@@ -23,6 +23,6 @@ public class PExtensionConstraint extends PConstraint {
 	}
 
 	public String toString() {
-		return super.toString() + ", and associated relation " + relation.getName();
+		return super.toString1() + ", definition: conflicts " + relation.getStringListOfTuples();
 	}
 }

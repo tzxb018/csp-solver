@@ -81,15 +81,19 @@ public class PRelation {
 
 	public String getStringListOfTuples() {
 		StringBuffer s = new StringBuffer();
+		s.append('{');
 		for (int i = 0; i < tuples.length; i++) {
+			s.append('(');
 			for (int j = 0; j < tuples[i].length; j++) {
 				s.append(tuples[i][j]);
 				if (j != tuples[i].length - 1)
-					s.append(' ');
+					s.append(',');
 			}
 			if (i != tuples.length - 1)
-				s.append('|');
+				// s.append('|');
+				s.append("),");
 		}
+		s.append(")}");
 		return s.toString();
 	}
 

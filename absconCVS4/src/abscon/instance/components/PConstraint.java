@@ -1,4 +1,5 @@
 package abscon.instance.components;
+import java.util.List;
 
 public abstract class PConstraint {
 	protected String name;
@@ -11,6 +12,15 @@ public abstract class PConstraint {
 
 	public PVariable[] getScope() {
 		return scope;
+	}
+
+	public String scopeToString(PVariable[] scope) {
+		String s =  "{";
+		for (int i = 0; i < scope.length - 1; i++){
+			s += scope[i].getName() + ", ";
+		}
+		s += scope[scope.length - 1].getName() + "}";
+		return s;
 	}
 
 	public int getArity() {
@@ -40,6 +50,12 @@ public abstract class PConstraint {
 		return s;
 	}
 
+	public String toString1() {
+		String s = "Name: " + name + ", variables = " + scopeToString(scope);
+
+		return s;
+
+	}
 	public boolean isGuaranteedToBeDivisionByZeroFree() {
 		return true;
 	}
