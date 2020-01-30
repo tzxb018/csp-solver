@@ -20,7 +20,7 @@ public class PDomain {
 	public String getValuesString () {
 		String out = "{";
 		for (int i = 0; i < values.length - 1; i++){
-			out += (values[i] + ", ");
+			out += (values[i] + ",");
 		}
 		out += (values[values.length - 1] + "}");
 		return out;

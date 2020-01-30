@@ -25,7 +25,7 @@ public class MyParser {
 		String nameOfProblem = parser.getName();
 		System.out.println("Instance name: " +  nameOfProblem);
 
-		System.out.println("Variables");
+		System.out.println("Variables:");
 		for (int i = 0; i < parser.getVariables().length; i++) {
 
 			// System.out.println(parser.getVariables()[i].getName());
@@ -37,8 +37,16 @@ public class MyParser {
 			variables.add(newVar);
 		}
 
-		System.out.println("Constraints");
+		String[] keysOfConstraints = new String[parser.getMapOfConstraints().size()];
+		int i = 0;
 		for (String key : parser.getMapOfConstraints().keySet()) {
+			keysOfConstraints[i] = key;
+			i++;
+		}
+		Arrays.sort(keysOfConstraints);
+
+		System.out.println("Constraints:");
+		for (String key : keysOfConstraints) {
 			PConstraint con = parser.getMapOfConstraints().get(key);
 			
 			System.out.println(con.toString());

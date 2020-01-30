@@ -52,18 +52,25 @@ public class Variable {
 
 	public String toString() {
 		String s = "Name: " + name + ", initial-domain: " + domain.getValuesString() + ", constraints: {";
+		String[] constrainNames = new String[constraints.size()];
 		// formatting the constraints
 		for (int i = 0; i < constraints.size(); i++){
-			s += (constraints.get(i).getName() + ", ");
+			constrainNames[i] = constraints.get(i).getName();
 		}
-		s = s.substring(0, s.length() - 2);
+		Arrays.sort(constrainNames);
+
+		for (int i = 0; i < constrainNames.length; i++){
+			s += (constrainNames[i] + ",");
+
+		}
+		s = s.substring(0, s.length() - 1);
 		s += "}, neighbors: {";
 
 		// formatting the neighbors
 		for (int i = 0; i < neighbors.size(); i++) {
-			s += (neighbors.get(i).getName() + ", ");
+			s += (neighbors.get(i).getName() + ",");
 		}
-		s = s.substring(0, s.length() - 2);
+		s = s.substring(0, s.length() - 1);
 		s += "}";
 		return s;
 	}
