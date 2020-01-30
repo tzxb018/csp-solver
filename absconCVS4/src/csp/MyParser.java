@@ -11,16 +11,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
-public class MyParser {
+public class MyParser{
 
 	private List<Variable> variables;
+
 
 	public MyParser(String filename) {
 		InstanceParser parser = new InstanceParser();
 		parser.loadInstance(filename);
 		parser.parse(false);
 		variables = new ArrayList<Variable>();
+
+		
 		
 		String nameOfProblem = parser.getName();
 		System.out.println("Instance name: " +  nameOfProblem);
@@ -37,17 +42,24 @@ public class MyParser {
 			variables.add(newVar);
 		}
 
-		String[] keysOfConstraints = new String[parser.getMapOfConstraints().size()];
-		int i = 0;
-		for (String key : parser.getMapOfConstraints().keySet()) {
-			keysOfConstraints[i] = key;
-			i++;
+		// String[] keysOfConstraints = new String[parser.getMapOfConstraints().size()];
+		// int i = 0;
+		// for (String key : parser.getMapOfConstraints().keySet()) {
+		// 	System.out.println(key);
+		// 	System.out.println(parser.getMapOfConstraints().get(key));
+		// 	keysOfConstraints[i] = key;
+		// 	i++;
+		// }
+		// Arrays.sort(keysOfConstraints);
+		List<PConstraint> listOfConstraints = new ArrayList<PConstraint>();
+		for (String key : parser.getMapOfConstraints().keySet()){
+			listOfConstraints.add(parser.getMapOfConstraints().get((key)));
 		}
-		Arrays.sort(keysOfConstraints);
+
+		Collections.sort(listOfConstraints, PConstraint.ConstraintComparer);
 
 		System.out.println("Constraints:");
-		for (String key : keysOfConstraints) {
-			PConstraint con = parser.getMapOfConstraints().get(key);
+		for (PConstraint con : listOfConstraints) {
 			
 			System.out.println(con.toString());
 		}

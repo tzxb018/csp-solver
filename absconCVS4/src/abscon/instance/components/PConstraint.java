@@ -1,9 +1,29 @@
 package abscon.instance.components;
 
-public abstract class PConstraint {
+import java.util.Comparator;
+
+public abstract class PConstraint implements Comparator{
 	protected String name;
 
 	protected PVariable[] scope;
+
+	public static final Comparator<PConstraint> ConstraintComparer = new Comparator<PConstraint>(){
+        @Override
+        public int compare(PConstraint c1, PConstraint c2) {
+			return extractInt(c1.getName()) - extractInt(c2.getName());
+        }
+	  
+		int extractInt(String s) {
+			String num = s.replaceAll("\\D", "");
+			// return 0 if no digits found
+			if (num.isEmpty()){
+				return 0;
+			}
+			else{
+				return Integer.parseInt(num);
+			}
+		}
+    };
 
 	public String getName() {
 		return name;
@@ -69,4 +89,6 @@ public abstract class PConstraint {
 	public boolean isGuaranteedToBeOverflowFree() {
 		return true;
 	}
+
+
 }

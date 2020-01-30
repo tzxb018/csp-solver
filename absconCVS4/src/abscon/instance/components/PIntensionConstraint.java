@@ -45,7 +45,7 @@ public class PIntensionConstraint extends PConstraint {
 		// for (String x : universalPostfixExpression){
 		// 	System.out.println(x);
 		// }
-		String out = super.toString() + ", definition: intension function: "  + function.getFunctionalExpression() + " params: {";
+		String out = super.toString() + ", definition: intension function: "  + function.getFunctionalExpression() + ", params: {";
 		for (String s : params.split(" ")){
 			out += s + ",";
 		}
