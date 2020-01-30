@@ -1,9 +1,11 @@
 package csp;
 
 import abscon.instance.tools.InstanceParser;
+import abscon.instance.components.PConstraint;
 import abscon.instance.components.PDomain;
 import abscon.instance.components.PVariable;
 import java.lang.String;
+import java.util.ArrayList;
 
 public class Variable {
 
@@ -13,6 +15,7 @@ public class Variable {
 	/// homework
 	protected String name;
 	protected PDomain domain;
+	protected ArrayList<PConstraint> constraints;
 	
 
 	public Variable(PVariable var) {
@@ -29,9 +32,23 @@ public class Variable {
 		return domain;
 	}
 
+	public void setConstraints(InstanceParser parser) {
+		this.constraints = parser.getConstraintsOfVar(varRef);
+	}
+
+	public ArrayList<PConstraint> getConstraints() {
+		return constraints;
+	}
+
 
 	public String toString() {
-		return "Name: " + name + ", initial-domain: " + domain.getValuesString() + ", constraints: x, neighbors: x";
+		String s = "Name: " + name + ", initial-domain: " + domain.getValuesString() + ", constraints: {";
+		for (int i = 0; i < constraints.size(); i++){
+			s += (constraints.get(i).getName() + ", ");
+		}
+		s = s.substring(0, s.length() - 2);
+		s += "}";
+		return s;
 	}
 
 }

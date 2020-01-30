@@ -14,6 +14,10 @@ public class PVariable {
 		return domain;
 	}
 
+	public PConstraint[] getConstraints(){
+		
+	}
+
 	public PVariable(String name, PDomain domain) {
 		this.name = name;
 		this.domain = domain;
