@@ -43,4 +43,10 @@ public class PElement extends PGlobalConstraint {
 		s += "  value=" + computeStringRepresentationOf(value);
 		return s;
 	}
+
+	@Override
+	public int compare(Object arg0, Object arg1) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

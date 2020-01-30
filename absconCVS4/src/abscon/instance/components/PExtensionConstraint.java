@@ -25,4 +25,10 @@ public class PExtensionConstraint extends PConstraint {
 	public String toString() {
 		return super.toString() + ", definition: " + relation.getSemantics() + " " + relation.getStringListOfTuples();
 	}
+
+	@Override
+	public int compare(Object arg0, Object arg1) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

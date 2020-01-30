@@ -64,4 +64,10 @@ public class PIntensionConstraint extends PConstraint {
 		EvaluationManager evaluationManager = new EvaluationManager(universalPostfixExpression);
 		return evaluationManager.isGuaranteedToBeOverflowFree(scope);
 	}
+
+	@Override
+	public int compare(Object arg0, Object arg1) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

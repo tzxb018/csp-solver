@@ -7,6 +7,7 @@ import abscon.instance.components.PVariable;
 import java.lang.String;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class Variable {
 
@@ -52,15 +53,11 @@ public class Variable {
 
 	public String toString() {
 		String s = "Name: " + name + ", initial-domain: " + domain.getValuesString() + ", constraints: {";
-		String[] constrainNames = new String[constraints.size()];
 		// formatting the constraints
-		for (int i = 0; i < constraints.size(); i++){
-			constrainNames[i] = constraints.get(i).getName();
-		}
-		Arrays.sort(constrainNames);
 
-		for (int i = 0; i < constrainNames.length; i++){
-			s += (constrainNames[i] + ",");
+		Collections.sort(constraints, PConstraint.ConstraintComparer);
+		for (int i = 0; i < constraints.size(); i++){
+			s += (constraints.get(i).getName() + ",");
 
 		}
 		s = s.substring(0, s.length() - 1);
