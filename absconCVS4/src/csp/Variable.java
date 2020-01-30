@@ -6,6 +6,7 @@ import abscon.instance.components.PDomain;
 import abscon.instance.components.PVariable;
 import java.lang.String;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Variable {
 
@@ -16,6 +17,7 @@ public class Variable {
 	protected String name;
 	protected PDomain domain;
 	protected ArrayList<PConstraint> constraints;
+	protected ArrayList<PVariable> neighbors;
 	
 
 	public Variable(PVariable var) {
@@ -40,11 +42,26 @@ public class Variable {
 		return constraints;
 	}
 
+	public void setNeighbors(InstanceParser parser) {
+		this.neighbors = parser.getNeighborsOfVar(varRef);
+	}
+
+	public ArrayList<PVariable> getNeighbors() {
+		return neighbors;
+	}
 
 	public String toString() {
 		String s = "Name: " + name + ", initial-domain: " + domain.getValuesString() + ", constraints: {";
+		// formatting the constraints
 		for (int i = 0; i < constraints.size(); i++){
 			s += (constraints.get(i).getName() + ", ");
+		}
+		s = s.substring(0, s.length() - 2);
+		s += "}, neighbors: {";
+
+		// formatting the neighbors
+		for (int i = 0; i < neighbors.size(); i++) {
+			s += (neighbors.get(i).getName() + ", ");
 		}
 		s = s.substring(0, s.length() - 2);
 		s += "}";

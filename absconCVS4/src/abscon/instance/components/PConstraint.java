@@ -1,5 +1,4 @@
 package abscon.instance.components;
-import java.util.List;
 
 public abstract class PConstraint {
 	protected String name;

@@ -31,6 +31,7 @@ public class MyParser {
 			// System.out.println(parser.getVariables()[i].getName());
 			Variable newVar = new Variable(parser.getVariables()[i]);
 			newVar.setConstraints(parser);
+			newVar.setNeighbors(parser);
 			System.out.println(newVar);
 
 			variables.add(newVar);

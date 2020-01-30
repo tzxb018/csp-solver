@@ -147,6 +147,17 @@ public class InstanceParser {
 		return out;
 	}
 
+	public ArrayList<PVariable> getNeighborsOfVar (PVariable pVariable) {
+		ArrayList<PVariable> out = new ArrayList<PVariable>();
+		for (PVariable p : this.mapOfVariables.values()){
+			if (!p.equals(pVariable)){
+				out.add(p);
+			}
+		}
+
+		return out;
+	}
+
 	/**
 	 * Used to determine if elements of the instance must be displayed when parsing.
 	 */
