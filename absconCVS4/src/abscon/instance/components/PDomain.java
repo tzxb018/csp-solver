@@ -4,6 +4,10 @@ import java.util.Arrays;
 
 import abscon.instance.InstanceTokens;
 
+/**
+ * Author: Tomo Bessho Course: CSCE 421 Date: 2/1/2020
+ */
+
 public class PDomain {
 	private String name;
 
@@ -17,9 +21,9 @@ public class PDomain {
 		return values;
 	}
 
-	public String getValuesString () {
+	public String getValuesString() {
 		String out = "{";
-		for (int i = 0; i < values.length - 1; i++){
+		for (int i = 0; i < values.length - 1; i++) {
 			out += (values[i] + ",");
 		}
 		out += (values[values.length - 1] + "}");
@@ -62,7 +66,8 @@ public class PDomain {
 				sb.append(InstanceTokens.VALUE_SEPARATOR);
 			} else {
 				if (!startedInterval) {
-					sb.append(InstanceTokens.DISCRETE_INTERVAL_START + previousValue + InstanceTokens.DISCRETE_INTERVAL_SEPARATOR);
+					sb.append(InstanceTokens.DISCRETE_INTERVAL_START + previousValue
+							+ InstanceTokens.DISCRETE_INTERVAL_SEPARATOR);
 					startedInterval = true;
 				}
 			}
@@ -74,12 +79,12 @@ public class PDomain {
 			sb.append(previousValue);
 		return sb.toString();
 	}
-	
+
 	public boolean controlValueRanging(int min, int max) {
 		for (int v : values)
 			if (v < min || v > max)
 				return false;
 		return true;
 	}
-	
+
 }

@@ -1,5 +1,8 @@
 package abscon.instance.components;
 
+/**
+ * Author: Tomo Bessho Course: CSCE 421 Date: 2/1/2020
+ */
 
 public class PExtensionConstraint extends PConstraint {
 
@@ -17,7 +20,7 @@ public class PExtensionConstraint extends PConstraint {
 	public int getMaximalCost() {
 		return relation.getMaximalCost();
 	}
-	
+
 	public long computeCostOf(int[] tuple) {
 		return relation.computeCostOf(tuple);
 	}

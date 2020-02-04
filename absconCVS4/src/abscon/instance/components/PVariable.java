@@ -1,5 +1,8 @@
 package abscon.instance.components;
 
+/**
+ * Author: Tomo Bessho Course: CSCE 421 Date: 2/1/2020
+ */
 
 public class PVariable {
 	private String name;

@@ -32,6 +32,12 @@ import abscon.instance.components.PWeightedSum;
 import abscon.instance.components.Task;
 
 /**
+ * Author: Tomo Bessho
+ * Course: CSCE 421
+ * Date: 2/1/2020
+ */
+
+/**
  * This class corresponds to a Java parser that uses DOM (Document Object Model)
  * to parse CSP and WCSP instances in format "XCSP 2.1". <br>
  * Here, we assume that the instance is well-formed (valid). This class is given
@@ -136,21 +142,21 @@ public class InstanceParser {
 		return minViolatedConstraints;
 	}
 
-	public ArrayList<PConstraint> getConstraintsOfVar(PVariable pVariable){
+	public ArrayList<PConstraint> getConstraintsOfVar(PVariable pVariable) {
 		ArrayList<PConstraint> out = new ArrayList<PConstraint>();
-		for (PConstraint c : this.getMapOfConstraints().values())  {
+		for (PConstraint c : this.getMapOfConstraints().values()) {
 			List<PVariable> scopeOfC = Arrays.asList(c.getScope());
-			if (scopeOfC.contains(pVariable)){
+			if (scopeOfC.contains(pVariable)) {
 				out.add(c);
 			}
 		}
 		return out;
 	}
 
-	public ArrayList<PVariable> getNeighborsOfVar (PVariable pVariable) {
+	public ArrayList<PVariable> getNeighborsOfVar(PVariable pVariable) {
 		ArrayList<PVariable> out = new ArrayList<PVariable>();
-		for (PVariable p : this.mapOfVariables.values()){
-			if (!p.equals(pVariable)){
+		for (PVariable p : this.mapOfVariables.values()) {
+			if (!p.equals(pVariable)) {
 				out.add(p);
 			}
 		}
@@ -485,7 +491,6 @@ public class InstanceParser {
 		if (mapOfPredicates.containsKey(reference)) {
 			Element parameters = (Element) constraintElement.getElementsByTagName(InstanceTokens.PARAMETERS).item(0);
 			nbIntensionConstraints++;
-		
 
 			return new PIntensionConstraint(name, scope, mapOfPredicates.get(reference), parameters.getTextContent());
 		}

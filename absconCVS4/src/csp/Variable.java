@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
+/**
+ * Author: Tomo Bessho Course: CSCE 421 Date: 2/1/2020
+ */
+
 public class Variable {
 
 	/// Keep a reference to the original variable, just in case it is needed later
@@ -19,19 +23,18 @@ public class Variable {
 	protected PDomain domain;
 	protected ArrayList<PConstraint> constraints;
 	protected ArrayList<PVariable> neighbors;
-	
 
 	public Variable(PVariable var) {
 		varRef = var;
 		name = var.getName();
-		domain = var.getDomain();		
+		domain = var.getDomain();
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public PDomain getDomain(){
+	public PDomain getDomain() {
 		return domain;
 	}
 
@@ -56,7 +59,7 @@ public class Variable {
 		// formatting the constraints
 
 		Collections.sort(constraints, PConstraint.ConstraintComparer);
-		for (int i = 0; i < constraints.size(); i++){
+		for (int i = 0; i < constraints.size(); i++) {
 			s += (constraints.get(i).getName() + ",");
 
 		}

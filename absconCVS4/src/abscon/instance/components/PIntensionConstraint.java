@@ -4,11 +4,15 @@ import abscon.instance.Toolkit;
 import abscon.instance.intension.EvaluationManager;
 import abscon.instance.intension.PredicateManager;
 
+/**
+ * Author: Tomo Bessho Course: CSCE 421 Date: 2/1/2020
+ */
+
 public class PIntensionConstraint extends PConstraint {
 	private PFunction function; // a predicate is a kind of function - so function may be a PPredicate
 
 	private String[] universalPostfixExpression;
-	private String params; 
+	private String params;
 
 	public PFunction getFunction() {
 		return function;
@@ -18,7 +22,8 @@ public class PIntensionConstraint extends PConstraint {
 		return universalPostfixExpression;
 	}
 
-	public PIntensionConstraint(String name, PVariable[] scope, PFunction function, String effectiveParametersExpression) {
+	public PIntensionConstraint(String name, PVariable[] scope, PFunction function,
+			String effectiveParametersExpression) {
 		super(name, scope);
 		this.function = function;
 		this.params = effectiveParametersExpression;
@@ -27,7 +32,8 @@ public class PIntensionConstraint extends PConstraint {
 		for (int i = 0; i < variableNames.length; i++)
 			variableNames[i] = scope[i].getName();
 
-		this.universalPostfixExpression = PredicateManager.buildNewUniversalPostfixExpression(function.getUniversalPostfixExpression(), effectiveParametersExpression, variableNames);
+		this.universalPostfixExpression = PredicateManager.buildNewUniversalPostfixExpression(
+				function.getUniversalPostfixExpression(), effectiveParametersExpression, variableNames);
 		// System.out.println(universalPredicateExpression);
 	}
 
@@ -43,10 +49,11 @@ public class PIntensionConstraint extends PConstraint {
 
 	public String toString() {
 		// for (String x : universalPostfixExpression){
-		// 	System.out.println(x);
+		// System.out.println(x);
 		// }
-		String out = super.toString() + ", definition: intension function: "  + function.getFunctionalExpression() + ", params: {";
-		for (String s : params.split(" ")){
+		String out = super.toString() + ", definition: intension function: " + function.getFunctionalExpression()
+				+ ", params: {";
+		for (String s : params.split(" ")) {
 			out += s + ",";
 		}
 		out = out.substring(0, out.length() - 1);
