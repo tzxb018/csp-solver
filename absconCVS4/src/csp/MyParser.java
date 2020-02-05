@@ -15,14 +15,12 @@ import java.util.Collections;
 import java.util.Comparator;
 
 /**
- * Author: Tomo Bessho
- * Course: CSCE 421
- * Date: 2/1/2020
+ * Author: Tomo Bessho Course: CSCE 421 Date: 2/1/2020
  */
 
 public class MyParser {
 
-	private List<Variable> variables;
+	private ArrayList<Variable> variables;
 
 	public MyParser(String filename) {
 		InstanceParser parser = new InstanceParser();
@@ -44,7 +42,7 @@ public class MyParser {
 			variables.add(newVar);
 		}
 
-		List<PConstraint> listOfConstraints = new ArrayList<PConstraint>();
+		ArrayList<PConstraint> listOfConstraints = new ArrayList<PConstraint>();
 		for (String key : parser.getMapOfConstraints().keySet()) {
 			listOfConstraints.add(parser.getMapOfConstraints().get((key)));
 		}
@@ -56,6 +54,8 @@ public class MyParser {
 
 			System.out.println(con.toString());
 		}
+
+		Algorithms_AC ac = new Algorithms_AC("AC1", listOfConstraints, variables, true);
 	}
 
 	public static void main(String[] args) {

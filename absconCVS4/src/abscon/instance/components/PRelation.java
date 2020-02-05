@@ -29,6 +29,10 @@ public class PRelation {
 		return arity;
 	}
 
+	public int getNpTubles() {
+		return nbTuples;
+	}
+
 	public String getSemantics() {
 		return semantics;
 	}
