@@ -1,61 +1,60 @@
 package csp;
 
-import csp.Variable;
+import csp.MyVariable;
 import abscon.instance.tools.InstanceParser;
+import abscon.instance.InstanceTokens;
+import abscon.instance.XMLManager;
 import abscon.instance.components.PConstraint;
+import abscon.instance.components.PExtensionConstraint;
+import abscon.instance.components.PIntensionConstraint;
 import abscon.instance.components.PVariable;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 
-/**
- * Author: Tomo Bessho Course: CSCE 421 Date: 2/1/2020
- */
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class MyParser {
-
-	private ArrayList<Variable> variables;
+	private ArrayList<MyVariable> variables;
+	private ArrayList<MyConstraint> constraints;
 
 	public MyParser(String filename) {
 		InstanceParser parser = new InstanceParser();
 		parser.loadInstance(filename);
 		parser.parse(false);
-		variables = new ArrayList<Variable>();
+		variables = new ArrayList<MyVariable>();
 
-		String nameOfProblem = parser.getName();
-		System.out.println("Instance name: " + nameOfProblem);
+		Document document = XMLManager.load(filename);
+		Element presentationElement = (Element) document.getDocumentElement()
+				.getElementsByTagName(InstanceTokens.PRESENTATION).item(0);
+		String problemName = presentationElement.getAttribute(InstanceTokens.NAME);
 
-		System.out.println("Variables:");
 		for (int i = 0; i < parser.getVariables().length; i++) {
-
-			Variable newVar = new Variable(parser.getVariables()[i]);
-			newVar.setConstraints(parser);
-			newVar.setNeighbors(parser);
-			System.out.println(newVar);
-
+			PVariable tempVar = parser.getVariables()[i];
+			MyVariable newVar = new MyVariable(tempVar);
 			variables.add(newVar);
 		}
 
-		ArrayList<PConstraint> listOfConstraints = new ArrayList<PConstraint>();
+		boolean extension = parser.getConstraintsCategory().contains("E");
+
+		constraints = new ArrayList<MyConstraint>();
+
 		for (String key : parser.getMapOfConstraints().keySet()) {
-			listOfConstraints.add(parser.getMapOfConstraints().get((key)));
+			PConstraint con = parser.getMapOfConstraints().get(key);
+			if (extension) {
+				MyExtensionConstraint extCon = new MyExtensionConstraint(con, (PExtensionConstraint) con);
+				constraints.add(extCon);
+			} else {
+				MyIntensionConstraint intcon = new MyIntensionConstraint(con, (PIntensionConstraint) con);
+				constraints.add(intcon);
+			}
 		}
 
-		Collections.sort(listOfConstraints, PConstraint.ConstraintComparer);
+		MyProblem myProblem = new MyProblem(problemName, variables, constraints);
+		System.out.println(myProblem.toString());
 
-		System.out.println("Constraints:");
-		for (PConstraint con : listOfConstraints) {
-
-			System.out.println(con.toString());
-		}
-
-		Algorithms_AC ac = new Algorithms_AC("AC1", listOfConstraints, variables, true);
 	}
 
 	public static void main(String[] args) {

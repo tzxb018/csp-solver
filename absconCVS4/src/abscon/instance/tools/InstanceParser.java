@@ -1,9 +1,8 @@
 package abscon.instance.tools;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -13,9 +12,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import abscon.instance.InstanceTokens;
-import abscon.instance.PredicateTokens.RelationalOperator;
 import abscon.instance.Toolkit;
 import abscon.instance.XMLManager;
+import abscon.instance.PredicateTokens.RelationalOperator;
 import abscon.instance.components.PAllDifferent;
 import abscon.instance.components.PConstraint;
 import abscon.instance.components.PCumulative;
@@ -32,16 +31,8 @@ import abscon.instance.components.PWeightedSum;
 import abscon.instance.components.Task;
 
 /**
- * Author: Tomo Bessho
- * Course: CSCE 421
- * Date: 2/1/2020
- */
-
-/**
- * This class corresponds to a Java parser that uses DOM (Document Object Model)
- * to parse CSP and WCSP instances in format "XCSP 2.1". <br>
- * Here, we assume that the instance is well-formed (valid). This class is given
- * for illustration purpose. Feel free to adapt it !
+ * This class corresponds to a Java parser that uses DOM (Document Object Model) to parse CSP and WCSP instances in format "XCSP 2.1". <br>
+ * Here, we assume that the instance is well-formed (valid). This class is given for illustration purpose. Feel free to adapt it !
  * 
  * @author christophe lecoutre
  * @version 2.1.1
@@ -52,8 +43,6 @@ public class InstanceParser {
 	private Document document;
 
 	private String type;
-
-	private String problemName;
 
 	private String format;
 
@@ -97,20 +86,12 @@ public class InstanceParser {
 		return type;
 	}
 
-	public String getName() {
-		return problemName;
-	}
-
 	public PVariable[] getVariables() {
 		return variables;
 	}
 
 	public int getMaxConstraintArity() {
 		return maxConstraintArity;
-	}
-
-	public Map<String, PDomain> getMapOfDomains() {
-		return mapOfDomains;
 	}
 
 	public Map<String, PConstraint> getMapOfConstraints() {
@@ -130,8 +111,7 @@ public class InstanceParser {
 	}
 
 	public String getConstraintsCategory() {
-		return (nbExtensionConstraints > 0 ? "E" : "") + (nbIntensionConstraints > 0 ? "I" : "")
-				+ (nbGlobalConstraints > 0 ? "G" : "");
+		return (nbExtensionConstraints > 0 ? "E" : "") + (nbIntensionConstraints > 0 ? "I" : "") + (nbGlobalConstraints > 0 ? "G" : "");
 	}
 
 	public String getSatisfiable() {
@@ -140,28 +120,6 @@ public class InstanceParser {
 
 	public String getMinViolatedConstraints() {
 		return minViolatedConstraints;
-	}
-
-	public ArrayList<PConstraint> getConstraintsOfVar(PVariable pVariable) {
-		ArrayList<PConstraint> out = new ArrayList<PConstraint>();
-		for (PConstraint c : this.getMapOfConstraints().values()) {
-			List<PVariable> scopeOfC = Arrays.asList(c.getScope());
-			if (scopeOfC.contains(pVariable)) {
-				out.add(c);
-			}
-		}
-		return out;
-	}
-
-	public ArrayList<PVariable> getNeighborsOfVar(PVariable pVariable) {
-		ArrayList<PVariable> out = new ArrayList<PVariable>();
-		for (PVariable p : this.mapOfVariables.values()) {
-			if (!p.equals(pVariable)) {
-				out.add(p);
-			}
-		}
-
-		return out;
 	}
 
 	/**
@@ -180,15 +138,13 @@ public class InstanceParser {
 	}
 
 	private void parsePresentation(Element presentationElement) {
-		problemName = presentationElement.getAttribute(InstanceTokens.NAME);
 		String s = presentationElement.getAttribute(InstanceTokens.MAX_CONSTRAINT_ARITY.trim());
 		maxConstraintArity = s.length() == 0 || s.equals("?") ? -1 : Integer.parseInt(s);
 		type = presentationElement.getAttribute(InstanceTokens.TYPE.trim());
 		type = type.length() == 0 || type.equals("?") ? InstanceTokens.CSP : type;
 		format = presentationElement.getAttribute(InstanceTokens.FORMAT.trim());
 		if (displayInstance)
-			System.out.println(
-					"Instance with maxConstraintArity=" + maxConstraintArity + " type=" + type + " format=" + format);
+			System.out.println("Instance with maxConstraintArity=" + maxConstraintArity + " type=" + type + " format=" + format);
 		s = presentationElement.getAttribute(InstanceTokens.NB_SOLUTIONS).trim();
 		satisfiable = s.length() == 0 || s.equals("?") ? "unknown" : s.equals("0") ? "false" : "true";
 		s = presentationElement.getAttribute(InstanceTokens.MIN_VIOLATED_CONSTRAINTS).trim();
@@ -206,8 +162,7 @@ public class InstanceParser {
 				values[cnt++] = Integer.parseInt(token);
 			else {
 				int min = Integer.parseInt(token.substring(0, position));
-				int max = Integer
-						.parseInt(token.substring(position + InstanceTokens.DISCRETE_INTERVAL_SEPARATOR.length()));
+				int max = Integer.parseInt(token.substring(position + InstanceTokens.DISCRETE_INTERVAL_SEPARATOR.length()));
 				for (int j = min; j <= max; j++)
 					values[cnt++] = j;
 			}
@@ -264,20 +219,17 @@ public class InstanceParser {
 
 	private PRelation parseRelationTuples(String name, int arity, int nbTuples, String semantics, String textContent) {
 		int[][] tuples = new int[nbTuples][arity];
-		StringTokenizer st = new StringTokenizer(textContent,
-				InstanceTokens.WHITE_SPACE + InstanceTokens.TUPLES_SEPARATOR);
+		StringTokenizer st = new StringTokenizer(textContent, InstanceTokens.WHITE_SPACE + InstanceTokens.TUPLES_SEPARATOR);
 		for (int i = 0; i < tuples.length; i++)
 			for (int j = 0; j < arity; j++)
 				tuples[i][j] = Integer.parseInt(st.nextToken());
 		return new PRelation(name, arity, nbTuples, semantics, tuples);
 	}
 
-	private PRelation parseSoftRelationTuples(String name, int arity, int nbTuples, String semantics,
-			String textContent, String textDefaultCost) {
+	private PRelation parseSoftRelationTuples(String name, int arity, int nbTuples, String semantics, String textContent, String textDefaultCost) {
 		int[][] tuples = new int[nbTuples][arity];
 		int[] weights = new int[nbTuples];
-		StringTokenizer st = new StringTokenizer(textContent,
-				InstanceTokens.WHITE_SPACE + InstanceTokens.TUPLES_SEPARATOR);
+		StringTokenizer st = new StringTokenizer(textContent, InstanceTokens.WHITE_SPACE + InstanceTokens.TUPLES_SEPARATOR);
 		int currentCost = -2;
 		for (int i = 0; i < nbTuples; i++) {
 			String token = st.nextToken();
@@ -291,8 +243,7 @@ public class InstanceParser {
 			for (int j = 1; j < arity; j++)
 				tuples[i][j] = Integer.parseInt(st.nextToken());
 		}
-		int defaultCost = textDefaultCost.equals(InstanceTokens.INFINITY) ? Integer.MAX_VALUE
-				: Integer.parseInt(textDefaultCost);
+		int defaultCost = textDefaultCost.equals(InstanceTokens.INFINITY) ? Integer.MAX_VALUE : Integer.parseInt(textDefaultCost);
 		return new PSoftRelation(name, arity, nbTuples, semantics, tuples, weights, defaultCost);
 	}
 
@@ -302,8 +253,7 @@ public class InstanceParser {
 		int nbTuples = Integer.parseInt(relationElement.getAttribute(InstanceTokens.NB_TUPLES));
 		String semantics = relationElement.getAttribute(InstanceTokens.SEMANTICS);
 		if (semantics.equals(InstanceTokens.SOFT))
-			return parseSoftRelationTuples(name, arity, nbTuples, semantics, relationElement.getTextContent(),
-					relationElement.getAttribute(InstanceTokens.DEFAULT_COST));
+			return parseSoftRelationTuples(name, arity, nbTuples, semantics, relationElement.getTextContent(), relationElement.getAttribute(InstanceTokens.DEFAULT_COST));
 		else
 			return parseRelationTuples(name, arity, nbTuples, semantics, relationElement.getTextContent());
 	}
@@ -391,9 +341,7 @@ public class InstanceParser {
 	}
 
 	private PConstraint parseElementConstraint(String name, PVariable[] scope, Element parameters) {
-		StringTokenizer st = new StringTokenizer(
-				Toolkit.insertWhitespaceAround(parameters.getTextContent().trim(), InstanceTokens.BRACKETS),
-				InstanceTokens.WHITE_SPACE);
+		StringTokenizer st = new StringTokenizer(Toolkit.insertWhitespaceAround(parameters.getTextContent().trim(), InstanceTokens.BRACKETS), InstanceTokens.WHITE_SPACE);
 		PVariable index = mapOfVariables.get(st.nextToken()); // index is necessarily a variable
 		st.nextToken(); // token [ skipped
 		List<Object> table = new ArrayList<Object>();
@@ -414,8 +362,7 @@ public class InstanceParser {
 
 	private PConstraint parseWeightedSumConstraint(String name, PVariable[] scope, Element parameters) {
 		NodeList nodeList = parameters.getChildNodes();
-		StringTokenizer st = new StringTokenizer(nodeList.item(0).getTextContent(),
-				InstanceTokens.WHITE_SPACE + "[{}]");
+		StringTokenizer st = new StringTokenizer(nodeList.item(0).getTextContent(), InstanceTokens.WHITE_SPACE + "[{}]");
 		int[] coeffs = new int[scope.length];
 		while (st.hasMoreTokens()) {
 			int coeff = Integer.parseInt(st.nextToken());
@@ -441,8 +388,7 @@ public class InstanceParser {
 	}
 
 	private PConstraint parseCumulativeConstraint(String name, PVariable[] scope, Element parameters) {
-		StringTokenizer st = new StringTokenizer(buildStringRepresentationOf(parameters),
-				InstanceTokens.WHITE_SPACE + "{}");
+		StringTokenizer st = new StringTokenizer(buildStringRepresentationOf(parameters), InstanceTokens.WHITE_SPACE + "{}");
 		st.nextToken(); // token '[' skipped
 		List<Task> tasks = new ArrayList<Task>();
 		String token = st.nextToken();
@@ -491,7 +437,6 @@ public class InstanceParser {
 		if (mapOfPredicates.containsKey(reference)) {
 			Element parameters = (Element) constraintElement.getElementsByTagName(InstanceTokens.PARAMETERS).item(0);
 			nbIntensionConstraints++;
-
 			return new PIntensionConstraint(name, scope, mapOfPredicates.get(reference), parameters.getTextContent());
 		}
 
@@ -538,21 +483,17 @@ public class InstanceParser {
 	/**
 	 * Parse the DOM object that has been loaded.
 	 * 
-	 * @param displayInstance if <code> true </code>, elements of the instance will
-	 *                        be displayed.
+	 * @param displayInstance if <code> true </code>, elements of the instance will be displayed.
 	 */
 	public void parse(boolean displayInstance) {
 		this.displayInstance = displayInstance;
-		parsePresentation(
-				(Element) document.getDocumentElement().getElementsByTagName(InstanceTokens.PRESENTATION).item(0));
+		parsePresentation((Element) document.getDocumentElement().getElementsByTagName(InstanceTokens.PRESENTATION).item(0));
 		parseDomains((Element) document.getDocumentElement().getElementsByTagName(InstanceTokens.DOMAINS).item(0));
 		parseVariables((Element) document.getDocumentElement().getElementsByTagName(InstanceTokens.VARIABLES).item(0));
 		parseRelations((Element) document.getDocumentElement().getElementsByTagName(InstanceTokens.RELATIONS).item(0));
 		parseFunctions((Element) document.getDocumentElement().getElementsByTagName(InstanceTokens.FUNCTIONS).item(0));
-		parsePredicates(
-				(Element) document.getDocumentElement().getElementsByTagName(InstanceTokens.PREDICATES).item(0));
-		parseConstraints(
-				(Element) document.getDocumentElement().getElementsByTagName(InstanceTokens.CONSTRAINTS).item(0));
+		parsePredicates((Element) document.getDocumentElement().getElementsByTagName(InstanceTokens.PREDICATES).item(0));
+		parseConstraints((Element) document.getDocumentElement().getElementsByTagName(InstanceTokens.CONSTRAINTS).item(0));
 	}
 
 	public static void main(String[] args) {

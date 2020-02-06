@@ -1,32 +1,9 @@
 package abscon.instance.components;
 
-import java.util.Comparator;
-
-/**
- * Author: Tomo Bessho Course: CSCE 421 Date: 2/1/2020
- */
-
-public abstract class PConstraint implements Comparator {
+public abstract class PConstraint {
 	protected String name;
 
 	protected PVariable[] scope;
-
-	public static final Comparator<PConstraint> ConstraintComparer = new Comparator<PConstraint>() {
-		@Override
-		public int compare(PConstraint c1, PConstraint c2) {
-			return extractInt(c1.getName()) - extractInt(c2.getName());
-		}
-
-		int extractInt(String s) {
-			String num = s.replaceAll("\\D", "");
-			// return 0 if no digits found
-			if (num.isEmpty()) {
-				return 0;
-			} else {
-				return Integer.parseInt(num);
-			}
-		}
-	};
 
 	public String getName() {
 		return name;
@@ -34,15 +11,6 @@ public abstract class PConstraint implements Comparator {
 
 	public PVariable[] getScope() {
 		return scope;
-	}
-
-	public String scopeToString(PVariable[] scope) {
-		String s = "{";
-		for (int i = 0; i < scope.length - 1; i++) {
-			s += scope[i].getName() + ",";
-		}
-		s += scope[scope.length - 1].getName() + "}";
-		return s;
 	}
 
 	public int getArity() {
@@ -59,30 +27,17 @@ public abstract class PConstraint implements Comparator {
 	}
 
 	/**
-	 * For CSP, returns 0 is the constraint is satified and 1 if the constraint is
-	 * violated. <br>
+	 * For CSP, returns 0 is the constraint is satified and 1 if the constraint is violated. <br>
 	 * For WCSP, returns the cost for the given tuple.
 	 */
 	public abstract long computeCostOf(int[] tuple);
 
 	public String toString() {
-		// String s = " constraint " + name + " with arity = " + scope.length + ", scope
-		// = ";
-		// s += scope[0].getName();
-		// for (int i = 1; i < scope.length; i++)
-		// s += " " + scope[i].getName();
-		// return s;
-
-		String s = "Name: " + name + ", variables: " + scopeToString(scope);
-
+		String s = "  constraint " + name + " with arity = " + scope.length + ", scope = ";
+		s += scope[0].getName();
+		for (int i = 1; i < scope.length; i++)
+			s += " " + scope[i].getName();
 		return s;
-	}
-
-	public String toString1() {
-		String s = "Name: " + name + ", variables: " + scopeToString(scope);
-
-		return s;
-
 	}
 
 	public boolean isGuaranteedToBeDivisionByZeroFree() {
@@ -92,5 +47,4 @@ public abstract class PConstraint implements Comparator {
 	public boolean isGuaranteedToBeOverflowFree() {
 		return true;
 	}
-
 }

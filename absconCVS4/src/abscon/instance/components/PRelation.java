@@ -5,10 +5,6 @@ import java.util.Arrays;
 import abscon.instance.InstanceTokens;
 import abscon.instance.Toolkit;
 
-/**
- * Author: Tomo Bessho Course: CSCE 421 Date: 2/1/2020
- */
-
 public class PRelation {
 
 	protected String name;
@@ -29,10 +25,6 @@ public class PRelation {
 		return arity;
 	}
 
-	public int getNpTubles() {
-		return nbTuples;
-	}
-
 	public String getSemantics() {
 		return semantics;
 	}
@@ -40,6 +32,7 @@ public class PRelation {
 	public int[][] getTuples() {
 		return tuples;
 	}
+
 
 	public int getMaximalCost() {
 		return 1;
@@ -51,8 +44,9 @@ public class PRelation {
 		this.nbTuples = nbTuples;
 		this.semantics = semantics;
 		this.tuples = tuples;
-		Arrays.sort(tuples, Toolkit.lexicographicComparator);
+		Arrays.sort(tuples,Toolkit.lexicographicComparator); 
 	}
+
 
 	public int computeCostOf(int[] tuple) {
 		int position = Arrays.binarySearch(tuples, tuple, Toolkit.lexicographicComparator);
@@ -63,8 +57,7 @@ public class PRelation {
 
 	public String toString() {
 		int displayLimit = 5;
-		String s = "  relation " + name + " with arity=" + arity + ", semantics=" + semantics + ", nbTuples=" + nbTuples
-				+ " : ";
+		String s = "  relation " + name + " with arity=" + arity + ", semantics=" + semantics + ", nbTuples=" + nbTuples + " : ";
 		for (int i = 0; i < Math.min(nbTuples, displayLimit); i++) {
 			s += "(";
 			for (int j = 0; j < arity; j++)
@@ -88,19 +81,15 @@ public class PRelation {
 
 	public String getStringListOfTuples() {
 		StringBuffer s = new StringBuffer();
-		s.append('{');
 		for (int i = 0; i < tuples.length; i++) {
-			s.append('(');
 			for (int j = 0; j < tuples[i].length; j++) {
 				s.append(tuples[i][j]);
 				if (j != tuples[i].length - 1)
-					s.append(',');
+					s.append(' ');
 			}
 			if (i != tuples.length - 1)
-				// s.append('|');
-				s.append("),");
+				s.append('|');
 		}
-		s.append(")}");
 		return s.toString();
 	}
 

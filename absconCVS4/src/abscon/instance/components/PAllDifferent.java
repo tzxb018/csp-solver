@@ -18,10 +18,4 @@ public class PAllDifferent extends PGlobalConstraint {
 	public String toString() {
 		return super.toString() + " : allDifferent";
 	}
-
-	@Override
-	public int compare(Object arg0, Object arg1) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 }
