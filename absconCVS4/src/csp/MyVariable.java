@@ -78,9 +78,11 @@ public class MyVariable {
 
 	public void setCurrentDomain(ArrayList<Integer> currdomain) {
 		this.currentDomain.clear();
+		System.out.println("Passed thru: " + currdomain.toString());
 		for (Integer i : currdomain) {
 			this.currentDomain.add(i);
 		}
+		System.out.println("In var " + this.currentDomain.toString());
 	}
 
 	public String toString() {

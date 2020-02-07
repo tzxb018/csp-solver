@@ -131,7 +131,7 @@ public class SearchFunctions {
             // if we find that it is not supported, we need to remove this value from the
             // domain
             if (found == false) {
-                System.out.println(var1.getName() + " " + val + " " + var2.getName());
+                System.out.println("REMOVE: " + var1.getName() + " " + val + " " + var2.getName());
                 revised = true;
                 iterator.remove();
 
@@ -141,8 +141,11 @@ public class SearchFunctions {
             }
         }
         // making sure to update the current domain of the variable
-        System.out.println(var1.getName() + " " + domainOfVar1.toString());
-        var1.setCurrentDomain(domainOfVar1);
+        System.out.println("Dom of (revised): " + var1.getName() + " " + domainOfVar1.toString());
+        ArrayList<Integer> passThrough = (ArrayList<Integer>) domainOfVar1.clone();
+        var1.setCurrentDomain(passThrough);
+        System.out.println();
+
         return revised;
 
     }

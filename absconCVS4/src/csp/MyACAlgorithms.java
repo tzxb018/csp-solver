@@ -61,14 +61,29 @@ public class MyACAlgorithms {
         // Taking in all the possible combinations of each variable paired with another
         // variable besdies itself that are associated with a constraint
         for (MyConstraint c : constraints) {
-            queue.add(c.getScope());
+            ArrayList<MyVariable> copy = c.getScope();
+            ArrayList<MyVariable> putIn = new ArrayList<>();
+
+            for (MyVariable v : variables) {
+                if (v.getName().equals(copy.get(0).getName())) {
+                    putIn.add(v);
+                }
+            }
+
+            for (MyVariable v : variables) {
+                if (v.getName().equals(copy.get(1).getName())) {
+                    putIn.add(v);
+                }
+            }
+
+            queue.add(putIn);
 
             // making sure to add the other direction
-            ArrayList<MyVariable> a = c.getScope();
-            MyVariable temp = a.get(0);
-            a.set(0, a.get(1));
-            a.set(1, temp);
-            queue.add(a);
+            // ArrayList<MyVariable> a = c.getScope();
+            // MyVariable temp = a.get(0);
+            // a.set(0, a.get(1));
+            // a.set(1, temp);
+            // queue.add(a);
 
         }
 
@@ -80,27 +95,32 @@ public class MyACAlgorithms {
 
             for (ArrayList<MyVariable> tuple : queue) {
 
+                System.out.println("AC1 start");
+                System.out.println(tuple.get(0).getName() + " " + tuple.get(0).getCurrentDomain().toString());
+                System.out.println(tuple.get(1).getName() + " " + tuple.get(1).getCurrentDomain().toString());
+
                 // run the revised function for the two variables being tested
                 boolean updated = sf.revised(tuple.get(0), tuple.get(1));
-                // boolean updated1 = sf.revised(tuple.get(1), tuple.get(0));
+                boolean updated1 = sf.revised(tuple.get(1), tuple.get(0));
 
                 // if there is a domain wipeout in the first variable
+                // System.out.println(tuple.get(0).getCurrentDomain().toString());
                 if (tuple.get(0).getCurrentDomain().size() == 0) {
                     System.out.println("cc: " + sf.getCC());
                     System.out.println("CPU time: " + (getCpuTime() - captureTime));
 
                     System.out.println("fval: " + sf.getfval());
                     System.out.println("isize: " + this.isize);
-                    System.out.println("fsize: false\n feffect: false");
+                    System.out.println("fsize: false\nfeffect: false");
                     return false;
                 } else {
                     // keep track of whether there has been a change made within the while loop
-                    changed = (changed || updated);
+                    changed = (changed || updated || updated1);
                 }
+
             }
 
-            // System.out.println("changed: " + changed);
-            System.out.println(myProblem.printDomains());
+            System.out.println("AC all doms: " + myProblem.printDomains());
         }
 
         System.out.println("cc: " + sf.getCC());
