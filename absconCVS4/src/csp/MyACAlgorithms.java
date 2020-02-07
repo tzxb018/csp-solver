@@ -77,14 +77,6 @@ public class MyACAlgorithms {
             }
 
             queue.add(putIn);
-
-            // making sure to add the other direction
-            // ArrayList<MyVariable> a = c.getScope();
-            // MyVariable temp = a.get(0);
-            // a.set(0, a.get(1));
-            // a.set(1, temp);
-            // queue.add(a);
-
         }
 
         // Node consistency algorithm here

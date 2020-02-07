@@ -45,12 +45,9 @@ public class SearchFunctions {
         while (constraint == null && iterator < constraintList.size()) {
             MyConstraint testConstraint = constraintList.get(iterator);
             if ((testConstraint.getScope().get(0).getName().equals(scopeWithTwoVars[0].getName())
-                    && testConstraint.getScope().get(1).getName().equals(scopeWithTwoVars[1].getName()))) {
-                // ||
-                // (testConstraint.getScope().get(1).getName().equals(scopeWithTwoVars[0].getName())
-                // &&
-                // testConstraint.getScope().get(0).getName().equals(scopeWithTwoVars[1].getName())))
-                // {
+                    && testConstraint.getScope().get(1).getName().equals(scopeWithTwoVars[1].getName()))
+                    || (testConstraint.getScope().get(1).getName().equals(scopeWithTwoVars[0].getName())
+                            && testConstraint.getScope().get(0).getName().equals(scopeWithTwoVars[1].getName()))) {
                 constraint = testConstraint;
             }
             iterator++;
@@ -101,10 +98,13 @@ public class SearchFunctions {
     // 1 that is in the relation
     public boolean supported(MyVariable var1, int a, MyVariable var2) {
 
+        System.out.println("SUPPRT: " + var1.getName() + " " + var1.getCurrentDomain().toString());
+        System.out.println("SUPPRT: " + var2.getName() + " " + var2.getCurrentDomain().toString());
+
         // go through each value of the second MyVariable and find if that value is in
         // the relation with MyVariable 1 using the check function
         for (int i = 0; i < var2.getCurrentDomain().size(); i++) {
-            if (check(var1, a, var2, var2.getCurrentDomain().get(i))) {
+            if (check(var1, a, var2, var2.getCurrentDomain().get(i))) { //
                 // System.out.println("Supported " + var1.getName() + " " + a + " " +
                 // var2.getName() + " "
                 // + var2.getCurrentDomain().get(i));
@@ -120,8 +120,11 @@ public class SearchFunctions {
         boolean revised = false;
         boolean found = false;
 
+        System.out.println("REV: " + var1.getName() + " " + var1.getCurrentDomain().toString());
+        System.out.println("REV: " + var2.getName() + " " + var2.getCurrentDomain().toString());
+
         ArrayList<Integer> domainOfVar1 = var1.getCurrentDomain();
-        Iterator iterator = domainOfVar1.iterator();
+        Iterator<Integer> iterator = domainOfVar1.iterator();
 
         // go through each possible value within the current domain of var 1
         while (iterator.hasNext()) {
@@ -131,12 +134,9 @@ public class SearchFunctions {
             // if we find that it is not supported, we need to remove this value from the
             // domain
             if (found == false) {
-                System.out.println("REMOVE: " + var1.getName() + " " + val + " " + var2.getName());
+                System.out.println("*REMOVE: " + var1.getName() + " " + val + " ");
                 revised = true;
                 iterator.remove();
-
-                // System.out.println(var1.getName() + ": " +
-                // var1.getCurrentDomain().toString());
                 fval++;
             }
         }
@@ -144,7 +144,6 @@ public class SearchFunctions {
         System.out.println("Dom of (revised): " + var1.getName() + " " + domainOfVar1.toString());
         ArrayList<Integer> passThrough = (ArrayList<Integer>) domainOfVar1.clone();
         var1.setCurrentDomain(passThrough);
-        System.out.println();
 
         return revised;
 
