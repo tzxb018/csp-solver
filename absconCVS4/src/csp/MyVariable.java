@@ -9,6 +9,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Objects;
 
+/**
+ * Name: Tomo Bessho Date: 2/6/2020 Class: CSCE 421
+ */
 public class MyVariable {
 	/// Keep a reference to the original variable, just in case it is needed later
 	protected PVariable varRef;
@@ -16,32 +19,20 @@ public class MyVariable {
 	/// homework
 	protected String name;
 	protected int[] initialDomain;
-	protected int[] currentDomain;
+	protected ArrayList<Integer> currentDomain;
 	protected ArrayList<MyConstraint> constraints;
 	protected ArrayList<MyVariable> neighbors;
-
-	// public static final Comparator<MyVariable> variableComparator = new
-	// Comparator<MyVariable>() {
-	// @Override
-	// public int compare(MyVariable c1, MyVariable c2) {
-	// return extractInt(c1.getName()) - extractInt(c2.getName());
-	// }
-
-	// public int extractInt(String s) {
-	// String num = s.replaceAll("\\D", "");
-	// // return 0 if no digits found
-	// if (num.isEmpty()) {
-	// return 0;
-	// } else {
-	// return Integer.parseInt(num);
-	// }
-	// }
-	// };
 
 	public MyVariable(PVariable var) {
 		varRef = var;
 		name = var.getName();
 		initialDomain = var.getDomain().getValues();
+
+		currentDomain = new ArrayList<Integer>();
+		// Deep copying all the elements of the inital array into the current domain
+		for (int i = 0; i < initialDomain.length; i++) {
+			currentDomain.add((Integer) initialDomain[i]);
+		}
 
 		constraints = new ArrayList<MyConstraint>();
 		neighbors = new ArrayList<MyVariable>();
@@ -50,6 +41,10 @@ public class MyVariable {
 
 	public String getName() {
 		return this.name;
+	}
+
+	public int[] getDomain() {
+		return this.initialDomain;
 	}
 
 	public void addConstraints(MyConstraint cnst) {
@@ -77,14 +72,25 @@ public class MyVariable {
 		this.neighbors = neighbors;
 	}
 
-	public String toString() {
-		String s = "Name: " + name + ", initial-domain: {";
+	public ArrayList<Integer> getCurrentDomain() {
+		return this.currentDomain;
+	}
 
-		for (int i = 0; i < initialDomain.length - 1; i++) {
-			s += initialDomain[i];
+	public void setCurrentDomain(ArrayList<Integer> currdomain) {
+		this.currentDomain.clear();
+		for (Integer i : currdomain) {
+			this.currentDomain.add(i);
+		}
+	}
+
+	public String toString() {
+		String s = "Name: " + name + ", domain: {";
+
+		for (int i = 0; i < currentDomain.size() - 1; i++) {
+			s += currentDomain.get(i);
 			s += ",";
 		}
-		s += initialDomain[initialDomain.length - 1] + "}, ";
+		s += currentDomain.get(currentDomain.size() - 1) + "}, ";
 		s += "constraints: {";
 
 		for (int i = 0; i < constraints.size() - 1; i++) {

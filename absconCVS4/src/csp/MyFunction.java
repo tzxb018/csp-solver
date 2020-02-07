@@ -5,6 +5,10 @@ import java.util.Objects;
 
 import abscon.instance.components.PFunction;
 
+/**
+ * Name: Tomo Bessho Date: 2/6/2020 Class: CSCE 421
+ */
+
 public class MyFunction {
 
     protected String[] formalParameters;

@@ -3,12 +3,19 @@ package csp;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * Name: Tomo Bessho Date: 2/6/2020 Class: CSCE 421
+ */
+
 public class MyProblem {
 
     protected String problemName;
     protected ArrayList<MyVariable> variables;
     protected ArrayList<MyConstraint> constraints;
+    protected boolean extension; // determines if the problem is intension or extension
 
+    // Stores the important informations about the problem, the variables (which
+    // have their own domains) and the constraints (the three compoennets of a csp)
     public MyProblem(String problemName, ArrayList<MyVariable> variables, ArrayList<MyConstraint> constraints) {
         this.problemName = problemName;
         this.variables = variables;
@@ -26,9 +33,17 @@ public class MyProblem {
             Collections.sort(toSortConstraints, MyConstraint.ConstraintComparer);
             myVar.setConstraints(toSortConstraints);
         }
+
+        this.extension = (constraints.get(0).getClass().toString().contains("Extension"));
+
+        // System.out.println(mainFunction.revised(variables.get(1), variables.get(2)));
+
     }
 
+    // Sets all the constraints linked to the variable
     public void setConstraintsForVariable(MyVariable myVar) {
+        // Looping through each constraint to see if a variable is assigned to that
+        // particular constraint
         for (MyConstraint c : this.constraints) {
             for (int i = 0; i < c.getVariables().size(); i++) {
                 if (c.getVariables().get(i).getName().equals(myVar.getName())) {
@@ -38,7 +53,10 @@ public class MyProblem {
         }
     }
 
+    // Sets all the neighbors of the variable
     public void setNeighborsForVariable(MyVariable myVar) {
+        // Looping through the variables and adding all the variables that are not
+        // itself
         for (MyVariable v : variables) {
             if (!v.getName().equals(myVar.getName())) {
                 myVar.addNeighbors(v);
@@ -56,6 +74,15 @@ public class MyProblem {
 
     public ArrayList<MyConstraint> getConstraints() {
         return this.constraints;
+    }
+
+    public String printDomains() {
+        String s = "";
+        for (MyVariable v : variables) {
+            s += v.getName() + " " + v.getCurrentDomain().toString() + " ";
+        }
+
+        return s;
     }
 
     @Override

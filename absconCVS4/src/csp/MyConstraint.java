@@ -7,12 +7,18 @@ import java.util.Objects;
 import abscon.instance.components.PConstraint;
 import abscon.instance.components.PVariable;
 
+/**
+ * Name: Tomo Bessho Date: 2/6/2020 Class: CSCE 421
+ */
+
 public abstract class MyConstraint implements Comparator<MyConstraint> {
 
     protected String name;
-    protected ArrayList<MyVariable> variables;
+    protected ArrayList<MyVariable> scope;
     protected PConstraint refConstraint;
 
+    // Creating a lexiographic comparator for the comparator by looking at the
+    // constraint's name
     public static final Comparator<MyConstraint> ConstraintComparer = new Comparator<MyConstraint>() {
         @Override
         public int compare(MyConstraint c1, MyConstraint c2) {
@@ -34,14 +40,19 @@ public abstract class MyConstraint implements Comparator<MyConstraint> {
         this.refConstraint = refConstraint;
         this.name = refConstraint.getName();
 
-        variables = new ArrayList<MyVariable>();
+        scope = new ArrayList<MyVariable>();
 
+        // Getting the scope of the constraint
         PVariable[] tempVariables = refConstraint.getScope();
         for (int i = 0; i < tempVariables.length; i++) {
             MyVariable varTemp = new MyVariable(tempVariables[i]);
-            variables.add(varTemp);
+            scope.add(varTemp);
         }
 
+    }
+
+    public ArrayList<MyVariable> getScope() {
+        return this.scope;
     }
 
     public String getName() {
@@ -49,7 +60,7 @@ public abstract class MyConstraint implements Comparator<MyConstraint> {
     }
 
     public ArrayList<MyVariable> getVariables() {
-        return this.variables;
+        return this.scope;
     }
 
     public PConstraint getRefConstraint() {
@@ -64,23 +75,23 @@ public abstract class MyConstraint implements Comparator<MyConstraint> {
             return false;
         }
         MyConstraint myConstraint = (MyConstraint) o;
-        return Objects.equals(name, myConstraint.name) && Objects.equals(variables, myConstraint.variables)
+        return Objects.equals(name, myConstraint.name) && Objects.equals(scope, myConstraint.scope)
                 && Objects.equals(refConstraint, myConstraint.refConstraint);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, variables, refConstraint);
+        return Objects.hash(name, scope, refConstraint);
     }
 
     @Override
     public String toString() {
         String s = "Name: " + this.name + ", variables: {";
-        for (int i = 0; i < variables.size() - 1; i++) {
-            s += variables.get(i).getName();
+        for (int i = 0; i < scope.size() - 1; i++) {
+            s += scope.get(i).getName();
             s += ",";
         }
-        s += variables.get(variables.size() - 1).getName() + "}";
+        s += scope.get(scope.size() - 1).getName() + "}";
 
         return s;
     }

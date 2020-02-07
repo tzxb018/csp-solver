@@ -6,21 +6,26 @@ import abscon.instance.components.PConstraint;
 import abscon.instance.components.PExtensionConstraint;
 import abscon.instance.components.PRelation;
 
+/**
+ * Name: Tomo Bessho Date: 2/6/2020 Class: CSCE 421
+ */
+
 public class MyExtensionConstraint extends MyConstraint {
 
     protected PExtensionConstraint conRef;
     protected PRelation relationRef;
-    protected int[][] definition;
-    protected String semantics; // returns true if this is a support constraint, else it is a conflict
-    // constraint
+    protected int[][] relation;
+    protected String semantics; // conflict/support
 
+    // Using the MyConstraint as a parent class, this is a data structure for just
+    // extension constraints
     public MyExtensionConstraint(PConstraint refConstraint, PExtensionConstraint refExtensionConstraint) {
         super(refConstraint);
         this.conRef = refExtensionConstraint;
         this.relationRef = refExtensionConstraint.getRelation();
         this.semantics = relationRef.getSemantics();
 
-        this.definition = relationRef.getTuples();
+        this.relation = relationRef.getTuples();
 
     }
 
@@ -40,12 +45,12 @@ public class MyExtensionConstraint extends MyConstraint {
         this.relationRef = relationRef;
     }
 
-    public int[][] getDefinition() {
-        return this.definition;
+    public int[][] getRelation() {
+        return this.relation;
     }
 
-    public void setDefinition(int[][] definition) {
-        this.definition = definition;
+    public void setRelation(int[][] definition) {
+        this.relation = definition;
     }
 
     public String getSemantics() {
@@ -66,8 +71,8 @@ public class MyExtensionConstraint extends MyConstraint {
         return this;
     }
 
-    public MyExtensionConstraint definition(int[][] definition) {
-        this.definition = definition;
+    public MyExtensionConstraint relation(int[][] definition) {
+        this.relation = definition;
         return this;
     }
 
@@ -86,13 +91,13 @@ public class MyExtensionConstraint extends MyConstraint {
         MyExtensionConstraint myExtensionConstraint = (MyExtensionConstraint) o;
         return Objects.equals(conRef, myExtensionConstraint.conRef)
                 && Objects.equals(relationRef, myExtensionConstraint.relationRef)
-                && Objects.equals(definition, myExtensionConstraint.definition)
+                && Objects.equals(relation, myExtensionConstraint.relation)
                 && Objects.equals(semantics, myExtensionConstraint.semantics);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(conRef, relationRef, definition, semantics);
+        return Objects.hash(conRef, relationRef, relation, semantics);
     }
 
     @Override
@@ -100,14 +105,14 @@ public class MyExtensionConstraint extends MyConstraint {
         String s = super.toString();
         s += ", definition: " + semantics + " {";
 
-        for (int i = 0; i < definition.length; i++) {
+        for (int i = 0; i < relation.length; i++) {
             s += "(";
-            for (int j = 0; j < definition[i].length; j++) {
-                s += (definition[i][j]);
-                if (j != definition[i].length - 1)
+            for (int j = 0; j < relation[i].length; j++) {
+                s += (relation[i][j]);
+                if (j != relation[i].length - 1)
                     s += (',');
             }
-            if (i != definition.length - 1)
+            if (i != relation.length - 1)
                 s += ("),");
         }
         s += ")}";
