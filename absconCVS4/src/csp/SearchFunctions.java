@@ -48,10 +48,16 @@ public class SearchFunctions {
         // make it a lsit
         while (constraint == null && iterator < constraintList.size()) {
             MyConstraint testConstraint = constraintList.get(iterator);
+
+            // checking if the scope of the constriant matches the two variables being put
+            // in
             if ((testConstraint.getScope().get(0).getName().equals(scopeWithTwoVars[0].getName())
                     && testConstraint.getScope().get(1).getName().equals(scopeWithTwoVars[1].getName()))) {
                 reversed = false;
                 constraint = testConstraint;
+
+                // making sure we check the reverse of the scope, since we are checking both
+                // directions
             } else if (testConstraint.getScope().get(1).getName().equals(scopeWithTwoVars[0].getName())
                     && testConstraint.getScope().get(0).getName().equals(scopeWithTwoVars[1].getName())) {
                 constraint = testConstraint;
@@ -76,23 +82,28 @@ public class SearchFunctions {
             // for binary constraints
             if (extensionConstraint.getRelation()[0].length == 2) {
                 int[][] relation = extensionConstraint.getRelation();
-                System.out.println(extensionConstraint.toString());
+                // System.out.println(extensionConstraint.toString());
 
                 // finding the two values in one tuple within the relation
-
                 for (int i = 0; i < relation.length; i++) {
-                    System.out.println(relation[i][0] + " " + relation[i][1] + " : " + scopeWithTwoVars[0].getName()
-                            + " " + scopeWithTwoVars[1].getName());
+                    // System.out.println(relation[i][0] + " " + relation[i][1] + " : " +
+                    // scopeWithTwoVars[0].getName()
+                    // + " " + scopeWithTwoVars[1].getName());
+                    // if the relation holds the two values in the argument
                     if (relation[i][0] == val1 && relation[i][1] == val2 && reversed == false) {
                         foundMatch = true;
-                        System.out.println("Check found relation " + val1 + "," + val2 + " for " + variable1.getName()
-                                + "," + variable2.getName());
+                        // System.out.println("Check found relation " + val1 + "," + val2 + " for " +
+                        // variable1.getName()
+                        // + "," + variable2.getName());
                         break;
-                    }
-                    else if (relation[i][1] == val1 && relation[i][0] == val2 && reversed == true){
+
+                        // gotta check the reversed order of the values (wow this took me 6 hours to
+                        // find!)
+                    } else if (relation[i][1] == val1 && relation[i][0] == val2 && reversed == true) {
                         foundMatch = true;
-                        System.out.println("Check found relation " + val1 + "," + val2 + " for " + variable1.getName()
-                                + "," + variable2.getName());
+                        // System.out.println("Check found relation " + val1 + "," + val2 + " for " +
+                        // variable1.getName()
+                        // + "," + variable2.getName());
                         break;
                     }
                 }
@@ -132,11 +143,13 @@ public class SearchFunctions {
         // go through each value of the second MyVariable and find if that value is in
         // the relation with MyVariable 1 using the check function
         for (int i = 0; i < var2.getCurrentDomain().size(); i++) {
-            System.out.println("SUPPORT FUNCTION:" + var1.getName() + " " + a + " " + var2.getName() + " "
-                    + var2.getCurrentDomain().get(i));
+            // System.out.println("SUPPORT FUNCTION:" + var1.getName() + " " + a + " " +
+            // var2.getName() + " "
+            // + var2.getCurrentDomain().get(i));
             if (check(var1, a, var2, var2.getCurrentDomain().get(i))) { //
-                System.out.println("Supported " + var1.getName() + " " + a + " " + var2.getName() + " "
-                        + var2.getCurrentDomain().get(i));
+                // System.out.println("Supported " + var1.getName() + " " + a + " " +
+                // var2.getName() + " "
+                // + var2.getCurrentDomain().get(i));
                 return true;
             }
         }
@@ -165,7 +178,7 @@ public class SearchFunctions {
             // if we find that it is not supported, we need to remove this value from the
             // domain
             if (found == false) {
-                System.out.println("*REMOVE: " + var1.getName() + " " + val + " ");
+                // System.out.println("*REMOVE: " + var1.getName() + " " + val + " ");
                 revised = true;
                 iterator.remove();
                 fval++;

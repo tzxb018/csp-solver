@@ -2,6 +2,7 @@ package csp;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -38,7 +39,7 @@ public class MyACAlgorithms {
     }
 
     public double computeFEffect(double isize, double fsize) {
-        this.feffect = Math.log((Math.pow(isize, Math.E) / Math.pow(fsize, Math.E)));
+        this.feffect = Math.log((Math.pow(Math.E, this.isize) / Math.pow(Math.E, this.fsize)));
         return this.feffect;
     }
 
@@ -78,7 +79,7 @@ public class MyACAlgorithms {
 
             queue.add(putIn);
 
-            System.out.println(putIn.toString());
+            // System.out.println(putIn.toString());
 
             putIn = new ArrayList<>();
 
@@ -116,19 +117,23 @@ public class MyACAlgorithms {
                 // tuple.get(1).getCurrentDomain().toString());
 
                 // run the revised function for the two variables being tested
-                System.out.println("AC Revise: " + tuple.get(0).getName() + " " + tuple.get(1).getName());
+                // System.out.println("AC Revise: " + tuple.get(0).getName() + " " +
+                // tuple.get(1).getName());
                 boolean updated = sf.revised(tuple.get(0), tuple.get(1));
                 // boolean updated1 = sf.revised(tuple.get(1), tuple.get(0));
 
                 // if there is a domain wipeout in the first variable
-                System.out.println(tuple.get(0).getName() + " " + tuple.get(0).getCurrentDomain().toString());
+                // System.out.println(tuple.get(0).getName() + " " +
+                // tuple.get(0).getCurrentDomain().toString());
                 for (MyVariable v : variables) {
                     if (v.getCurrentDomain().size() == 0) {
+                        DecimalFormat df = new DecimalFormat("#.#####");
+
                         System.out.println("cc: " + sf.getCC());
                         System.out.println("CPU time: " + (getCpuTime() - captureTime));
 
                         System.out.println("fval: " + sf.getfval());
-                        System.out.println("isize: " + this.isize);
+                        System.out.println("isize: " + df.format(this.isize));
                         System.out.println("fsize: false\nfeffect: false");
                         return false;
                     }
@@ -139,18 +144,19 @@ public class MyACAlgorithms {
 
             }
 
-            System.out.println(myProblem.printDomains());
+            // System.out.println(myProblem.printDomains());
 
         }
+        DecimalFormat df = new DecimalFormat("#.#####");
 
         System.out.println("cc: " + sf.getCC());
         System.out.println("CPU time: " + (getCpuTime() - captureTime));
 
         System.out.println("fval: " + sf.getfval());
-        System.out.println("isize: " + this.isize);
+        System.out.println("isize: " + df.format(this.isize));
 
-        System.out.println("fsize: " + this.computeFSize(variables));
-        System.out.println("feffect: " + this.feffect);
+        System.out.println("fsize: " + df.format(this.computeFSize(variables)));
+        System.out.println("feffect: " + df.format(this.computeFEffect(this.isize, this.fsize)));
         return true;
 
     }
