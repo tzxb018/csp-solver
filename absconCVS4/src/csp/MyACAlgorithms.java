@@ -30,7 +30,7 @@ public class MyACAlgorithms {
         double a = 1;
         for (MyVariable v : variables) {
             a *= v.currentDomain.size();
-            System.out.println(v.currentDomain.size());
+            // System.out.println(v.currentDomain.size());
 
         }
         this.fsize = Math.log(a);
@@ -77,8 +77,30 @@ public class MyACAlgorithms {
             }
 
             queue.add(putIn);
+
+            System.out.println(putIn.toString());
+
+            putIn = new ArrayList<>();
+
+            for (MyVariable v : variables) {
+                if (v.getName().equals(copy.get(1).getName())) {
+                    putIn.add(v);
+                }
+            }
+
+            for (MyVariable v : variables) {
+                if (v.getName().equals(copy.get(0).getName())) {
+                    putIn.add(v);
+                }
+            }
+
+            queue.add(putIn);
         }
 
+        // System.out.println();
+        // for (int i = 0; i < queue.size(); i++) {
+        // System.out.println(queue.get(i).toString());
+        // }
         // Node consistency algorithm here
 
         boolean changed = true; // tracks if there was a change made in the algorithm
@@ -87,32 +109,38 @@ public class MyACAlgorithms {
 
             for (ArrayList<MyVariable> tuple : queue) {
 
-                System.out.println("AC1 start");
-                System.out.println(tuple.get(0).getName() + " " + tuple.get(0).getCurrentDomain().toString());
-                System.out.println(tuple.get(1).getName() + " " + tuple.get(1).getCurrentDomain().toString());
+                // System.out.println("AC1 start");
+                // System.out.println(tuple.get(0).getName() + " " +
+                // tuple.get(0).getCurrentDomain().toString());
+                // System.out.println(tuple.get(1).getName() + " " +
+                // tuple.get(1).getCurrentDomain().toString());
 
                 // run the revised function for the two variables being tested
+                System.out.println("AC Revise: " + tuple.get(0).getName() + " " + tuple.get(1).getName());
                 boolean updated = sf.revised(tuple.get(0), tuple.get(1));
-                boolean updated1 = sf.revised(tuple.get(1), tuple.get(0));
+                // boolean updated1 = sf.revised(tuple.get(1), tuple.get(0));
 
                 // if there is a domain wipeout in the first variable
-                // System.out.println(tuple.get(0).getCurrentDomain().toString());
-                if (tuple.get(0).getCurrentDomain().size() == 0) {
-                    System.out.println("cc: " + sf.getCC());
-                    System.out.println("CPU time: " + (getCpuTime() - captureTime));
+                System.out.println(tuple.get(0).getName() + " " + tuple.get(0).getCurrentDomain().toString());
+                for (MyVariable v : variables) {
+                    if (v.getCurrentDomain().size() == 0) {
+                        System.out.println("cc: " + sf.getCC());
+                        System.out.println("CPU time: " + (getCpuTime() - captureTime));
 
-                    System.out.println("fval: " + sf.getfval());
-                    System.out.println("isize: " + this.isize);
-                    System.out.println("fsize: false\nfeffect: false");
-                    return false;
-                } else {
-                    // keep track of whether there has been a change made within the while loop
-                    changed = (changed || updated || updated1);
+                        System.out.println("fval: " + sf.getfval());
+                        System.out.println("isize: " + this.isize);
+                        System.out.println("fsize: false\nfeffect: false");
+                        return false;
+                    }
                 }
+                // keep track of whether there has been a change made within the while loop
+                changed = (changed || updated);
+                // changed = (changed || updated || updated1);
 
             }
 
-            System.out.println("AC all doms: " + myProblem.printDomains());
+            System.out.println(myProblem.printDomains());
+
         }
 
         System.out.println("cc: " + sf.getCC());
