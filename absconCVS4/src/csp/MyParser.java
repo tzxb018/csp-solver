@@ -72,7 +72,7 @@ public class MyParser {
 		// place
 		MyProblem myProblem = new MyProblem(problemName, variables, constraints);
 		System.out.println("Instance name: " + problemName);
-		System.out.println(myProblem);
+		// System.out.println(myProblem);
 		MyACAlgorithms ac = new MyACAlgorithms();
 
 		if (algoirthm.equals("ac1"))

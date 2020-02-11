@@ -71,31 +71,35 @@ public class MyACAlgorithms {
                 }
             }
 
-            for (MyVariable v : variables) {
-                if (v.getName().equals(copy.get(1).getName())) {
-                    putIn.add(v);
+            // making sure that this is a binary constraint
+            if (copy.size() > 1) {
+                for (MyVariable v : variables) {
+                    if (v.getName().equals(copy.get(1).getName())) {
+                        putIn.add(v);
+                    }
                 }
             }
 
             queue.add(putIn);
 
-            // System.out.println(putIn.toString());
+            // only need to put in the reverse if it is a binary constraint
+            if (copy.size() > 1) {
+                putIn = new ArrayList<>();
 
-            putIn = new ArrayList<>();
-
-            for (MyVariable v : variables) {
-                if (v.getName().equals(copy.get(1).getName())) {
-                    putIn.add(v);
+                for (MyVariable v : variables) {
+                    if (v.getName().equals(copy.get(1).getName())) {
+                        putIn.add(v);
+                    }
                 }
-            }
 
-            for (MyVariable v : variables) {
-                if (v.getName().equals(copy.get(0).getName())) {
-                    putIn.add(v);
+                for (MyVariable v : variables) {
+                    if (v.getName().equals(copy.get(0).getName())) {
+                        putIn.add(v);
+                    }
                 }
-            }
 
-            queue.add(putIn);
+                queue.add(putIn);
+            }
         }
 
         // System.out.println();
@@ -119,7 +123,12 @@ public class MyACAlgorithms {
                 // run the revised function for the two variables being tested
                 // System.out.println("AC Revise: " + tuple.get(0).getName() + " " +
                 // tuple.get(1).getName());
-                boolean updated = sf.revised(tuple.get(0), tuple.get(1));
+
+                
+                boolean updated = false;
+                if (tuple.size() > 1) {
+                    updated = sf.revised(tuple.get(0), tuple.get(1));
+                }
                 // boolean updated1 = sf.revised(tuple.get(1), tuple.get(0));
 
                 // if there is a domain wipeout in the first variable
@@ -128,9 +137,8 @@ public class MyACAlgorithms {
                 for (MyVariable v : variables) {
                     if (v.getCurrentDomain().size() == 0) {
                         DecimalFormat df = new DecimalFormat("#.#####");
-
                         System.out.println("cc: " + sf.getCC());
-                        System.out.println("CPU time: " + (getCpuTime() - captureTime));
+                        System.out.println("CPU time: " + (getCpuTime() - captureTime) / 1000000);
 
                         System.out.println("fval: " + sf.getfval());
                         System.out.println("isize: " + df.format(this.isize));
@@ -150,7 +158,7 @@ public class MyACAlgorithms {
         DecimalFormat df = new DecimalFormat("#.#####");
 
         System.out.println("cc: " + sf.getCC());
-        System.out.println("CPU time: " + (getCpuTime() - captureTime));
+        System.out.println("CPU time: " + ((getCpuTime() - captureTime) / 1000000));
 
         System.out.println("fval: " + sf.getfval());
         System.out.println("isize: " + df.format(this.isize));

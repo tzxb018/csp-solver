@@ -49,26 +49,35 @@ public class SearchFunctions {
         while (constraint == null && iterator < constraintList.size()) {
             MyConstraint testConstraint = constraintList.get(iterator);
 
-            // checking if the scope of the constriant matches the two variables being put
-            // in
-            if ((testConstraint.getScope().get(0).getName().equals(scopeWithTwoVars[0].getName())
-                    && testConstraint.getScope().get(1).getName().equals(scopeWithTwoVars[1].getName()))) {
-                reversed = false;
-                constraint = testConstraint;
+            // finding the binary constraint that holds the two given variables
+            if (testConstraint.getScope().size() > 1) {
+                // checking if the scope of the constriant matches the two variables being put
+                // in
+                if ((testConstraint.getScope().get(0).getName().equals(scopeWithTwoVars[0].getName())
+                        && testConstraint.getScope().get(1).getName().equals(scopeWithTwoVars[1].getName()))) {
+                    reversed = false;
+                    constraint = testConstraint;
 
-                // making sure we check the reverse of the scope, since we are checking both
-                // directions
-            } else if (testConstraint.getScope().get(1).getName().equals(scopeWithTwoVars[0].getName())
-                    && testConstraint.getScope().get(0).getName().equals(scopeWithTwoVars[1].getName())) {
-                constraint = testConstraint;
-                reversed = true;
+                    // making sure we check the reverse of the scope, since we are checking both
+                    // directions
+                } else if (testConstraint.getScope().get(1).getName().equals(scopeWithTwoVars[0].getName())
+                        && testConstraint.getScope().get(0).getName().equals(scopeWithTwoVars[1].getName())) {
+                    constraint = testConstraint;
+                    reversed = true;
+                }
+                // finding the unary constraint
+            } else if (testConstraint.getScope().size() == 1) {
+                if (testConstraint.getScope().get(0).getName().equals(variable1.getName())) {
+                    constraint = testConstraint;
+                    System.out.println(constraint.getName());
+                    reversed = false;
+                }
+
             }
             iterator++;
         }
 
-        if (constraint == null)
-
-        {
+        if (constraint == null) {
             return true; // universal constraints return true
         }
 
@@ -121,12 +130,20 @@ public class SearchFunctions {
             // Need to implement intension
             MyIntensionConstraint intensionConstraint = (MyIntensionConstraint) constraint;
 
-            EvaluationManager em = new EvaluationManager(intensionConstraint.univeralPostExpression);
-            int[] tuple = { val1, val2 };
-            // System.out.println(variable1.getName() + " " + val1 + " " +
-            // variable2.getName() + " " + val2 + " " +
+            int[] tuple = new int[2];
+            if (reversed) {
+                tuple[0] = val2;
+                tuple[1] = val1;
+            } else {
+                tuple[0] = val1;
+                tuple[1] = val2;
+            }
+
+            // System.out.println(intensionConstraint.getName() + " " + variable1.getName()
+            // + " " + val1 + " "
+            // + variable2.getName() + " " + val2 + " ==> " +
             // intensionConstraint.refCon.computeCostOf(tuple));
-            return !(intensionConstraint.refCon.computeCostOf(tuple) > 0);
+            return (intensionConstraint.refCon.computeCostOf(tuple) == 0);
 
         }
     }

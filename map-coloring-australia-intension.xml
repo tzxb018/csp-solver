@@ -1,0 +1,52 @@
+<instance>
+    <presentation name="ColAustralia-intension" description="The Australia Problem from AIMA, p138" nbSolutions="at least 1" format="1.1"/>
+    <domains nbDomains="1">
+        <domain name="dom0" nbValues="3">1..3</domain>
+    </domains>
+    <variables nbVariables="7">
+        <variable name="NewSouthWales" domain="dom0"/>
+        <variable name="NorthernTerritory" domain="dom0"/>
+        <variable name="Queensland" domain="dom0"/>
+        <variable name="SouthAustralia" domain="dom0"/>
+        <variable name="Tasmania" domain="dom0"/>
+        <variable name="Victoria" domain="dom0"/>
+        <variable name="WesternAustralia" domain="dom0"/>
+    </variables>
+    <predicates nbPredicates="1">
+        <predicate name="P0">
+            <parameters>int X0 int X1</parameters>
+            <expression>
+                <functional>ne(X0,X1)</functional>
+            </expression>
+        </predicate>
+    </predicates>
+    <constraints nbConstraints="9">
+        <constraint name="C0" arity="2" scope="WesternAustralia NorthernTerritory" reference="P0">
+            <parameters>WesternAustralia NorthernTerritory</parameters>
+        </constraint>
+        <constraint name="C1" arity="2" scope="WesternAustralia SouthAustralia" reference="P0">
+            <parameters>WesternAustralia SouthAustralia</parameters>
+        </constraint>
+        <constraint name="C2" arity="2" scope="NorthernTerritory SouthAustralia" reference="P0">
+            <parameters>NorthernTerritory SouthAustralia</parameters>
+        </constraint>
+        <constraint name="C3" arity="2" scope="NorthernTerritory Queensland" reference="P0">
+            <parameters>NorthernTerritory Queensland</parameters>
+        </constraint>
+        <constraint name="C4" arity="2" scope="Queensland NewSouthWales" reference="P0">
+            <parameters>Queensland NewSouthWales</parameters>
+        </constraint>
+        <constraint name="C5" arity="2" scope="Queensland SouthAustralia" reference="P0">
+            <parameters>Queensland SouthAustralia</parameters>
+        </constraint>
+        <constraint name="C6" arity="2" scope="NewSouthWales SouthAustralia" reference="P0">
+            <parameters>NewSouthWales SouthAustralia</parameters>
+        </constraint>
+        <constraint name="C7" arity="2" scope="NewSouthWales Victoria" reference="P0">
+            <parameters>NewSouthWales Victoria</parameters>
+        </constraint>
+        <constraint name="C8" arity="2" scope="SouthAustralia Victoria" reference="P0">
+            <parameters>SouthAustralia Victoria</parameters>
+        </constraint>
+    </constraints>
+</instance>
