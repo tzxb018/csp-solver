@@ -1,0 +1,56 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug (Launch) - Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-InstanceChecker<absconCVS4>",
+            "request": "launch",
+            "mainClass": "abscon.instance.tools.InstanceChecker",
+            "projectName": "absconCVS4"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-InstanceParser<absconCVS4>",
+            "request": "launch",
+            "mainClass": "abscon.instance.tools.InstanceParser",
+            "projectName": "absconCVS4"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-InstanceShuffler<absconCVS4>",
+            "request": "launch",
+            "mainClass": "abscon.instance.tools.InstanceShuffler",
+            "projectName": "absconCVS4"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-SolutionChecker<absconCVS4>",
+            "request": "launch",
+            "mainClass": "abscon.instance.tools.SolutionChecker",
+            "projectName": "absconCVS4"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-MainFunctions<absconCVS4>",
+            "request": "launch",
+            "mainClass": "csp.MainFunctions",
+            "projectName": "absconCVS4"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-MyParser<absconCVS4>",
+            "request": "launch",
+            "mainClass": "csp.MyParser",
+            "projectName": "absconCVS4"
+        }
+    ]
+}
