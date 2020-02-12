@@ -504,6 +504,8 @@ public class MyACAlgorithms {
                 }
             }
 
+            // this is a test
+
             // if there is a domain wipeout in any of the variables
             for (MyVariable v : variables) {
                 if (v.getCurrentDomain().size() == 0) {
