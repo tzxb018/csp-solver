@@ -69,7 +69,6 @@ public class SearchFunctions {
             } else if (testConstraint.getScope().size() == 1) {
                 if (testConstraint.getScope().get(0).getName().equals(variable1.getName())) {
                     constraint = testConstraint;
-                    System.out.println(constraint.getName());
                     reversed = false;
                 }
 
@@ -127,7 +126,6 @@ public class SearchFunctions {
         } else
 
         {
-            // Need to implement intension
             MyIntensionConstraint intensionConstraint = (MyIntensionConstraint) constraint;
 
             int[] tuple = new int[2];
@@ -139,10 +137,6 @@ public class SearchFunctions {
                 tuple[1] = val2;
             }
 
-            // System.out.println(intensionConstraint.getName() + " " + variable1.getName()
-            // + " " + val1 + " "
-            // + variable2.getName() + " " + val2 + " ==> " +
-            // intensionConstraint.refCon.computeCostOf(tuple));
             return (intensionConstraint.refCon.computeCostOf(tuple) == 0);
 
         }
@@ -151,11 +145,6 @@ public class SearchFunctions {
     // using the check function, the function determines if there is a value for var
     // 1 that is in the relation
     public boolean supported(MyVariable var1, int a, MyVariable var2) {
-
-        // System.out.println("SUPPRT: " + var1.getName() + " " +
-        // var1.getCurrentDomain().toString());
-        // System.out.println("SUPPRT: " + var2.getName() + " " +
-        // var2.getCurrentDomain().toString());
 
         // go through each value of the second MyVariable and find if that value is in
         // the relation with MyVariable 1 using the check function
@@ -195,15 +184,14 @@ public class SearchFunctions {
             // if we find that it is not supported, we need to remove this value from the
             // domain
             if (found == false) {
-                // System.out.println("*REMOVE: " + var1.getName() + " " + val + " ");
+                System.out.println("*REMOVE: " + var1.getName() + " " + val + " ");
                 revised = true;
                 iterator.remove();
                 fval++;
             }
         }
         // making sure to update the current domain of the variable
-        // System.out.println("Dom of (revised): " + var1.getName() + " " +
-        // domainOfVar1.toString());
+        // System.out.println("Dom of (revised): " + var1.getName() + " " + domainOfVar1.toString());
         ArrayList<Integer> passThrough = (ArrayList<Integer>) domainOfVar1.clone();
         var1.setCurrentDomain(passThrough);
 

@@ -77,6 +77,8 @@ public class MyParser {
 
 		if (algoirthm.equals("ac1"))
 			ac.AC1(myProblem);
+		else if (algoirthm.equals("ac3"))
+			ac.AC3(myProblem);
 
 	}
 

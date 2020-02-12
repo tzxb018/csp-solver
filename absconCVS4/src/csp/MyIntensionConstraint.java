@@ -27,12 +27,14 @@ public class MyIntensionConstraint extends MyConstraint {
         // Getting the intension function parameters from the universal post expression
         // and the scope of the intension variable
         String[] paramholder = new String[5];
-        paramholder[4] = this.univeralPostExpression[0];
-        paramholder[0] = super.scope.get(0).getName();
-        paramholder[1] = super.scope.get(1).getName();
-        paramholder[2] = super.scope.get(0).getName();
-        paramholder[3] = super.scope.get(1).getName();
 
+        if (super.scope.size() == 2) {
+            paramholder[4] = this.univeralPostExpression[0];
+            paramholder[0] = super.scope.get(0).getName();
+            paramholder[1] = super.scope.get(1).getName();
+            paramholder[2] = super.scope.get(0).getName();
+            paramholder[3] = super.scope.get(1).getName();
+        }
         this.param = paramholder;
 
     }
