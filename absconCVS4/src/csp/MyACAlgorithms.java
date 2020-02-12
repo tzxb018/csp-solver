@@ -302,7 +302,7 @@ public class MyACAlgorithms {
         SearchFunctions sf = new SearchFunctions(constraints, variables, extension);
 
         // Initialzing the queue used by the ac 3 algorithm
-        Deque<ArrayList<MyVariable>> queue = new LinkedList<ArrayList<MyVariable>>();
+        Queue<ArrayList<MyVariable>> queue = new LinkedList<ArrayList<MyVariable>>();
 
         // An arraylist (only used to look through) all the tuples that correspond to a
         // scope of a constraint in the csp
@@ -314,75 +314,121 @@ public class MyACAlgorithms {
         // computing iSize
         this.computeISize(variables);
 
-        System.out.println(constraints);
-
-        ArrayList<MyVariable> tuple = new ArrayList<MyVariable>();
-        tuple.add(constraints.get(0).getScope().get(0));
-        tuple.add(constraints.get(0).getScope().get(1));
-        queue.add(tuple);
-        listOftuples.add(tuple);
-
-        tuple = new ArrayList<MyVariable>();
-        tuple.add(constraints.get(0).getScope().get(1));
-        tuple.add(constraints.get(0).getScope().get(0));
-        queue.add(tuple);
-        listOftuples.add(tuple);
-
-        tuple = new ArrayList<MyVariable>();
-        tuple.add(constraints.get(1).getScope().get(0));
-        tuple.add(constraints.get(1).getScope().get(1));
-        queue.add(tuple);
-        listOftuples.add(tuple);
-
-        tuple = new ArrayList<MyVariable>();
-        tuple.add(constraints.get(2).getScope().get(0));
-        tuple.add(constraints.get(2).getScope().get(1));
-        queue.add(tuple);
-        listOftuples.add(tuple);
-
-        tuple = new ArrayList<MyVariable>();
-        tuple.add(constraints.get(1).getScope().get(1));
-        tuple.add(constraints.get(1).getScope().get(0));
-        queue.add(tuple);
-        listOftuples.add(tuple);
-
-        tuple = new ArrayList<MyVariable>();
-        tuple.add(constraints.get(2).getScope().get(1));
-        tuple.add(constraints.get(2).getScope().get(0));
-        queue.add(tuple);
-        listOftuples.add(tuple);
-
-        /*
-         * // putting in every pair (both directions) that exist in a constraint for
-         * (MyConstraint constraint : constraints) {
+        /**
+         * // System.out.println(constraints);
          * 
-         * // putting in unary constraints if (constraint.getScope().size() == 1) {
-         * unaryConstraints.add(constraint); } // finding binary constraints and putting
-         * their scopes in as tuples into the // queue else if
-         * (constraint.getScope().size() == 2) {
+         * // ArrayList<MyVariable> tuple = new ArrayList<MyVariable>(); //
+         * tuple.add(constraints.get(0).getScope().get(0)); //
+         * tuple.add(constraints.get(0).getScope().get(1)); // queue.add(tuple); //
+         * listOftuples.add(tuple);
          * 
-         * // the tuple being added into the queue ArrayList<MyVariable> tuple = new
-         * ArrayList<MyVariable>(); tuple.add(constraint.getScope().get(0));
-         * tuple.add(constraint.getScope().get(1)); // since the first part of the tuple
-         * is already in the tuple
+         * // tuple = new ArrayList<MyVariable>(); //
+         * tuple.add(constraints.get(0).getScope().get(1)); //
+         * tuple.add(constraints.get(0).getScope().get(0)); // queue.add(tuple); //
+         * listOftuples.add(tuple);
          * 
-         * queue.add(tuple); listOftuples.add(tuple);
+         * // tuple = new ArrayList<MyVariable>(); //
+         * tuple.add(constraints.get(1).getScope().get(0)); //
+         * tuple.add(constraints.get(1).getScope().get(1)); // queue.add(tuple); //
+         * listOftuples.add(tuple);
          * 
-         * // adding in the reversed version fo the tupel ArrayList<MyVariable>
-         * tupleReverse = new ArrayList<MyVariable>();
-         * tupleReverse.add(constraint.getScope().get(1));
-         * tupleReverse.add(constraint.getScope().get(0));
+         * // tuple = new ArrayList<MyVariable>(); //
+         * tuple.add(constraints.get(2).getScope().get(0)); //
+         * tuple.add(constraints.get(2).getScope().get(1)); // queue.add(tuple); //
+         * listOftuples.add(tuple);
          * 
-         * queue.add(tupleReverse); listOftuples.add(tupleReverse);
+         * // tuple = new ArrayList<MyVariable>(); //
+         * tuple.add(constraints.get(1).getScope().get(1)); //
+         * tuple.add(constraints.get(1).getScope().get(0)); // queue.add(tuple); //
+         * listOftuples.add(tuple);
          * 
-         * } }
+         * // tuple = new ArrayList<MyVariable>(); //
+         * tuple.add(constraints.get(2).getScope().get(1)); //
+         * tuple.add(constraints.get(2).getScope().get(0)); // queue.add(tuple); //
+         * listOftuples.add(tuple);
          */
 
-        for (ArrayList<MyVariable> a : queue) {
-            System.out.print("(" + a.get(0).getName() + " " + a.get(1).getName() + "),");
+        for (MyConstraint c : constraints) {
+            ArrayList<MyVariable> copy = c.getScope();
+            ArrayList<MyVariable> putIn = new ArrayList<>();
+
+            for (MyVariable v : variables) {
+                if (v.getName().equals(copy.get(0).getName())) {
+                    putIn.add(v);
+                }
+            }
+
+            // making sure that this is a binary constraint
+            if (copy.size() > 1) {
+                for (MyVariable v : variables) {
+                    if (v.getName().equals(copy.get(1).getName())) {
+                        putIn.add(v);
+                    }
+                }
+            } else if (copy.size() == 1) {
+                unaryConstraints.add(c);
+            }
+
+            queue.add(putIn);
+            listOftuples.add(putIn);
+
+            // only need to put in the reverse if it is a binary constraint
+            if (copy.size() > 1) {
+                putIn = new ArrayList<>();
+
+                for (MyVariable v : variables) {
+                    if (v.getName().equals(copy.get(1).getName())) {
+                        putIn.add(v);
+                    }
+                }
+
+                for (MyVariable v : variables) {
+                    if (v.getName().equals(copy.get(0).getName())) {
+                        putIn.add(v);
+                    }
+                }
+
+                queue.add(putIn);
+                listOftuples.add(putIn);
+            }
         }
-        System.out.println();
-        System.out.println();
+
+        /**
+         * // putting in every pair (both directions) that exist in a constraint // for
+         * (MyConstraint constraint : constraints) { // ArrayList<MyVariable> copy =
+         * constraint.getScope();
+         * 
+         * // // putting in unary constraints // if (copy.size() == 1) { //
+         * unaryConstraints.add(constraint); // } // // finding binary constraints and
+         * puttin their scopes in as tuples into the // // queue // else if (copy.size()
+         * == 2) {
+         * 
+         * // // the tuple being added into the queue // ArrayList<MyVariable> tuple =
+         * new ArrayList<MyVariable>(); // tuple.add(copy.get(0)); //
+         * tuple.add(copy.get(1)); // since the first part of the tuple already in the
+         * // tuple
+         * 
+         * // queue.add(tuple); // listOftuples.add(tuple);
+         * 
+         * // // adding in the reversed version fo the tupel // ArrayList<MyVariable>
+         * tupleReverse = new ArrayList<MyVariable>(); // tupleReverse.add(copy.get(1));
+         * // tupleReverse.add(copy.get(0));
+         * 
+         * // queue.add(tupleReverse); // listOftuples.add(tupleReverse);
+         * 
+         * // } // }
+         */
+
+        // for (ArrayList<MyVariable> a : listOftuples) {
+        // System.out.print("(" + a.get(0).getName() + " " + a.get(1).getName() + "),");
+        // }
+
+        // System.out.println();
+        // for (ArrayList<MyVariable> a : queue) {
+        // System.out.print("(" + a.get(0).getName() + " " + a.get(1).getName() + "),");
+        // }
+        // System.out.println();
+        // System.out.println();
 
         // looping through the queue while there is a tuple inside of it
         while (queue.size() != 0) {
@@ -390,38 +436,68 @@ public class MyACAlgorithms {
             // first tuple in the queue
             ArrayList<MyVariable> tupleToTest = queue.remove();
 
+            // updating the current tuple's domain to be set to the actual current domain of
+            // the varialbe it corresponds to
+            // for (MyVariable v : variables) {
+            // if (v.getName().equals(tupleToTest.get(0).getName())) {
+            // tupleToTest.get(0).setCurrentDomain(v.getCurrentDomain());
+            // }
+            // }
+
             // run the revise function for this tuple
-            boolean revised = sf.revised(tupleToTest.get(0), tupleToTest.get(1));
+            if (tupleToTest.size() > 1) {
+                boolean revised = sf.revised(tupleToTest.get(0), tupleToTest.get(1));
 
-            // if there was a change in the domain with the revise function
-            if (revised) {
-                String x_i = tupleToTest.get(0).getName();
-                String x_j = tupleToTest.get(1).getName();
+                // updating the actual varialbe's current domain to the updated odmain of the
+                // scope being tested after running revised
+                // for (MyVariable v : variables) {
+                // if (v.getName().equals(tupleToTest.get(0).getName())) {
+                // v.setCurrentDomain(tupleToTest.get(0).getCurrentDomain());
+                // }
+                // }
 
-                // going through all the scopes in the problem
-                // queue <- queue U {(x_k, x_i), k != i, k != j)
-                for (ArrayList<MyVariable> tupleInList : listOftuples) {
-                    // if x_i is in the second part of a scope
-                    if (tupleInList.get(1).getName().equals(x_i)) {
-                        String x_k = tupleInList.get(0).getName();
+                // if there was a change in the domain with the revise function
+                if (revised) {
+                    String x_i = tupleToTest.get(0).getName();
+                    String x_j = tupleToTest.get(1).getName();
 
-                        // making sure x_k != i and x_k != j
-                        if (!x_k.equals(x_i) && !x_k.equals(x_j)) {
+                    // going through all the scopes in the problem
+                    // queue <- queue U {(x_k, x_i), k != i, k != j)
+                    for (ArrayList<MyVariable> tupleInList : listOftuples) {
 
-                            // making sure that we don't add it in the queue if it already exists
-                            boolean exists = false;
-                            for (ArrayList<MyVariable> tupleInQueue : queue) {
-                                if (tupleInList.get(0).getName().equals(tupleInQueue.get(0).getName())
-                                        && tupleInList.get(1).getName().equals(tupleInQueue.get(1).getName())) {
-                                    exists = true;
-                                    break;
+                        // if x_i is in the second part of a scope
+                        if (tupleInList.size() > 1) {
+                            if (tupleInList.get(1).getName().equals(x_i)) {
+
+                                String x_k = tupleInList.get(0).getName();
+                                // System.out.println("Potential add: " + x_k + " " + x_i + " compared with " +
+                                // x_i + " " + x_j);
+
+                                // making sure x_k != i and x_k != j
+                                if (!x_k.equals(x_i) || !x_k.equals(x_j)) {
+
+                                    // System.out.println("ahhhh");
+                                    // making sure that we don't add it in the queue if it already exists
+                                    boolean exists = false;
+                                    for (ArrayList<MyVariable> tupleInQueue : queue) {
+                                        if (tupleInQueue.size() > 1) {
+                                            
+                                            if (tupleInList.get(0).getName().equals(tupleInQueue.get(0).getName())
+                                                    && tupleInList.get(1).getName()
+                                                            .equals(tupleInQueue.get(1).getName())) {
+                                                exists = true;
+                                            }
+                                        }
+                                    }
+                                    // System.out.println(
+                                    //         exists + tupleInList.get(0).getName() + " " + tupleInList.get(1).getName());
+                                    // if the tuple is not in the queue, add it to the beginning of the queue
+                                    if (!exists) {
+                                        queue.add(tupleInList);
+                                        // System.out.println("Add to queue " + tupleInList.get(0).getName() + " "
+                                        // + tupleInList.get(1).getName());
+                                    }
                                 }
-                            }
-
-                            if (!exists) {
-                                queue.addFirst(tupleInList);
-                                System.out.println("Add to queue " + tupleInList.get(0).getName() + " "
-                                        + tupleInList.get(1).getName());
                             }
                         }
                     }
@@ -442,14 +518,6 @@ public class MyACAlgorithms {
                 }
             }
 
-            for (ArrayList<MyVariable> a : queue) {
-                System.out.print("(" + a.get(0).getName() + " " + a.get(1).getName() + "),");
-            }
-            System.out.println();
-        }
-
-        for (MyVariable var : variables) {
-            System.out.println(var.getCurrentDomain());
         }
 
         DecimalFormat df = new DecimalFormat("#.#####");

@@ -184,7 +184,7 @@ public class SearchFunctions {
             // if we find that it is not supported, we need to remove this value from the
             // domain
             if (found == false) {
-                System.out.println("*REMOVE: " + var1.getName() + " " + val + " ");
+                // System.out.println("*REMOVE: " + var1.getName() + " " + val + " ");
                 revised = true;
                 iterator.remove();
                 fval++;
