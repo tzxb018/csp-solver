@@ -1,14 +1,19 @@
 package csp;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
-import abscon.instance.intension.EvaluationManager;
+/**
+ * 
+ * @author Tomo Bessho
+ * @version HW 2
+ * @since 2/11/2020
+ */
 
 public class SearchFunctions {
 
@@ -38,7 +43,8 @@ public class SearchFunctions {
 
     // checks to see if the vvp's are in the relation given in the problem
     public boolean check(MyVariable variable1, int val1, MyVariable variable2, int val2) {
-        MyConstraint constraint = null;
+        Map<MyConstraint, Boolean> constraint = new HashMap<MyConstraint, Boolean>();
+        ArrayList<MyConstraint> constraints = new ArrayList<MyConstraint>();
         int iterator = 0;
 
         MyVariable[] scopeWithTwoVars = { variable1, variable2 };
@@ -46,7 +52,7 @@ public class SearchFunctions {
 
         // iterating through the constraint list to find our constraint to test
         // make it a lsit
-        while (constraint == null && iterator < constraintList.size()) {
+        while (iterator < constraintList.size()) {
             MyConstraint testConstraint = constraintList.get(iterator);
 
             // finding the binary constraint that holds the two given variables
@@ -55,78 +61,103 @@ public class SearchFunctions {
                 // in
                 if ((testConstraint.getScope().get(0).getName().equals(scopeWithTwoVars[0].getName())
                         && testConstraint.getScope().get(1).getName().equals(scopeWithTwoVars[1].getName()))) {
+                    constraint.put(testConstraint, false);
+                    constraints.add(testConstraint);
                     reversed = false;
-                    constraint = testConstraint;
 
                     // making sure we check the reverse of the scope, since we are checking both
                     // directions
-                } else if (testConstraint.getScope().get(1).getName().equals(scopeWithTwoVars[0].getName())
+                }
+                if (testConstraint.getScope().get(1).getName().equals(scopeWithTwoVars[0].getName())
                         && testConstraint.getScope().get(0).getName().equals(scopeWithTwoVars[1].getName())) {
-                    constraint = testConstraint;
+                    constraint.put(testConstraint, true);
+                    constraints.add(testConstraint);
                     reversed = true;
-                }
-                // finding the unary constraint
-            } else if (testConstraint.getScope().size() == 1) {
-                if (testConstraint.getScope().get(0).getName().equals(variable1.getName())) {
-                    constraint = testConstraint;
-                    reversed = false;
-                }
 
+                }
             }
             iterator++;
         }
 
-        if (constraint == null) {
-            return true; // universal constraints return true
+        // return true for unary and universal constraints
+        for (Map.Entry<MyConstraint, Boolean> a : constraint.entrySet()) {
+            if (a.getKey().getScope().size() < 2)
+                return true;
         }
 
         cc++;
 
         // If we are working with extension
         if (extension) {
-            MyExtensionConstraint extensionConstraint = (MyExtensionConstraint) constraint;
-            boolean foundMatch = false;
 
-            // for binary constraints
-            if (extensionConstraint.getRelation()[0].length == 2) {
-                int[][] relation = extensionConstraint.getRelation();
+            boolean satisfied = true;
+            int counter = 0;
+
+            for (Map.Entry<MyConstraint, Boolean> entry : constraint.entrySet()) {
+
+                // if (constraint.size() > 1)
+                // System.out.println(entry);
+
+                MyExtensionConstraint extensionConstraint = (MyExtensionConstraint) entry.getKey();
                 // System.out.println(extensionConstraint.toString());
+                boolean foundMatch = false;
+                // for binary constraints
+                if (extensionConstraint.getRelation()[0].length == 2) {
+                    int[][] relation = extensionConstraint.getRelation();
 
-                // finding the two values in one tuple within the relation
-                for (int i = 0; i < relation.length; i++) {
-                    // System.out.println(relation[i][0] + " " + relation[i][1] + " : " +
-                    // scopeWithTwoVars[0].getName()
-                    // + " " + scopeWithTwoVars[1].getName());
-                    // if the relation holds the two values in the argument
-                    if (relation[i][0] == val1 && relation[i][1] == val2 && reversed == false) {
-                        foundMatch = true;
-                        // System.out.println("Check found relation " + val1 + "," + val2 + " for " +
-                        // variable1.getName()
-                        // + "," + variable2.getName());
-                        break;
+                    // finding the two values in one tuple within the relation
+                    for (int i = 0; i < relation.length; i++) {
+                        // System.out.println(relation[i][0] + " " + relation[i][1] + " : " +
+                        // scopeWithTwoVars[0].getName()
+                        // + " " + scopeWithTwoVars[1].getName());
+                        // if the relation holds the two values in the argument
+                        if (relation[i][0] == val1 && relation[i][1] == val2 && entry.getValue() == false) {
+                            foundMatch = true;
+                            // System.out.println("Check found relation " + val1 + "," + val2 + " for " +
+                            // variable1.getName()
+                            // + "," + variable2.getName());
+                            break;
 
-                        // gotta check the reversed order of the values (wow this took me 6 hours to
-                        // find!)
-                    } else if (relation[i][1] == val1 && relation[i][0] == val2 && reversed == true) {
-                        foundMatch = true;
-                        // System.out.println("Check found relation " + val1 + "," + val2 + " for " +
-                        // variable1.getName()
-                        // + "," + variable2.getName());
-                        break;
+                            // gotta check the reversed order of the values (wow this took me 6 hours to
+                            // find!)
+                        } else if (relation[i][1] == val1 && relation[i][0] == val2 && entry.getValue() == true) {
+                            foundMatch = true;
+                            // System.out.println("Check found relation " + val1 + "," + val2 + " for " +
+                            // variable1.getName()
+                            // + "," + variable2.getName());
+                            break;
+                        }
                     }
                 }
+
+                boolean support = extensionConstraint.getSemantics().contains("support");
+                if (support) {
+                    if (counter > 0)
+                        satisfied = satisfied && foundMatch;
+                    else
+                        satisfied = foundMatch;
+
+                } else {
+                    if (counter > 0)
+                        satisfied = satisfied || !foundMatch;
+                    satisfied = !foundMatch;
+                }
+
+                if (constraint.size() > 1)
+                    System.out.println(extensionConstraint.getName() + " " + variable1.getName() + " " + val1 + " "
+                            + variable2.getName() + " " + val2 + " " + ", reversed: " + entry.getValue()
+                            + ", found match: " + foundMatch + ", SAT: " + satisfied);
+
+                counter++;
+
             }
-            // return foundMatch;
-            boolean support = extensionConstraint.getSemantics().contains("support");
-            if (support)
-                return foundMatch;
-            else
-                return !foundMatch;
+            if (constraint.size() > 1)
+                System.out.println("Return of check: " + satisfied + "\n");
+            return satisfied;
 
         } else
 
         {
-            MyIntensionConstraint intensionConstraint = (MyIntensionConstraint) constraint;
 
             int[] tuple = new int[2];
             if (reversed) {
@@ -137,7 +168,14 @@ public class SearchFunctions {
                 tuple[1] = val2;
             }
 
-            return (intensionConstraint.refCon.computeCostOf(tuple) == 0);
+            boolean satisfied = true;
+            for (Map.Entry<MyConstraint, Boolean> entry : constraint.entrySet()) {
+                MyIntensionConstraint intensionConstraint = (MyIntensionConstraint) entry.getKey();
+
+                satisfied = satisfied && (intensionConstraint.refCon.computeCostOf(tuple) > 0);
+
+            }
+            return satisfied;
 
         }
     }
@@ -153,9 +191,6 @@ public class SearchFunctions {
             // var2.getName() + " "
             // + var2.getCurrentDomain().get(i));
             if (check(var1, a, var2, var2.getCurrentDomain().get(i))) { //
-                // System.out.println("Supported " + var1.getName() + " " + a + " " +
-                // var2.getName() + " "
-                // + var2.getCurrentDomain().get(i));
                 return true;
             }
         }
@@ -180,18 +215,22 @@ public class SearchFunctions {
         while (iterator.hasNext()) {
             int val = (int) iterator.next();
             found = supported(var1, val, var2);
+            // System.out.println(var1.getName() + " " + var2.getName() + ", FOUND: " +
+            // found);
 
             // if we find that it is not supported, we need to remove this value from the
             // domain
             if (found == false) {
+                // System.out.println(var2.getCurrentDomain());
                 // System.out.println("*REMOVE: " + var1.getName() + " " + val + " ");
+                fval++;
                 revised = true;
                 iterator.remove();
-                fval++;
             }
         }
         // making sure to update the current domain of the variable
-        // System.out.println("Dom of (revised): " + var1.getName() + " " + domainOfVar1.toString());
+        // System.out.println("Dom of (revised): " + var1.getName() + " " +
+        // domainOfVar1.toString());
         ArrayList<Integer> passThrough = (ArrayList<Integer>) domainOfVar1.clone();
         var1.setCurrentDomain(passThrough);
 

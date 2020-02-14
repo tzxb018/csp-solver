@@ -6,7 +6,10 @@ import java.util.Objects;
 import abscon.instance.components.PFunction;
 
 /**
- * Name: Tomo Bessho Date: 2/6/2020 Class: CSCE 421
+ * 
+ * @author Tomo Bessho
+ * @version HW 2
+ * @since 2/11/2020
  */
 
 public class MyFunction {

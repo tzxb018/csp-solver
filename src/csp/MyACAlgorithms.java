@@ -177,6 +177,7 @@ public class MyACAlgorithms {
             ArrayList<MyVariable> copy = c.getScope();
             ArrayList<MyVariable> putIn = new ArrayList<>();
 
+            // make sure to not put in unary contraints
             for (MyVariable v : variables) {
                 if (v.getName().equals(copy.get(0).getName())) {
                     putIn.add(v);
@@ -194,7 +195,8 @@ public class MyACAlgorithms {
                 unaryConstraints.add(c);
             }
 
-            queue.add(putIn);
+            if (copy.size() > 1)
+                queue.add(putIn);
 
             // only need to put in the reverse if it is a binary constraint
             if (copy.size() > 1) {
@@ -227,6 +229,8 @@ public class MyACAlgorithms {
             }
         }
 
+        // System.out.println(myProblem.printDomains());
+
         boolean changed = true; // tracks if there was a change made in the algorithm
         while (changed == true) {
             changed = false;
@@ -237,16 +241,16 @@ public class MyACAlgorithms {
                 if (tuple.size() > 1) {
                     updated = sf.revised(tuple.get(0), tuple.get(1));
                 }
-                // boolean updated1 = sf.revised(tuple.get(1), tuple.get(0));
 
                 // if there is a domain wipeout in any of the variables
                 // System.out.println(tuple.get(0).getName() + " " +
                 // tuple.get(0).getCurrentDomain().toString());
+                // System.out.println(myProblem.printDomains());
                 for (MyVariable v : variables) {
                     if (v.getCurrentDomain().size() == 0) {
                         DecimalFormat df = new DecimalFormat("#.#####");
                         System.out.println("cc: " + sf.getCC());
-                        System.out.println("CPU time: " + (getCpuTime() - captureTime) / 1000000);
+                        System.out.println("cpu: " + (getCpuTime() - captureTime) / 1000000);
 
                         System.out.println("fval: " + sf.getfval());
                         System.out.println("iSize: " + df.format(this.iSize));
@@ -256,17 +260,15 @@ public class MyACAlgorithms {
                 }
                 // keep track of whether there has been a change made within the while loop
                 changed = (changed || updated);
-                // changed = (changed || updated || updated1);
 
             }
-
+            
             // System.out.println(myProblem.printDomains());
-
         }
         DecimalFormat df = new DecimalFormat("#.#####");
 
         System.out.println("cc: " + sf.getCC());
-        System.out.println("CPU time: " + ((getCpuTime() - captureTime) / 1000000));
+        System.out.println("cpu: " + ((getCpuTime() - captureTime) / 1000000));
 
         System.out.println("fval: " + sf.getfval());
         System.out.println("iSize: " + df.format(this.iSize));
@@ -369,8 +371,10 @@ public class MyACAlgorithms {
                 unaryConstraints.add(c);
             }
 
-            queue.add(putIn);
-            listOftuples.add(putIn);
+            if (c.getScope().size() > 1) {
+                queue.add(putIn);
+                listOftuples.add(putIn);
+            }
 
             // only need to put in the reverse if it is a binary constraint
             if (copy.size() > 1) {
@@ -393,42 +397,16 @@ public class MyACAlgorithms {
             }
         }
 
-        /**
-         * // putting in every pair (both directions) that exist in a constraint // for
-         * (MyConstraint constraint : constraints) { // ArrayList<MyVariable> copy =
-         * constraint.getScope();
-         * 
-         * // // putting in unary constraints // if (copy.size() == 1) { //
-         * unaryConstraints.add(constraint); // } // // finding binary constraints and
-         * puttin their scopes in as tuples into the // // queue // else if (copy.size()
-         * == 2) {
-         * 
-         * // // the tuple being added into the queue // ArrayList<MyVariable> tuple =
-         * new ArrayList<MyVariable>(); // tuple.add(copy.get(0)); //
-         * tuple.add(copy.get(1)); // since the first part of the tuple already in the
-         * // tuple
-         * 
-         * // queue.add(tuple); // listOftuples.add(tuple);
-         * 
-         * // // adding in the reversed version fo the tupel // ArrayList<MyVariable>
-         * tupleReverse = new ArrayList<MyVariable>(); // tupleReverse.add(copy.get(1));
-         * // tupleReverse.add(copy.get(0));
-         * 
-         * // queue.add(tupleReverse); // listOftuples.add(tupleReverse);
-         * 
-         * // } // }
-         */
-
-        // for (ArrayList<MyVariable> a : listOftuples) {
-        // System.out.print("(" + a.get(0).getName() + " " + a.get(1).getName() + "),");
-        // }
-
-        // System.out.println();
-        // for (ArrayList<MyVariable> a : queue) {
-        // System.out.print("(" + a.get(0).getName() + " " + a.get(1).getName() + "),");
-        // }
-        // System.out.println();
-        // System.out.println();
+        // Node consistency algorithm here
+        if (extension) {
+            for (MyConstraint c : unaryConstraints) {
+                nodeConsistencyExtension(variables, (MyExtensionConstraint) c);
+            }
+        } else {
+            for (MyConstraint c : unaryConstraints) {
+                nodeConsistencyIntension(variables, (MyIntensionConstraint) c);
+            }
+        }
 
         // looping through the queue while there is a tuple inside of it
         while (queue.size() != 0) {
@@ -436,25 +414,9 @@ public class MyACAlgorithms {
             // first tuple in the queue
             ArrayList<MyVariable> tupleToTest = queue.remove();
 
-            // updating the current tuple's domain to be set to the actual current domain of
-            // the varialbe it corresponds to
-            // for (MyVariable v : variables) {
-            // if (v.getName().equals(tupleToTest.get(0).getName())) {
-            // tupleToTest.get(0).setCurrentDomain(v.getCurrentDomain());
-            // }
-            // }
-
             // run the revise function for this tuple
             if (tupleToTest.size() > 1) {
                 boolean revised = sf.revised(tupleToTest.get(0), tupleToTest.get(1));
-
-                // updating the actual varialbe's current domain to the updated odmain of the
-                // scope being tested after running revised
-                // for (MyVariable v : variables) {
-                // if (v.getName().equals(tupleToTest.get(0).getName())) {
-                // v.setCurrentDomain(tupleToTest.get(0).getCurrentDomain());
-                // }
-                // }
 
                 // if there was a change in the domain with the revise function
                 if (revised) {
@@ -481,7 +443,7 @@ public class MyACAlgorithms {
                                     boolean exists = false;
                                     for (ArrayList<MyVariable> tupleInQueue : queue) {
                                         if (tupleInQueue.size() > 1) {
-                                            
+
                                             if (tupleInList.get(0).getName().equals(tupleInQueue.get(0).getName())
                                                     && tupleInList.get(1).getName()
                                                             .equals(tupleInQueue.get(1).getName())) {
@@ -490,7 +452,7 @@ public class MyACAlgorithms {
                                         }
                                     }
                                     // System.out.println(
-                                    //         exists + tupleInList.get(0).getName() + " " + tupleInList.get(1).getName());
+                                    // exists + tupleInList.get(0).getName() + " " + tupleInList.get(1).getName());
                                     // if the tuple is not in the queue, add it to the beginning of the queue
                                     if (!exists) {
                                         queue.add(tupleInList);
@@ -504,14 +466,12 @@ public class MyACAlgorithms {
                 }
             }
 
-            // this is a test
-
             // if there is a domain wipeout in any of the variables
             for (MyVariable v : variables) {
                 if (v.getCurrentDomain().size() == 0) {
                     DecimalFormat df = new DecimalFormat("#.#####");
                     System.out.println("cc: " + sf.getCC());
-                    System.out.println("CPU time: " + (getCpuTime() - captureTime) / 1000000);
+                    System.out.println("cpu: " + (getCpuTime() - captureTime) / 1000000);
 
                     System.out.println("fval: " + sf.getfval());
                     System.out.println("iSize: " + df.format(this.iSize));
@@ -520,12 +480,14 @@ public class MyACAlgorithms {
                 }
             }
 
+            // System.out.println(myProblem.printDomains());
+
         }
 
         DecimalFormat df = new DecimalFormat("#.#####");
 
         System.out.println("cc: " + sf.getCC());
-        System.out.println("CPU time: " + df.format(((getCpuTime() - captureTime) / 1000000)));
+        System.out.println("cpu: " + df.format(((getCpuTime() - captureTime) / 1000000)));
 
         System.out.println("fval: " + sf.getfval());
         System.out.println("iSize: " + df.format(this.iSize));

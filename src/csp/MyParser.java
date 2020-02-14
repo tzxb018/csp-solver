@@ -17,7 +17,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Name: Tomo Bessho Date: 2/6/2020 Class: CSCE 421
+ * 
+ * @author Tomo Bessho
+ * @version HW 2
+ * @since 2/11/2020
  */
 
 public class MyParser {
@@ -71,6 +74,8 @@ public class MyParser {
 		// An instance of the problem to store the variables and constraints in one
 		// place
 		MyProblem myProblem = new MyProblem(problemName, variables, constraints);
+		SearchFunctions sf = new SearchFunctions(constraints, variables, true);
+		// sf.revised(variables.get(7), variables.get(9));
 		System.out.println("Instance name: " + problemName);
 		// System.out.println(myProblem);
 		MyACAlgorithms ac = new MyACAlgorithms();

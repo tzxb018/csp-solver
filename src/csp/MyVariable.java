@@ -10,8 +10,12 @@ import java.util.Comparator;
 import java.util.Objects;
 
 /**
- * Name: Tomo Bessho Date: 2/6/2020 Class: CSCE 421
+ * 
+ * @author Tomo Bessho
+ * @version HW 2
+ * @since 2/11/2020
  */
+
 public class MyVariable {
 	/// Keep a reference to the original variable, just in case it is needed later
 	protected PVariable varRef;

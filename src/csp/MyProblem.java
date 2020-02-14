@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * Name: Tomo Bessho Date: 2/6/2020 Class: CSCE 421
+ * 
+ * @author Tomo Bessho
+ * @version HW 2
+ * @since 2/11/2020
  */
 
 public class MyProblem {
@@ -36,7 +39,7 @@ public class MyProblem {
 
         this.extension = (constraints.get(0).getClass().toString().contains("Extension"));
 
-        // System.out.println(mainFunction.revised(variables.get(1), variables.get(2)));
+
 
     }
 
@@ -79,7 +82,7 @@ public class MyProblem {
     public String printDomains() {
         String s = "";
         for (MyVariable v : variables) {
-            s += v.getName() + " " + v.getCurrentDomain().toString() + " ";
+            s += v.getName() + " " + v.getCurrentDomain().toString() + "\n";
         }
 
         return s;

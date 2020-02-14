@@ -7,7 +7,10 @@ import abscon.instance.components.PConstraint;
 import abscon.instance.components.PIntensionConstraint;
 
 /**
- * Name: Tomo Bessho Date: 2/6/2020 Class: CSCE 421
+ * 
+ * @author Tomo Bessho
+ * @version HW 2
+ * @since 2/11/2020
  */
 
 public class MyIntensionConstraint extends MyConstraint {

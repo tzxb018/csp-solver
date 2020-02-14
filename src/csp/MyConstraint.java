@@ -8,7 +8,10 @@ import abscon.instance.components.PConstraint;
 import abscon.instance.components.PVariable;
 
 /**
- * Name: Tomo Bessho Date: 2/6/2020 Class: CSCE 421
+ * 
+ * @author Tomo Bessho
+ * @version HW 2
+ * @since 2/11/2020
  */
 
 public abstract class MyConstraint implements Comparator<MyConstraint> {
@@ -49,6 +52,20 @@ public abstract class MyConstraint implements Comparator<MyConstraint> {
             scope.add(varTemp);
         }
 
+    }
+
+    public MyConstraint() {
+
+    }
+
+    public void setScope(ArrayList<MyVariable> scope) {
+        ArrayList<MyVariable> newScope = new ArrayList<MyVariable>();
+
+        for (MyVariable var : scope) {
+            newScope.add(var);
+        }
+
+        this.scope = newScope;
     }
 
     public ArrayList<MyVariable> getScope() {
