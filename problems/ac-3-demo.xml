@@ -1,0 +1,22 @@
+<instance>
+    <presentation name="ac3-demo" maxConstraintArity="2" format="XCSP 2.0"/>
+    <domains nbDomains="1">
+        <domain name="D0" nbValues="5">1..5</domain>
+    </domains>
+    <variables nbVariables="4">
+        <variable name="V1" domain="D0"/>
+        <variable name="V2" domain="D0"/>
+        <variable name="V3" domain="D0"/>
+        <variable name="V4" domain="D0"/>
+    </variables>
+    <relations nbRelations="3">
+        <relation name="R0" arity="2" nbTuples="10" semantics="supports">2 2|4 5|2 5|3 5|2 3|5 1|1 2|5 3|2 1|1 1</relation>
+        <relation name="R1" arity="2" nbTuples="10" semantics="supports">5 5|2 4|3 5|3 3|5 3|4 4|5 4|3 4|1 1|3 1</relation>
+        <relation name="R2" arity="2" nbTuples="10" semantics="supports">1 2|3 2|3 1|4 5|2 3|4 1|1 1|4 3|2 2|1 5</relation>
+    </relations>
+    <constraints nbConstraints="3">
+        <constraint name="C2" arity="2" scope="V2 V3" reference="R0"></constraint>
+        <constraint name="C1" arity="2" scope="V1 V3" reference="R1"></constraint>
+        <constraint name="C0" arity="2" scope="V2 V4" reference="R2"></constraint>
+    </constraints>
+</instance>
