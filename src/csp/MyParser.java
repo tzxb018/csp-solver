@@ -98,18 +98,18 @@ public class MyParser {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 
-		// for (int i = 10; i <= 90; i += 10) {
-		// String fileName =
-		// "/home/tbessho/Documents/Tools2008/absconCVS4/v32_d8_p20/v32_d8_p20_t" + i;
+		// // for (int i = 10; i <= 90; i += 10) {
+		// 	// String fileName = "/home/tbessho/Documents/Tools2008/absconCVS4/v32_d8_p20/v32_d8_p20_t" + i;
 
-		// File dir = new File(fileName);
-		// File[] directoryListing = dir.listFiles();
+		// 	File dir = new File("/home/tbessho/Documents/Tools2008/absconCVS4/problems/CSPTestInstances");
+		// 	File[] directoryListing = dir.listFiles();
 
-		// for (File child : directoryListing) {
-		// MyParser parser = new MyParser(child.getAbsolutePath(), "ac3");
+		// 	for (File child : directoryListing) {
+		// 		// System.out.println(child.getAbsolutePath());
+		// 		MyParser parser = new MyParser(child.getAbsolutePath(), "ac1");
 
-		// }
-		// }
+		// 	}
+		// // }
 
 		MyParser parser = new MyParser(args[1], args[3]);
 

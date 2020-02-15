@@ -8,4 +8,3 @@ The AC-1 and AC-3 algorithms use the revised function to determine if there has 
 
 The program is run through the MyParser.java class, where it takes in two arguments marked by the flags -f and -a. -f distinguishes which file to run, and -a distingushes which algorithm to run ("ac1" for AC-1 and "ac3" for AC-3). The program then makes a myProblem instance, a data structure that holds all the constraints, variables, and whether it is an extension problem or not, and feeds the myProblem instance into the ACAlgorithms class to run the algorithm. 
 
-It is important to note that my fval doesn't include the values removed during node consitency (difference in fval can be seen in Zebra problem). I will make sure to implement fval in node constency in the future (this was approved by Dr. Choueiry). 

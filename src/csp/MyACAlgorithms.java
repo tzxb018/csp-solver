@@ -188,6 +188,7 @@ public class MyACAlgorithms {
     public boolean AC1(MyProblem myProblem) throws FileNotFoundException, IOException {
 
         captureTime = getCpuTime();
+        this.fval = 0;
 
         ArrayList<MyConstraint> constraints = myProblem.getConstraints();
         ArrayList<MyVariable> variables = myProblem.getVariables();
@@ -336,6 +337,7 @@ public class MyACAlgorithms {
     public boolean AC3(MyProblem myProblem) throws IOException {
 
         captureTime = getCpuTime();
+        this.fval = 0;
 
         ArrayList<MyConstraint> constraints = myProblem.getConstraints();
         ArrayList<MyVariable> variables = myProblem.getVariables();
