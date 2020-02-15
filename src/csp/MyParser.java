@@ -16,6 +16,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 /**
  * 
  * @author Tomo Bessho
@@ -28,7 +33,7 @@ public class MyParser {
 	private ArrayList<MyVariable> variables;
 	private ArrayList<MyConstraint> constraints;
 
-	public MyParser(String filename, String algoirthm) {
+	public MyParser(String filename, String algoirthm) throws FileNotFoundException, IOException {
 
 		InstanceParser parser = new InstanceParser();
 		parser.loadInstance(filename);
@@ -74,21 +79,39 @@ public class MyParser {
 		// An instance of the problem to store the variables and constraints in one
 		// place
 		MyProblem myProblem = new MyProblem(problemName, variables, constraints);
-		SearchFunctions sf = new SearchFunctions(constraints, variables, true);
-		// sf.revised(variables.get(7), variables.get(9));
+		CheckSupportRevise csr = new CheckSupportRevise(constraints, variables, true);
 		System.out.println("Instance name: " + problemName);
 		// System.out.println(myProblem);
 		MyACAlgorithms ac = new MyACAlgorithms();
 
 		if (algoirthm.equals("ac1"))
-			ac.AC1(myProblem);
+			try {
+				ac.AC1(myProblem);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		else if (algoirthm.equals("ac3"))
 			ac.AC3(myProblem);
 
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException, IOException {
+
+		// for (int i = 10; i <= 90; i += 10) {
+		// String fileName =
+		// "/home/tbessho/Documents/Tools2008/absconCVS4/v32_d8_p20/v32_d8_p20_t" + i;
+
+		// File dir = new File(fileName);
+		// File[] directoryListing = dir.listFiles();
+
+		// for (File child : directoryListing) {
+		// MyParser parser = new MyParser(child.getAbsolutePath(), "ac3");
+
+		// }
+		// }
 
 		MyParser parser = new MyParser(args[1], args[3]);
+
 	}
 }

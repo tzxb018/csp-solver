@@ -15,7 +15,7 @@ import java.util.Set;
  * @since 2/11/2020
  */
 
-public class SearchFunctions {
+public class CheckSupportRevise {
 
     protected ArrayList<MyConstraint> constraintList;
     protected ArrayList<MyVariable> variableList;
@@ -24,7 +24,7 @@ public class SearchFunctions {
     protected int cc;
     protected int fval;
 
-    public SearchFunctions(ArrayList<MyConstraint> constraintList, ArrayList<MyVariable> variables, boolean extension) {
+    public CheckSupportRevise(ArrayList<MyConstraint> constraintList, ArrayList<MyVariable> variables, boolean extension) {
         this.constraintList = constraintList;
         this.variableList = variables;
         this.extension = extension;
@@ -99,7 +99,7 @@ public class SearchFunctions {
                 // System.out.println(entry);
 
                 MyExtensionConstraint extensionConstraint = (MyExtensionConstraint) entry.getKey();
-                // System.out.println(extensionConstraint.toString());
+
                 boolean foundMatch = false;
                 // for binary constraints
                 if (extensionConstraint.getRelation()[0].length == 2) {
@@ -131,28 +131,20 @@ public class SearchFunctions {
                 }
 
                 boolean support = extensionConstraint.getSemantics().contains("support");
-                if (support) {
-                    if (counter > 0)
-                        satisfied = satisfied && foundMatch;
-                    else
-                        satisfied = foundMatch;
+                if (!support) foundMatch = !foundMatch;
 
-                } else {
-                    if (counter > 0)
-                        satisfied = satisfied || !foundMatch;
-                    satisfied = !foundMatch;
-                }
+                    satisfied = satisfied && foundMatch;
 
-                if (constraint.size() > 1)
-                    System.out.println(extensionConstraint.getName() + " " + variable1.getName() + " " + val1 + " "
-                            + variable2.getName() + " " + val2 + " " + ", reversed: " + entry.getValue()
-                            + ", found match: " + foundMatch + ", SAT: " + satisfied);
+                // if (constraint.size() > 1)
+                //     System.out.println(extensionConstraint.getName() + " " + variable1.getName() + " " + val1 + " "
+                //             + variable2.getName() + " " + val2 + " " + ", reversed: " + entry.getValue()
+                //             + ", found match: " + foundMatch + ", SAT: " + satisfied);
 
                 counter++;
 
             }
-            if (constraint.size() > 1)
-                System.out.println("Return of check: " + satisfied + "\n");
+            // if (constraint.size() > 1)
+            //     System.out.println("Return of check: " + satisfied + "\n");
             return satisfied;
 
         } else
@@ -172,7 +164,7 @@ public class SearchFunctions {
             for (Map.Entry<MyConstraint, Boolean> entry : constraint.entrySet()) {
                 MyIntensionConstraint intensionConstraint = (MyIntensionConstraint) entry.getKey();
 
-                satisfied = satisfied && (intensionConstraint.refCon.computeCostOf(tuple) > 0);
+                satisfied = satisfied && (intensionConstraint.refCon.computeCostOf(tuple) == 0);
 
             }
             return satisfied;

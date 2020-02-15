@@ -1,13 +1,22 @@
 package csp;
 
 import java.lang.management.ManagementFactory;
+
 import java.lang.management.ThreadMXBean;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Set;
+import java.util.TreeMap;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 
 /**
  * This class holds all the code for running the ac-1 and ac-3 algorithms. In
@@ -21,7 +30,7 @@ import java.util.Queue;
 public class MyACAlgorithms {
 
     protected int cc;
-    protected int fval;
+    protected int fval = 0;
 
     protected long captureTime;
     protected long runningTime;
@@ -55,6 +64,18 @@ public class MyACAlgorithms {
         return this.fEffect;
     }
 
+    public void printToCSV(double cc, double cpu, double fval, double isize, double fsize, double feffect)
+            throws IOException {
+
+        String fileContent = cc + "," + cpu + "," + fval + "," + isize + "," + fsize + "," + feffect + "\n";
+
+        BufferedWriter writer = new BufferedWriter(
+                new FileWriter("/home/tbessho/Documents/Tools2008/absconCVS4/out.csv", true));
+        writer.write(fileContent);
+        writer.close();
+
+    }
+
     public void nodeConsistencyIntension(ArrayList<MyVariable> vars, MyIntensionConstraint unaryConstraint) {
 
         // iterating through each variable
@@ -69,11 +90,13 @@ public class MyACAlgorithms {
                     int[] tuple = { iterator.next() };
                     if (unaryConstraint.getRefCon().computeCostOf(tuple) > 0) {
                         iterator.remove();
+                        this.fval++;
                     }
                 }
 
             }
         }
+
     }
 
     public void nodeConsistencyExtension(ArrayList<MyVariable> vars, MyExtensionConstraint unaryConstraint) {
@@ -83,6 +106,7 @@ public class MyACAlgorithms {
 
             // if the unary constraint's scope matches the current varaible being tested
             if (var.getName().equals(unaryConstraint.getScope().get(0).getName())) {
+
                 // getting the current domain
                 ArrayList<Integer> domain = var.getCurrentDomain();
                 ArrayList<Integer> updatedDomain = new ArrayList<Integer>();
@@ -97,22 +121,30 @@ public class MyACAlgorithms {
                 // the unary constraint
                 if (!supports) {
                     while (iterator.hasNext()) {
-                        if (iterator.next() == unaryConstraint.getRelation()[0][0]) {
-                            iterator.remove();
+                        for (int i = 0; i < unaryConstraint.getRelation().length; i++){
+                            if (iterator.hasNext() && iterator.next() == unaryConstraint.getRelation()[i][0]) {
+                                iterator.remove();
+                                this.fval++;
+                            }
                         }
+
                     }
                     // if it is a support variable, the unary constraint will only add the values in
                     // the constraint
                 } else {
+                    int tempCounter = 0;
                     for (int i = 0; i < unaryConstraint.getRelation().length; i++) {
                         updatedDomain.add(unaryConstraint.getRelation()[i][0]);
-
+                        tempCounter++;
                     }
                     // updating the current domain
-                    var.setCurrentDomain(updatedDomain);
-                }
-            }
+                    this.fval += (var.getCurrentDomain().size() - tempCounter);
 
+                    var.setCurrentDomain(updatedDomain);
+
+                }
+
+            }
         }
     }
 
@@ -151,8 +183,9 @@ public class MyACAlgorithms {
      *                  algorithm if the extension variables are supports or
      *                  conflict
      * @return whether there exists some partial solution to the csp
+     * @throws FileNotFoundException
      */
-    public boolean AC1(MyProblem myProblem) {
+    public boolean AC1(MyProblem myProblem) throws FileNotFoundException, IOException {
 
         captureTime = getCpuTime();
 
@@ -161,7 +194,7 @@ public class MyACAlgorithms {
 
         boolean extension = (constraints.get(0).getClass().toString().contains("Extension"));
 
-        SearchFunctions sf = new SearchFunctions(constraints, variables, extension);
+        CheckSupportRevise csr = new CheckSupportRevise(constraints, variables, extension);
 
         // Initialzing the queue used by the ac 1 algorithm
         ArrayList<ArrayList<MyVariable>> queue = new ArrayList<ArrayList<MyVariable>>();
@@ -239,7 +272,7 @@ public class MyACAlgorithms {
 
                 boolean updated = false;
                 if (tuple.size() > 1) {
-                    updated = sf.revised(tuple.get(0), tuple.get(1));
+                    updated = csr.revised(tuple.get(0), tuple.get(1));
                 }
 
                 // if there is a domain wipeout in any of the variables
@@ -249,12 +282,15 @@ public class MyACAlgorithms {
                 for (MyVariable v : variables) {
                     if (v.getCurrentDomain().size() == 0) {
                         DecimalFormat df = new DecimalFormat("#.#####");
-                        System.out.println("cc: " + sf.getCC());
+                        System.out.println("cc: " + csr.getCC());
                         System.out.println("cpu: " + (getCpuTime() - captureTime) / 1000000);
 
-                        System.out.println("fval: " + sf.getfval());
+                        System.out.println("fval: " + (this.fval + csr.getfval()));
                         System.out.println("iSize: " + df.format(this.iSize));
                         System.out.println("fSize: false\nfEffect: false");
+
+                        printToCSV(csr.getCC(), (getCpuTime() - captureTime) / 1000000, (this.fval + csr.getfval()), this.iSize, -1,
+                                -1);
                         return false;
                     }
                 }
@@ -262,19 +298,23 @@ public class MyACAlgorithms {
                 changed = (changed || updated);
 
             }
-            
+
             // System.out.println(myProblem.printDomains());
         }
         DecimalFormat df = new DecimalFormat("#.#####");
 
-        System.out.println("cc: " + sf.getCC());
+        System.out.println("cc: " + csr.getCC());
         System.out.println("cpu: " + ((getCpuTime() - captureTime) / 1000000));
 
-        System.out.println("fval: " + sf.getfval());
+        System.out.println("fval: " + (this.fval + csr.getfval()));
         System.out.println("iSize: " + df.format(this.iSize));
 
         System.out.println("fSize: " + df.format(this.computeFSize(variables)));
         System.out.println("fEffect: " + df.format(this.computeFEffect(this.iSize, this.fSize)));
+
+        printToCSV(csr.getCC(), (getCpuTime() - captureTime) / 1000000, (this.fval + csr.getfval()), this.iSize, this.fSize,
+                this.fEffect);
+
         return true;
 
     }
@@ -291,8 +331,9 @@ public class MyACAlgorithms {
      *                  algorithm if the extension variables are supports or
      *                  conflict
      * @return whether there exists some partial solution to the csp
+     * @throws IOException
      */
-    public boolean AC3(MyProblem myProblem) {
+    public boolean AC3(MyProblem myProblem) throws IOException {
 
         captureTime = getCpuTime();
 
@@ -301,7 +342,7 @@ public class MyACAlgorithms {
 
         boolean extension = (constraints.get(0).getClass().toString().contains("Extension"));
 
-        SearchFunctions sf = new SearchFunctions(constraints, variables, extension);
+        CheckSupportRevise csr = new CheckSupportRevise(constraints, variables, extension);
 
         // Initialzing the queue used by the ac 3 algorithm
         Queue<ArrayList<MyVariable>> queue = new LinkedList<ArrayList<MyVariable>>();
@@ -315,40 +356,6 @@ public class MyACAlgorithms {
 
         // computing iSize
         this.computeISize(variables);
-
-        /**
-         * // System.out.println(constraints);
-         * 
-         * // ArrayList<MyVariable> tuple = new ArrayList<MyVariable>(); //
-         * tuple.add(constraints.get(0).getScope().get(0)); //
-         * tuple.add(constraints.get(0).getScope().get(1)); // queue.add(tuple); //
-         * listOftuples.add(tuple);
-         * 
-         * // tuple = new ArrayList<MyVariable>(); //
-         * tuple.add(constraints.get(0).getScope().get(1)); //
-         * tuple.add(constraints.get(0).getScope().get(0)); // queue.add(tuple); //
-         * listOftuples.add(tuple);
-         * 
-         * // tuple = new ArrayList<MyVariable>(); //
-         * tuple.add(constraints.get(1).getScope().get(0)); //
-         * tuple.add(constraints.get(1).getScope().get(1)); // queue.add(tuple); //
-         * listOftuples.add(tuple);
-         * 
-         * // tuple = new ArrayList<MyVariable>(); //
-         * tuple.add(constraints.get(2).getScope().get(0)); //
-         * tuple.add(constraints.get(2).getScope().get(1)); // queue.add(tuple); //
-         * listOftuples.add(tuple);
-         * 
-         * // tuple = new ArrayList<MyVariable>(); //
-         * tuple.add(constraints.get(1).getScope().get(1)); //
-         * tuple.add(constraints.get(1).getScope().get(0)); // queue.add(tuple); //
-         * listOftuples.add(tuple);
-         * 
-         * // tuple = new ArrayList<MyVariable>(); //
-         * tuple.add(constraints.get(2).getScope().get(1)); //
-         * tuple.add(constraints.get(2).getScope().get(0)); // queue.add(tuple); //
-         * listOftuples.add(tuple);
-         */
 
         for (MyConstraint c : constraints) {
             ArrayList<MyVariable> copy = c.getScope();
@@ -416,7 +423,7 @@ public class MyACAlgorithms {
 
             // run the revise function for this tuple
             if (tupleToTest.size() > 1) {
-                boolean revised = sf.revised(tupleToTest.get(0), tupleToTest.get(1));
+                boolean revised = csr.revised(tupleToTest.get(0), tupleToTest.get(1));
 
                 // if there was a change in the domain with the revise function
                 if (revised) {
@@ -470,12 +477,14 @@ public class MyACAlgorithms {
             for (MyVariable v : variables) {
                 if (v.getCurrentDomain().size() == 0) {
                     DecimalFormat df = new DecimalFormat("#.#####");
-                    System.out.println("cc: " + sf.getCC());
+                    System.out.println("cc: " + csr.getCC());
                     System.out.println("cpu: " + (getCpuTime() - captureTime) / 1000000);
 
-                    System.out.println("fval: " + sf.getfval());
+                    System.out.println("fval: " + (this.fval + csr.getfval()));
                     System.out.println("iSize: " + df.format(this.iSize));
                     System.out.println("fSize: false\nfEffect: false");
+                    printToCSV(csr.getCC(), (getCpuTime() - captureTime) / 1000000, this.fval + csr.getfval(), this.iSize, -1, -1);
+
                     return false;
                 }
             }
@@ -486,14 +495,17 @@ public class MyACAlgorithms {
 
         DecimalFormat df = new DecimalFormat("#.#####");
 
-        System.out.println("cc: " + sf.getCC());
+        System.out.println("cc: " + csr.getCC());
         System.out.println("cpu: " + df.format(((getCpuTime() - captureTime) / 1000000)));
 
-        System.out.println("fval: " + sf.getfval());
+        System.out.println("fval: " + (this.fval + csr.getfval()));
         System.out.println("iSize: " + df.format(this.iSize));
 
         System.out.println("fSize: " + df.format(this.computeFSize(variables)));
         System.out.println("fEffect: " + df.format(this.computeFEffect(this.iSize, this.fSize)));
+        printToCSV(csr.getCC(), (getCpuTime() - captureTime) / 1000000, this.fval + csr.getfval(), this.iSize, this.fSize,
+                this.fEffect);
+
         return true;
     }
 }
