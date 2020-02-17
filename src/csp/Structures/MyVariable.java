@@ -1,4 +1,4 @@
-package csp;
+package csp.Structures;
 
 import abscon.instance.tools.InstanceParser;
 import abscon.instance.components.PDomain;
@@ -23,7 +23,7 @@ public class MyVariable {
 	/// homework
 	protected String name;
 	protected int[] initialDomain;
-	protected ArrayList<Integer> currentDomain;
+	public ArrayList<Integer> currentDomain;
 	protected ArrayList<MyConstraint> constraints;
 	protected ArrayList<MyVariable> neighbors;
 

@@ -10,6 +10,13 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 import java.util.TreeMap;
+
+import csp.Structures.MyConstraint;
+import csp.Structures.MyExtensionConstraint;
+import csp.Structures.MyIntensionConstraint;
+import csp.Structures.MyProblem;
+import csp.Structures.MyVariable;
+
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;

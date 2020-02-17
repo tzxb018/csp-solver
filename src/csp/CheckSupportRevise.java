@@ -8,6 +8,11 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import csp.Structures.MyConstraint;
+import csp.Structures.MyExtensionConstraint;
+import csp.Structures.MyIntensionConstraint;
+import csp.Structures.MyVariable;
+
 /**
  * 
  * @author Tomo Bessho

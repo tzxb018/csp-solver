@@ -1,4 +1,4 @@
-package csp;
+package csp.Structures;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -17,7 +17,7 @@ public class MyIntensionConstraint extends MyConstraint {
 
     protected MyFunction definition; // The function linked with this intension constraint
     protected String[] univeralPostExpression;
-    protected PIntensionConstraint refCon;
+    public PIntensionConstraint refCon;
     protected String[] param;
 
     public MyIntensionConstraint(PConstraint refConstraint, PIntensionConstraint refcon) {

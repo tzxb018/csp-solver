@@ -1,4 +1,4 @@
-package csp;
+package csp.Structures;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,8 +38,6 @@ public class MyProblem {
         }
 
         this.extension = (constraints.get(0).getClass().toString().contains("Extension"));
-
-
 
     }
 

@@ -1,4 +1,4 @@
-package csp;
+package csp.Structures;
 
 import java.util.ArrayList;
 import java.util.Comparator;
