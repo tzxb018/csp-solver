@@ -62,7 +62,7 @@ public class BacktrackSearch {
                 for (int i = 0; i < dom_of_var.length; i++) {
                     startingDomain.add(dom_of_var[i]);
                 }
-                
+
                 domains.add(startingDomain);
                 current_domains.add(anotherDomain);
             }

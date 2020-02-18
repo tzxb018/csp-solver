@@ -64,6 +64,12 @@ public class BCSSP {
             // determining if there is a solution or not
             if (i > n) {
                 status = "solution";
+                System.out.println("SOLUTION FOUND");
+                for (MyVariable var : current_path) {
+                    if (var != null) {
+                        System.out.println(var.getCurrentDomain().get(0));
+                    }
+                }
                 return true;
             }
             // reach the top of the tree
@@ -98,9 +104,10 @@ public class BCSSP {
                 consistent = csr.check(current_path.get(h), assignments[h], current_path.get(i), assignments[i]);
                 System.out.println(current_path.get(h).getName() + " " + assignments[h] + " <> "
                         + current_path.get(i).getName() + " " + assignments[i] + " ==> " + consistent);
-
+                System.out.println(current_path.get(i).getCurrentDomain());
                 if (!consistent) {
                     iterator.remove();
+                    break;
                 }
             }
 
@@ -122,23 +129,25 @@ public class BCSSP {
         // current_domains.set(i, domains.get(i)); // resetting the domain to be the
         // starting domain at level i
         // Iterator<Integer> iterator = current_domains.get(h).iterator();
-        Iterator<Integer> iterator = current_path.get(h).currentDomain.iterator();
+        System.out.println(h);
+        if (h > 0) {
+            Iterator<Integer> iterator = current_path.get(h).currentDomain.iterator();
 
-        // finding the index of assignments[h] in current-domain[h] to remove it
-        while (iterator.hasNext()) {
-            int nextVal = iterator.next();
-            System.out.println(nextVal + " == " + assignments[h]);
-            if (nextVal == assignments[h]) {
-                iterator.remove();
+            // finding the index of assignments[h] in current-domain[h] to remove it
+            while (iterator.hasNext()) {
+                int nextVal = iterator.next();
+                System.out.println(nextVal + " == " + assignments[h]);
+                if (nextVal == assignments[h]) {
+                    iterator.remove();
+                }
             }
+            System.out.println("updated: " + current_path.get(h).getCurrentDomain());
+
+            if (current_path.get(h).getCurrentDomain().size() == 0) {
+                consistent = false;
+            } else
+                consistent = true;
         }
-
-        System.out.println("updated: " + current_path.get(h).getCurrentDomain());
-
-        if (current_path.get(h).getCurrentDomain().size() == 0) {
-            consistent = false;
-        } else
-            consistent = true;
 
         return h;
 
