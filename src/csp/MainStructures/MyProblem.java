@@ -1,4 +1,4 @@
-package csp.Structures;
+package csp.MainStructures;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,6 +75,10 @@ public class MyProblem {
 
     public ArrayList<MyConstraint> getConstraints() {
         return this.constraints;
+    }
+
+    public boolean getExtension() {
+        return this.extension;
     }
 
     public String printDomains() {

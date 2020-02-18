@@ -1,4 +1,4 @@
-package csp.Structures;
+package csp.MainStructures;
 
 import abscon.instance.tools.InstanceParser;
 import abscon.instance.components.PDomain;
@@ -87,6 +87,13 @@ public class MyVariable {
 			this.currentDomain.add(i);
 		}
 		// System.out.println("In var " + this.currentDomain.toString());
+	}
+
+	public void resetDomain() {
+		this.currentDomain.clear();
+		for (int i : this.initialDomain) {
+			this.currentDomain.add(i);
+		}
 	}
 
 	public String toString() {

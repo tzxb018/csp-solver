@@ -11,11 +11,11 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.TreeMap;
 
-import csp.Structures.MyConstraint;
-import csp.Structures.MyExtensionConstraint;
-import csp.Structures.MyIntensionConstraint;
-import csp.Structures.MyProblem;
-import csp.Structures.MyVariable;
+import csp.MainStructures.MyConstraint;
+import csp.MainStructures.MyExtensionConstraint;
+import csp.MainStructures.MyIntensionConstraint;
+import csp.MainStructures.MyProblem;
+import csp.MainStructures.MyVariable;
 
 import java.io.FileOutputStream;
 import java.io.FileReader;

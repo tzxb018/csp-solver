@@ -1,8 +1,10 @@
-package csp.Structures;
+package csp.MainStructures;
 
 import abscon.instance.tools.InstanceParser;
 import csp.CheckSupportRevise;
 import csp.MyACAlgorithms;
+import csp.BacktrackSearch.BCSSP;
+import csp.BacktrackSearch.BacktrackSearch;
 import abscon.instance.InstanceTokens;
 import abscon.instance.XMLManager;
 import abscon.instance.components.PConstraint;
@@ -80,7 +82,6 @@ public class MyParser {
 		// An instance of the problem to store the variables and constraints in one
 		// place
 		MyProblem myProblem = new MyProblem(problemName, variables, constraints);
-		CheckSupportRevise csr = new CheckSupportRevise(constraints, variables, true);
 		System.out.println("Instance name: " + problemName);
 		// System.out.println(myProblem);
 		MyACAlgorithms ac = new MyACAlgorithms();
@@ -89,11 +90,13 @@ public class MyParser {
 			try {
 				ac.AC1(myProblem);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		else if (algoirthm.equals("ac3"))
 			ac.AC3(myProblem);
+		else if (algoirthm.equals("LX")) {
+			BacktrackSearch bt = new BacktrackSearch(myProblem, "LX", "BT");
+		}
 
 	}
 

@@ -8,6 +8,13 @@
             "type": "java",
             "name": "CodeLens (Launch) - MyParser",
             "request": "launch",
+            "mainClass": "csp.MainStructures.MyParser",
+            "projectName": "absconCVS4"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - MyParser",
+            "request": "launch",
             "mainClass": "csp.Structures.MyParser",
             "projectName": "absconCVS4"
         },

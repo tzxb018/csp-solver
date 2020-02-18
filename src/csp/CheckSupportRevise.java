@@ -8,10 +8,10 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import csp.Structures.MyConstraint;
-import csp.Structures.MyExtensionConstraint;
-import csp.Structures.MyIntensionConstraint;
-import csp.Structures.MyVariable;
+import csp.MainStructures.MyConstraint;
+import csp.MainStructures.MyExtensionConstraint;
+import csp.MainStructures.MyIntensionConstraint;
+import csp.MainStructures.MyVariable;
 
 /**
  * 
@@ -149,7 +149,7 @@ public class CheckSupportRevise {
 
             }
             // if (constraint.size() > 1)
-            //     System.out.println("Return of check: " + satisfied + "\n");
+                // System.out.println("Return of check: " + satisfied + "\n");
             return satisfied;
 
         } else
