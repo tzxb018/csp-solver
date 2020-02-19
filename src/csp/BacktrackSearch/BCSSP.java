@@ -1,5 +1,7 @@
 package csp.BacktrackSearch;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.util.*;
 
 import csp.CheckSupportRevise;
@@ -29,11 +31,18 @@ public class BCSSP {
     protected int nv;
     protected int bt;
 
+    protected long captureTime;
+    protected long runningTime;
+
     public BCSSP(MyProblem myProblem, ArrayList<MyVariable> current_path, int[] assignments) {
         this.myProblem = myProblem;
         this.current_path = current_path;
         this.assignments = assignments;
         this.variables = myProblem.getVariables();
+
+        this.cc = 0;
+        this.nv = 0;
+        this.bt = 0;
     }
 
     /**
@@ -45,6 +54,12 @@ public class BCSSP {
      * @return whether there is a solution in the CSP after running BCSSP
      */
     public boolean execute(int n, String status) {
+
+        this.cc = 0;
+        this.nv = 0;
+        this.bt = 0;
+
+        captureTime = getCpuTime();
 
         // running NC before running search
         ArrayList<MyConstraint> unaryConstraints = new ArrayList<MyConstraint>();
@@ -77,6 +92,7 @@ public class BCSSP {
         // the domain
         for (MyVariable var : variables) {
             var.setDomain(var.getCurrentDomain());
+            // System.out.println(Arrays.toString(var.getDomain()));
         }
 
         consistent = true;
@@ -84,6 +100,7 @@ public class BCSSP {
         int i = 1;
 
         while (status.equals("unknown")) {
+
             if (consistent) {
                 // System.out.println("BT LABEL: " + i);
                 i = BT_label(i);
@@ -93,14 +110,20 @@ public class BCSSP {
             }
 
             // System.out.println("===========");
-            // for (ArrayList<Integer> doms : current_domains) {
-            // System.out.println(doms);
+            // for (int j = 1; j < current_path.size(); j++){
+            // System.out.println(current_path.get(j).getName() + " " +
+            // current_path.get(j).getCurrentDomain());
             // }
             // System.out.println("===========");
 
             // determining if there is a solution or not
             if (i > n) {
                 status = "solution";
+                System.out.println("cc: " + this.cc);
+                System.out.println("nv: " + this.nv);
+                System.out.println("bt: " + this.bt);
+                System.out.println("cpu: " + ((getCpuTime() - captureTime) / 1000000.0));
+
                 // System.out.println("SOLUTION FOUND");
                 String solution = "";
                 for (MyVariable var : current_path) {
@@ -108,12 +131,19 @@ public class BCSSP {
                         solution += (var.getCurrentDomain().get(0) + " ");
                     }
                 }
-                System.out.println(solution);
+                System.out.println("First solution: " + solution);
                 return true;
             }
             // reach the top of the tree
             else if (i == 0) {
                 status = "false";
+                System.out.println("cc: " + this.cc);
+                System.out.println("nv: " + this.nv);
+                System.out.println("bt: " + this.bt);
+                System.out.println("cpu: " + ((double) (getCpuTime() - captureTime) / 1000000.0));
+
+                System.out.println("First solution: No Solution");
+
                 return false;
             }
             // System.out.println();
@@ -138,6 +168,7 @@ public class BCSSP {
             // System.out.println("Assignment: " + current_path.get(i).getName() + " <-- " +
             // assignments[i]);
             consistent = true;
+            this.nv++;
 
             // back checking against all past variables with their respective assignments
             for (int h = 1; h <= i - 1; h++) {
@@ -155,6 +186,8 @@ public class BCSSP {
 
         }
 
+        this.cc += csr.getCC();
+
         if (consistent) {
             return i + 1; // an assignment to v[i] works
         } else {
@@ -164,6 +197,7 @@ public class BCSSP {
     }
 
     public int BT_unlabel(int i) {
+        this.bt++;
         int h = i - 1;
         // System.out.println("domain: " + i + " " + domains.get(i));
         current_path.get(i).resetDomain();
@@ -193,5 +227,30 @@ public class BCSSP {
 
         return h;
 
+    }
+
+    /** Get cpu time in nanoseconds. */
+    public long getCpuTime() {
+        ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+        if (!bean.isThreadCpuTimeSupported())
+            return 0L;
+        return bean.getThreadCpuTime(java.lang.Thread.currentThread().getId());
+    }
+
+    /** Get user time in nanoseconds. */
+    public long getUserTime(long[] ids) {
+        ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+        if (!bean.isThreadCpuTimeSupported())
+            return 0L;
+        return bean.getThreadUserTime(java.lang.Thread.currentThread().getId());
+    }
+
+    /** Get system time in nanoseconds. */
+    public long getSystemTime(long[] ids) {
+        ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+        if (!bean.isThreadCpuTimeSupported())
+            return 0L;
+        return bean.getThreadCpuTime(java.lang.Thread.currentThread().getId())
+                + bean.getThreadUserTime(java.lang.Thread.currentThread().getId());
     }
 }

@@ -75,10 +75,10 @@ public class BacktrackSearch {
             }
 
             current_path.add(0, null); // pointer starts at 1
-            for (MyVariable var : current_path) {
-                if (var != null && var.getConstraints().size() > 0)
-                    System.out.println(var.getName() + " " + (var.getDomain().length / var.getConstraints().size()));
-            }
+            // for (MyVariable var : current_path) {
+            //     if (var != null && var.getConstraints().size() > 0)
+            //         System.out.println(var.getName() + " " + (var.getDomain().length / var.getConstraints().size()));
+            // }
         }
     }
 
