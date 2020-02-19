@@ -27,6 +27,142 @@ public class MyVariable {
 	protected ArrayList<MyConstraint> constraints;
 	protected ArrayList<MyVariable> neighbors;
 
+	// Creating a lexiographic comparator for the comparator by looking at the
+	// variable's name
+
+	// taken from
+	// https://stackoverflow.com/questions/13973503/sorting-strings-that-contains-number-in-java
+	public static final Comparator<MyVariable> LX_COMPARATOR = new Comparator<MyVariable>() {
+		@Override
+		public int compare(MyVariable v1, MyVariable v2) {
+			if (v1.getName().matches(".*\\d.*") && v2.getName().matches(".*\\d.*")) {
+				return extractInt(v1.getName()) - extractInt(v2.getName());
+			} else {
+				return v1.getName().compareTo(v2.getName());
+			}
+
+		}
+
+		public int extractInt(String s) {
+			String num = s.replaceAll("\\D", "");
+			// return 0 if no digits found
+			if (num.isEmpty()) {
+				return 0;
+			} else {
+				return Integer.parseInt(num);
+			}
+		}
+	};
+
+	// Creating a comparator with domain sizes with ties broken up with
+	// lexiographical ordering
+	public static final Comparator<MyVariable> LD_COMPARATOR = new Comparator<MyVariable>() {
+		@Override
+		public int compare(MyVariable v1, MyVariable v2) {
+
+			Integer s1 = v1.getDomain().length;
+			Integer s2 = v2.getDomain().length;
+
+			int sComp = s1.compareTo(s2);
+
+			if (sComp != 0) {
+				return sComp;
+			}
+
+			if (v1.getName().matches(".*\\d.*") && v2.getName().matches(".*\\d.*")) {
+				return extractInt(v1.getName()) - extractInt(v2.getName());
+			} else {
+				return v1.getName().compareTo(v2.getName());
+			}
+
+		}
+
+		public int extractInt(String s) {
+			String num = s.replaceAll("\\D", "");
+			// return 0 if no digits found
+			if (num.isEmpty()) {
+				return 0;
+			} else {
+				return Integer.parseInt(num);
+			}
+		}
+	};
+
+	// Creating a comparator with degree sizes with ties broken up with
+	// lexiographical ordering
+	public static final Comparator<MyVariable> DEG_COMPARATOR = new Comparator<MyVariable>() {
+		@Override
+		public int compare(MyVariable v1, MyVariable v2) {
+
+			Integer s1 = v1.getConstraints().size();
+			Integer s2 = v2.getConstraints().size();
+			int sComp = s1.compareTo(s2);
+
+			if (sComp != 0) {
+				return sComp;
+			}
+
+			if (v1.getName().matches(".*\\d.*") && v2.getName().matches(".*\\d.*")) {
+				return extractInt(v1.getName()) - extractInt(v2.getName());
+			} else {
+				return v1.getName().compareTo(v2.getName());
+			}
+
+		}
+
+		public int extractInt(String s) {
+			String num = s.replaceAll("\\D", "");
+			// return 0 if no digits found
+			if (num.isEmpty()) {
+				return 0;
+			} else {
+				return Integer.parseInt(num);
+			}
+		}
+	};
+
+	// Creating a comparator with ddr sizes with ties broken up with
+	// lexiographical ordering
+	public static final Comparator<MyVariable> DDR_COMPARATOR = new Comparator<MyVariable>() {
+		@Override
+		public int compare(MyVariable v1, MyVariable v2) {
+
+			double ddr1, ddr2 = 0;
+			if (v1.getConstraints().size() == 0)
+				ddr1 = v1.getDomain().length / .00001;
+			else
+				ddr1 = v1.getDomain().length / v1.getConstraints().size();
+
+			if (v2.getConstraints().size() == 0)
+				ddr2 = v2.getDomain().length / .00001;
+			else
+				ddr2 = v2.getDomain().length / v2.getConstraints().size();
+
+			int sComp = Double.compare(ddr1, ddr2);
+
+			if (sComp != 0) {
+				return sComp;
+			}
+
+			if (v1.getName().matches(".*\\d.*") && v2.getName().matches(".*\\d.*")) {
+				return extractInt(v1.getName()) - extractInt(v2.getName());
+			} else {
+				return v1.getName().compareTo(v2.getName());
+			}
+
+		}
+
+		public int extractInt(String s) {
+			String num = s.replaceAll("\\D", "");
+			// return 0 if no digits found
+			if (num.isEmpty()) {
+				return 0;
+			} else {
+				return Integer.parseInt(num);
+			}
+		}
+	};
+
 	public MyVariable(PVariable var) {
 		varRef = var;
 		name = var.getName();

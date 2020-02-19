@@ -1,9 +1,7 @@
 package csp.MainStructures;
 
 import abscon.instance.tools.InstanceParser;
-import csp.CheckSupportRevise;
 import csp.MyACAlgorithms;
-import csp.BacktrackSearch.BCSSP;
 import csp.BacktrackSearch.BacktrackSearch;
 import abscon.instance.InstanceTokens;
 import abscon.instance.XMLManager;
@@ -13,11 +11,10 @@ import abscon.instance.components.PIntensionConstraint;
 import abscon.instance.components.PVariable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,7 +33,26 @@ public class MyParser {
 	private ArrayList<MyVariable> variables;
 	private ArrayList<MyConstraint> constraints;
 
-	public MyParser(String filename, String algoirthm) throws FileNotFoundException, IOException {
+	public MyParser(String[] args) throws FileNotFoundException, IOException {
+
+		System.out.println(Arrays.toString(args));
+
+		String filename = "";
+		String ACAlgorithmString = "";
+		String orderingHeuristic = "";
+		String searchAlgorithm = "";
+
+		for (int i = 0; i < args.length; i += 2) {
+			if (args[i].equals("-f")) {
+				filename = args[i + 1];
+			} else if (args[i].equals("-a")) {
+				ACAlgorithmString = args[i + 1];
+			} else if (args[i].equals("-u")) {
+				orderingHeuristic = args[i + 1];
+			} else if (args[i].equals("-s")) {
+				searchAlgorithm = args[i + 1];
+			}
+		}
 
 		InstanceParser parser = new InstanceParser();
 		parser.loadInstance(filename);
@@ -63,8 +79,8 @@ public class MyParser {
 		// An arraylist to hold all the constraints parsed by the parser
 		constraints = new ArrayList<MyConstraint>();
 
-		// Going through the map of constraints made by the parser to obtain the correct
-		// constraint
+		// Going through the map of constraints made by the parser to obtain the
+		// correct constraint
 		for (String key : parser.getMapOfConstraints().keySet()) {
 			PConstraint con = parser.getMapOfConstraints().get(key);
 
@@ -83,19 +99,16 @@ public class MyParser {
 		// place
 		MyProblem myProblem = new MyProblem(problemName, variables, constraints);
 		System.out.println("Instance name: " + problemName);
-		// System.out.println(myProblem);
 		MyACAlgorithms ac = new MyACAlgorithms();
 
-		if (algoirthm.equals("ac1"))
-			try {
-				ac.AC1(myProblem);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		else if (algoirthm.equals("ac3"))
+		if (ACAlgorithmString.equals("ac1"))
+			ac.AC1(myProblem);
+		else if (ACAlgorithmString.equals("ac3"))
 			ac.AC3(myProblem);
-		else if (algoirthm.equals("LX")) {
-			BacktrackSearch bt = new BacktrackSearch(myProblem, "LX", "BT");
+
+		if (!orderingHeuristic.equals("") && !searchAlgorithm.equals("")){
+			BacktrackSearch bt = new BacktrackSearch(myProblem, orderingHeuristic, true);
+			bt.runSearch(searchAlgorithm);
 		}
 
 	}
@@ -117,7 +130,7 @@ public class MyParser {
 		// }
 		// // }
 
-		MyParser parser = new MyParser(args[1], args[3]);
+		MyParser parser = new MyParser(args);
 
 	}
 }
