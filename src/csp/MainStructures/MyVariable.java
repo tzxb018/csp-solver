@@ -80,13 +80,18 @@ public class MyVariable {
 		return this.currentDomain;
 	}
 
+	public void setDomain(ArrayList<Integer> newDomain) {
+		this.initialDomain = new int[newDomain.size()];
+		for (int i = 0; i < newDomain.size(); i++) {
+			this.initialDomain[i] = newDomain.get(i);
+		}
+	}
+
 	public void setCurrentDomain(ArrayList<Integer> currdomain) {
 		this.currentDomain.clear();
-		// System.out.println("Passed thru: " + currdomain.toString());
 		for (Integer i : currdomain) {
 			this.currentDomain.add(i);
 		}
-		// System.out.println("In var " + this.currentDomain.toString());
 	}
 
 	public void resetDomain() {

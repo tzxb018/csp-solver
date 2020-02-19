@@ -18,8 +18,6 @@ public class BacktrackSearch {
     protected MyProblem myProblem;
     protected ArrayList<MyVariable> current_path;
     protected int[] assignments;
-    protected ArrayList<ArrayList<Integer>> domains;
-    protected ArrayList<ArrayList<Integer>> current_domains;
 
     /**
      * This is the constructor for all the backtrack searches
@@ -37,34 +35,20 @@ public class BacktrackSearch {
         ArrayList<MyVariable> variables = myProblem.getVariables();
         this.current_path = new ArrayList<MyVariable>();
         this.assignments = new int[variables.size() + 1];
-        this.domains = new ArrayList<ArrayList<Integer>>();
-        this.current_domains = new ArrayList<ArrayList<Integer>>();
 
         // using the ordering heuristic to determine how the variables are put into
         // current-path
         if (ordering_heursitic.equals("LX")) {
 
             current_path.add(null); // pointer starts at 1
-            domains.add(null);
-            current_domains.add(null);
 
             // adding into the current-path in order lexiographically
             for (MyVariable var : variables) {
                 current_path.add(var);
+            }
 
-                // adding the initial domains of all the variables
-                int[] dom_of_var = var.getDomain();
-
-                // converting from array to arraylist
-                ArrayList<Integer> startingDomain = new ArrayList<Integer>();
-                ArrayList<Integer> anotherDomain = var.getCurrentDomain();
-
-                for (int i = 0; i < dom_of_var.length; i++) {
-                    startingDomain.add(dom_of_var[i]);
-                }
-
-                domains.add(startingDomain);
-                current_domains.add(anotherDomain);
+            for (int i = 0; i < assignments.length; i++){
+                assignments[i] = -1;
             }
 
         } else if (ordering_heursitic.equals("LD")) {
@@ -76,8 +60,8 @@ public class BacktrackSearch {
         }
 
         if (searchType.equals("BT")) {
-            BCSSP bcssp = new BCSSP(myProblem, current_path, assignments, domains, current_domains);
-            System.out.println("FINAL: " + bcssp.execute(variables.size(), "unknown"));
+            BCSSP bcssp = new BCSSP(myProblem, current_path, assignments);
+            bcssp.execute(variables.size(), "unknown");
         }
 
     }
