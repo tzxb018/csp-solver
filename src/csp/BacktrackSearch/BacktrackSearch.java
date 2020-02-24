@@ -26,6 +26,7 @@ public class BacktrackSearch {
     protected MyProblem myProblem;
     protected ArrayList<MyVariable> variables;
     protected ArrayList<MyVariable> current_path;
+    protected ArrayList<MyVariable> copy_current_path;
     protected int[] assignments;
 
     protected ArrayList<MyVariable> unassignedVariables;
@@ -93,6 +94,8 @@ public class BacktrackSearch {
                 assignments[i] = -1;
             }
 
+            this.copy_current_path = current_path;
+
             // using the ordering heuristic to determine how the variables are put into
             // current-path
             switch (ordering_heursitic) {
@@ -115,7 +118,8 @@ public class BacktrackSearch {
             // orderedCurrentPathString = "[";
             for (int i = 1; i < current_path.size() - 1; i++) {
                 orderedCurrentPathString += (current_path.get(i).getName() + ",");
-                System.out.println(current_path.get(i).getName() + " " + (current_path.get(i).getCurrentDomain()));
+                System.out.println(
+                        current_path.get(i).getName() + " " + Arrays.toString(current_path.get(i).getDomain()));
             }
             orderedCurrentPathString += (current_path.get(current_path.size() - 1)).getName();
         }
@@ -135,6 +139,10 @@ public class BacktrackSearch {
             writer.write(fileContent);
             writer.close();
         }
+    }
+
+    public ArrayList<MyVariable> getCopyCurrentPath() {
+        return this.copy_current_path;
     }
 
     public ArrayList<MyVariable> getUnassignedVariables() {

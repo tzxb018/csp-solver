@@ -98,7 +98,7 @@ public class MyACAlgorithms {
                 for (int i = 0; i < domain.length; i++) {
                     listToIterate.add(domain[i]);
                 }
-                Iterator<Integer> iterator = var.getCurrentDomain().iterator();
+                Iterator<Integer> iterator = listToIterate.iterator();
 
                 while (iterator.hasNext()) {
                     int[] tuple = { iterator.next() };
@@ -107,6 +107,8 @@ public class MyACAlgorithms {
                         this.fval++;
                     }
                 }
+
+                var.setDomain(listToIterate);
 
             }
         }
@@ -133,7 +135,7 @@ public class MyACAlgorithms {
                 for (int i = 0; i < domain.length; i++) {
                     listToIterate.add(domain[i]);
                 }
-                Iterator<Integer> iterator = var.getCurrentDomain().iterator();
+                Iterator<Integer> iterator = listToIterate.iterator();
 
                 // if it is a conflict variable, remove every instance of the value that is in
                 // the unary constraint
@@ -146,6 +148,8 @@ public class MyACAlgorithms {
                             }
                         }
                     }
+
+                    var.setDomain(listToIterate);
                     // if it is a support variable, the unary constraint will only add the values in
                     // the constraint
                 } else {
@@ -157,7 +161,7 @@ public class MyACAlgorithms {
                     // updating the current domain
                     this.fval += (var.getDomain().length - tempCounter);
 
-                    var.setCurrentDomain(updatedDomain);
+                    var.setDomain(updatedDomain);
 
                 }
 

@@ -1,30 +1,26 @@
 package csp;
 
-import abscon.instance.tools.InstanceParser;
-import csp.MyACAlgorithms;
-import csp.BacktrackSearch.BacktrackSearch;
-import csp.MainStructures.MyConstraint;
-import csp.MainStructures.MyExtensionConstraint;
-import csp.MainStructures.MyIntensionConstraint;
-import csp.MainStructures.MyProblem;
-import csp.MainStructures.MyVariable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import abscon.instance.InstanceTokens;
 import abscon.instance.XMLManager;
 import abscon.instance.components.PConstraint;
 import abscon.instance.components.PExtensionConstraint;
 import abscon.instance.components.PIntensionConstraint;
 import abscon.instance.components.PVariable;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import abscon.instance.tools.InstanceParser;
+import csp.BacktrackSearch.BacktrackSearch;
+import csp.MainStructures.MyConstraint;
+import csp.MainStructures.MyExtensionConstraint;
+import csp.MainStructures.MyIntensionConstraint;
+import csp.MainStructures.MyProblem;
+import csp.MainStructures.MyVariable;
 
 /**
  * 
@@ -139,7 +135,7 @@ public class MyParser {
 		// System.out.println(Arrays.toString(argsString));
 		// }
 		String[] argsString = { "-f", "/home/tbessho/Documents/Tools2008/absconCVS4/problems/zebra-supports.xml", "-s",
-				"BT", "-u", "LX" };
+				"BT", "-u", "LD" };
 
 		MyParser parser = new MyParser(argsString);
 

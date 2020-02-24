@@ -109,15 +109,22 @@ public class BCSSP {
                 this.cpuTime = (long) ((getCpuTime() - captureTime) / 1000000.0);
                 System.out.println("cpu: " + this.cpuTime);
 
-                // System.out.println("SOLUTION FOUND");
                 String solution = "";
+                current_path.remove(0);
+
+                // making sure we return the solution in the order of the variables given (for
+                // the checker)
+                Collections.sort(current_path, MyVariable.SOL_COMPARATOR);
                 for (MyVariable var : current_path) {
                     if (var != null) {
+                        System.out.println(var.getName());
                         solution += (var.getCurrentDomain().get(0) + " ");
                     }
                 }
                 this.firstSolution = solution;
                 System.out.println("First solution: " + solution);
+                current_path.add(0, null); // pointer starts at 1
+
                 return true;
             }
             // reach the top of the tree

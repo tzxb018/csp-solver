@@ -33,6 +33,24 @@ public class MyVariable {
 
 	// taken from
 	// https://stackoverflow.com/questions/13973503/sorting-strings-that-contains-number-in-java
+	public static final Comparator<MyVariable> SOL_COMPARATOR = new Comparator<MyVariable>() {
+		@Override
+		public int compare(MyVariable v1, MyVariable v2) {
+			return extractInt(v1.getName()) - extractInt(v2.getName());
+
+		}
+
+		public int extractInt(String s) {
+			String num = s.replaceAll("\\D", "");
+			// return 0 if no digits found
+			if (num.isEmpty()) {
+				return 0;
+			} else {
+				return Integer.parseInt(num);
+			}
+		}
+	};
+
 	public static final Comparator<MyVariable> LX_COMPARATOR = new Comparator<MyVariable>() {
 		@Override
 		public int compare(MyVariable v1, MyVariable v2) {
