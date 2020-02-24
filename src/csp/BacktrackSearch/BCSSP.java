@@ -1,5 +1,8 @@
 package csp.BacktrackSearch;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.*;
@@ -33,6 +36,9 @@ public class BCSSP {
 
     protected long captureTime;
     protected long runningTime;
+    protected long cpuTime;
+
+    protected String firstSolution;
 
     public BCSSP(MyProblem myProblem, ArrayList<MyVariable> current_path, int[] assignments) {
         this.myProblem = myProblem;
@@ -43,6 +49,11 @@ public class BCSSP {
         this.cc = 0;
         this.nv = 0;
         this.bt = 0;
+    }
+
+    public String getCSVRow() {
+        return this.cc + "," + this.nv + "," + this.bt + "," + this.cpuTime + "," + firstSolution + "\n";
+
     }
 
     /**
@@ -61,38 +72,11 @@ public class BCSSP {
 
         captureTime = getCpuTime();
 
-        // running NC before running search
-        ArrayList<MyConstraint> unaryConstraints = new ArrayList<MyConstraint>();
-
-        // finding the unary constraints
-        for (MyConstraint constraint : myProblem.getConstraints()) {
-            if (constraint.getScope().size() == 1) {
-                unaryConstraints.add(constraint);
-            }
-        }
-
-        // executing node consistency
-        if (unaryConstraints.size() > 0) {
-            MyACAlgorithms ac = new MyACAlgorithms();
-
-            // depending on which type of unary constraint it is, run NC
-            if (myProblem.getExtension()) {
-                for (MyConstraint c : unaryConstraints) {
-                    ac.nodeConsistencyExtension(variables, (MyExtensionConstraint) c);
-                }
-            } else {
-                for (MyConstraint c : unaryConstraints) {
-                    ac.nodeConsistencyIntension(variables, (MyIntensionConstraint) c);
-                }
-            }
-        }
-
         // making sure that both domain and current domain are set to what NC finds
         // since NC updates only current domain, we will deep copy current domain into
         // the domain
         for (MyVariable var : variables) {
-            var.setDomain(var.getCurrentDomain());
-            // System.out.println(Arrays.toString(var.getDomain()));
+            System.out.println(Arrays.toString(var.getDomain()) + "  " + var.getCurrentDomain());
         }
 
         consistent = true;
@@ -122,7 +106,8 @@ public class BCSSP {
                 System.out.println("cc: " + this.cc);
                 System.out.println("nv: " + this.nv);
                 System.out.println("bt: " + this.bt);
-                System.out.println("cpu: " + ((getCpuTime() - captureTime) / 1000000.0));
+                this.cpuTime = (long) ((getCpuTime() - captureTime) / 1000000.0);
+                System.out.println("cpu: " + this.cpuTime);
 
                 // System.out.println("SOLUTION FOUND");
                 String solution = "";
@@ -131,6 +116,7 @@ public class BCSSP {
                         solution += (var.getCurrentDomain().get(0) + " ");
                     }
                 }
+                this.firstSolution = solution;
                 System.out.println("First solution: " + solution);
                 return true;
             }
@@ -140,8 +126,9 @@ public class BCSSP {
                 System.out.println("cc: " + this.cc);
                 System.out.println("nv: " + this.nv);
                 System.out.println("bt: " + this.bt);
-                System.out.println("cpu: " + ((double) (getCpuTime() - captureTime) / 1000000.0));
-
+                this.cpuTime = (long) ((getCpuTime() - captureTime) / 1000000.0);
+                System.out.println("cpu: " + this.cpuTime);
+                this.firstSolution = "No Solution";
                 System.out.println("First solution: No Solution");
 
                 return false;
@@ -158,7 +145,6 @@ public class BCSSP {
                 myProblem.getExtension());
         // going through each possible assignment in the current domain of the variable
         // at v[i]
-        // Iterator<Integer> iterator = current_domains.get(i).iterator();
         Iterator<Integer> iterator = current_path.get(i).getCurrentDomain().iterator();
         while (iterator.hasNext() && !consistent) {
 

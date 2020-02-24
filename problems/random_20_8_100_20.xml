@@ -1,5 +1,5 @@
 <instance>
-    <presentation name="Instance0" maxConstraintArity="2" format="XCSP 2.0"/>
+    <presentation name="20_8_100_20" maxConstraintArity="2" format="XCSP 2.0"/>
     <domains nbDomains="1">
         <domain name="D0" nbValues="8">0..7</domain>
     </domains>

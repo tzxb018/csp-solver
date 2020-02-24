@@ -5,6 +5,7 @@ import abscon.instance.components.PDomain;
 import abscon.instance.components.PVariable;
 import java.lang.String;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Objects;
@@ -35,22 +36,7 @@ public class MyVariable {
 	public static final Comparator<MyVariable> LX_COMPARATOR = new Comparator<MyVariable>() {
 		@Override
 		public int compare(MyVariable v1, MyVariable v2) {
-			if (v1.getName().matches(".*\\d.*") && v2.getName().matches(".*\\d.*")) {
-				return extractInt(v1.getName()) - extractInt(v2.getName());
-			} else {
-				return v1.getName().compareTo(v2.getName());
-			}
-
-		}
-
-		public int extractInt(String s) {
-			String num = s.replaceAll("\\D", "");
-			// return 0 if no digits found
-			if (num.isEmpty()) {
-				return 0;
-			} else {
-				return Integer.parseInt(num);
-			}
+			return v1.getName().compareTo(v2.getName());
 		}
 	};
 
@@ -68,23 +54,8 @@ public class MyVariable {
 			if (sComp != 0) {
 				return sComp;
 			}
+			return v1.getName().compareTo(v2.getName());
 
-			if (v1.getName().matches(".*\\d.*") && v2.getName().matches(".*\\d.*")) {
-				return extractInt(v1.getName()) - extractInt(v2.getName());
-			} else {
-				return v1.getName().compareTo(v2.getName());
-			}
-
-		}
-
-		public int extractInt(String s) {
-			String num = s.replaceAll("\\D", "");
-			// return 0 if no digits found
-			if (num.isEmpty()) {
-				return 0;
-			} else {
-				return Integer.parseInt(num);
-			}
 		}
 	};
 
@@ -99,25 +70,11 @@ public class MyVariable {
 			int sComp = s1.compareTo(s2);
 
 			if (sComp != 0) {
-				return sComp;
+				return -sComp;
 			}
 
-			if (v1.getName().matches(".*\\d.*") && v2.getName().matches(".*\\d.*")) {
-				return extractInt(v1.getName()) - extractInt(v2.getName());
-			} else {
-				return v1.getName().compareTo(v2.getName());
-			}
+			return v1.getName().compareTo(v2.getName());
 
-		}
-
-		public int extractInt(String s) {
-			String num = s.replaceAll("\\D", "");
-			// return 0 if no digits found
-			if (num.isEmpty()) {
-				return 0;
-			} else {
-				return Integer.parseInt(num);
-			}
 		}
 	};
 
@@ -128,15 +85,10 @@ public class MyVariable {
 		public int compare(MyVariable v1, MyVariable v2) {
 
 			double ddr1, ddr2 = 0;
-			if (v1.getConstraints().size() == 0)
-				ddr1 = v1.getDomain().length / .00001;
-			else
-				ddr1 = v1.getDomain().length / v1.getConstraints().size();
 
-			if (v2.getConstraints().size() == 0)
-				ddr2 = v2.getDomain().length / .00001;
-			else
-				ddr2 = v2.getDomain().length / v2.getConstraints().size();
+			ddr1 = v1.getDomain().length * v1.getConstraints().size();
+
+			ddr2 = v2.getDomain().length * v2.getConstraints().size();
 
 			int sComp = Double.compare(ddr1, ddr2);
 
@@ -144,23 +96,9 @@ public class MyVariable {
 				return sComp;
 			}
 
-			if (v1.getName().matches(".*\\d.*") && v2.getName().matches(".*\\d.*")) {
-				return extractInt(v1.getName()) - extractInt(v2.getName());
-			} else {
-				return v1.getName().compareTo(v2.getName());
-			}
-
+			return v1.getName().compareTo(v2.getName());
 		}
 
-		public int extractInt(String s) {
-			String num = s.replaceAll("\\D", "");
-			// return 0 if no digits found
-			if (num.isEmpty()) {
-				return 0;
-			} else {
-				return Integer.parseInt(num);
-			}
-		}
 	};
 
 	public MyVariable(PVariable var) {
@@ -218,8 +156,10 @@ public class MyVariable {
 
 	public void setDomain(ArrayList<Integer> newDomain) {
 		this.initialDomain = new int[newDomain.size()];
+		this.currentDomain.clear();
 		for (int i = 0; i < newDomain.size(); i++) {
 			this.initialDomain[i] = newDomain.get(i);
+			this.currentDomain.add(newDomain.get(i));
 		}
 	}
 
