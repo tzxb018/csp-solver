@@ -93,7 +93,6 @@ public class MyParser {
 				constraints.add(intcon);
 			}
 		}
-
 		// An instance of the problem to store the variables and constraints in one
 		// place
 		MyProblem myProblem = new MyProblem(problemName, variables, constraints);
@@ -119,25 +118,25 @@ public class MyParser {
 		// // String fileName =
 		// "/home/tbessho/Documents/Tools2008/absconCVS4/v32_d8_p20/v32_d8_p20_t" + i;
 
-		File dir = new File("/home/tbessho/Documents/Tools2008/absconCVS4/problems/");
-		File[] directoryListing = dir.listFiles();
-		String[] typesOfOrder = { "LX", "LD", "DEG", "DDR" };
+		// File dir = new File("/home/tbessho/Documents/Tools2008/absconCVS4/problems/");
+		// File[] directoryListing = dir.listFiles();
+		// String[] typesOfOrder = { "LX", "LD", "DEG", "DDR" };
 
-		// for (File child : directoryListing) {
-		// for (String typeoforder : typesOfOrder) {
-		// // String[] argsString = { "-f", child.getAbsolutePath(), "-s", "BT", "-u",
-		// // typeoforder };
-		// String[] argsString = { "-f",
-		// "/home/tbessho/Documents/Tools2008/absconCVS4/problems/zebra-supports.xml",
-		// "-s", "BT", "-u", typeoforder };
+		// // for (File child : directoryListing) {
+		// // for (String typeoforder : typesOfOrder) {
+		// // // String[] argsString = { "-f", child.getAbsolutePath(), "-s", "BT", "-u",
+		// // // typeoforder };
+		// // String[] argsString = { "-f",
+		// // "/home/tbessho/Documents/Tools2008/absconCVS4/problems/zebra-supports.xml",
+		// // "-s", "BT", "-u", typeoforder };
+
+		// // MyParser parser = new MyParser(argsString);
+		// // System.out.println(Arrays.toString(argsString));
+		// // }
+		// String[] argsString = { "-f", "/home/tbessho/Documents/Tools2008/absconCVS4/problems/zebra-intension.xml", "-s",
+		// 		"BT", "-u", "DEG" };
 
 		// MyParser parser = new MyParser(argsString);
-		// System.out.println(Arrays.toString(argsString));
-		// }
-		String[] argsString = { "-f", "/home/tbessho/Documents/Tools2008/absconCVS4/problems/zebra-supports.xml", "-s",
-				"BT", "-u", "LD" };
-
-		MyParser parser = new MyParser(argsString);
 
 		// }
 		// // }
@@ -145,7 +144,7 @@ public class MyParser {
 		// String[] argsString = { "-f", child.getAbsolutePath(), "-s", "BT", "-u",
 		// typeoforder };
 		// MyParser parser = new MyParser(argsString);
-		// MyParser parser = new MyParser(args);
+		MyParser parser = new MyParser(args);
 
 	}
 }

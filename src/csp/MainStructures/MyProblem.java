@@ -12,10 +12,10 @@ import java.util.Collections;
 
 public class MyProblem {
 
-    protected String problemName;
-    protected ArrayList<MyVariable> variables;
-    protected ArrayList<MyConstraint> constraints;
-    protected boolean extension; // determines if the problem is intension or extension
+    public String problemName;
+    public ArrayList<MyVariable> variables;
+    public ArrayList<MyConstraint> constraints;
+    public boolean extension; // determines if the problem is intension or extension
 
     // Stores the important informations about the problem, the variables (which
     // have their own domains) and the constraints (the three compoennets of a csp)
@@ -30,12 +30,14 @@ public class MyProblem {
             setNeighborsForVariable(myVar);
         }
 
+
         // sorting the two lists, constraints and variables lexiographically
         for (MyVariable myVar : variables) {
             ArrayList<MyConstraint> toSortConstraints = myVar.getConstraints();
             Collections.sort(toSortConstraints, MyConstraint.ConstraintComparer);
             myVar.setConstraints(toSortConstraints);
         }
+
 
         this.extension = (constraints.get(0).getClass().toString().contains("Extension"));
 

@@ -39,6 +39,7 @@ public class BCSSP {
     protected long cpuTime;
 
     protected String firstSolution;
+    protected int numberOfSolutions;
 
     public BCSSP(MyProblem myProblem, ArrayList<MyVariable> current_path, int[] assignments) {
         this.myProblem = myProblem;
@@ -102,41 +103,53 @@ public class BCSSP {
 
             // determining if there is a solution or not
             if (i > n) {
-                status = "solution";
-                System.out.println("cc: " + this.cc);
-                System.out.println("nv: " + this.nv);
-                System.out.println("bt: " + this.bt);
-                this.cpuTime = (long) ((getCpuTime() - captureTime) / 1000000.0);
-                System.out.println("cpu: " + this.cpuTime);
 
-                String solution = "";
-                current_path.remove(0);
+                if (this.numberOfSolutions == 0) {
+                    System.out.println("cc: " + this.cc);
+                    System.out.println("nv: " + this.nv);
+                    System.out.println("bt: " + this.bt);
+                    this.cpuTime = (long) ((getCpuTime() - captureTime) / 1000000.0);
+                    System.out.println("cpu: " + this.cpuTime);
 
-                // making sure we return the solution in the order of the variables given (for
-                // the checker)
-                Collections.sort(current_path, MyVariable.SOL_COMPARATOR);
-                for (MyVariable var : current_path) {
-                    if (var != null) {
-                        System.out.println(var.getName());
-                        solution += (var.getCurrentDomain().get(0) + " ");
+                    String solution = "";
+                    current_path.remove(0);
+
+                    for (MyVariable var : current_path) {
+                        if (var != null) {
+                            System.out.println(var.getName());
+                            solution += (var.getCurrentDomain().get(0) + " ");
+                        }
                     }
-                }
-                this.firstSolution = solution;
-                System.out.println("First solution: " + solution);
-                current_path.add(0, null); // pointer starts at 1
+                    this.firstSolution = solution;
+                    System.out.println("First solution: " + solution);
 
-                return true;
+                    current_path.add(0, null); // pointer starts at 1
+                    this.numberOfSolutions++;
+                } else {
+                    this.numberOfSolutions++;
+
+                }
+                i = i - 1;
+                consistent = true;
+                current_path.get(i).currentDomain.remove(0);
             }
             // reach the top of the tree
             else if (i == 0) {
+
                 status = "false";
                 System.out.println("cc: " + this.cc);
                 System.out.println("nv: " + this.nv);
                 System.out.println("bt: " + this.bt);
                 this.cpuTime = (long) ((getCpuTime() - captureTime) / 1000000.0);
                 System.out.println("cpu: " + this.cpuTime);
-                this.firstSolution = "No Solution";
-                System.out.println("First solution: No Solution");
+
+                if (this.numberOfSolutions == 0) {
+                    this.firstSolution = "No Solution";
+                    System.out.println("First solution: No Solution");
+                }
+                else{
+                    System.out.println("Number of solutions: " + this.numberOfSolutions);
+                }
 
                 return false;
             }
@@ -192,13 +205,14 @@ public class BCSSP {
     public int BT_unlabel(int i) {
         this.bt++;
         int h = i - 1;
-        // System.out.println("domain: " + i + " " + domains.get(i));
+        // System.out.println("domain: " + i + " " +
+        // current_path.get(h).getCurrentDomain());
+
         current_path.get(i).resetDomain();
 
         // current_domains.set(i, domains.get(i)); // resetting the domain to be the
         // starting domain at level i
         // Iterator<Integer> iterator = current_domains.get(h).iterator();
-        // System.out.println(h);
         if (h > 0) {
             Iterator<Integer> iterator = current_path.get(h).currentDomain.iterator();
 

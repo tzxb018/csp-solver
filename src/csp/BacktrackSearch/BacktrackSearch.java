@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 
 import csp.MyACAlgorithms;
 import csp.MainStructures.MyConstraint;
@@ -86,15 +87,16 @@ public class BacktrackSearch {
             }
 
             // adding into the current-path in order lexiographically
-            for (MyVariable var : variables) {
-                current_path.add(var);
+            for (int i = 0; i < variables.size(); i++) {
+                current_path.add(variables.get(i));
             }
+            // for (MyVariable var : variables) {
+            // current_path.add(var);
+            // }
 
             for (int i = 0; i < assignments.length; i++) {
                 assignments[i] = -1;
             }
-
-            this.copy_current_path = current_path;
 
             // using the ordering heuristic to determine how the variables are put into
             // current-path
@@ -106,7 +108,7 @@ public class BacktrackSearch {
                     Collections.sort(current_path, MyVariable.LD_COMPARATOR);
                     break;
                 case ("DEG"):
-                    Collections.sort(current_path, MyVariable.DEG_COMPARATOR);
+                    this.current_path = degreeOrdering(this.current_path);
                     break;
                 case ("DDR"):
                     Collections.sort(current_path, MyVariable.DDR_COMPARATOR);
@@ -118,9 +120,10 @@ public class BacktrackSearch {
             // orderedCurrentPathString = "[";
             for (int i = 1; i < current_path.size() - 1; i++) {
                 orderedCurrentPathString += (current_path.get(i).getName() + ",");
-                System.out.println(
-                        current_path.get(i).getName() + " " + Arrays.toString(current_path.get(i).getDomain()));
+                System.out.println(current_path.get(i).getName() + " " + current_path.get(i).getConstraints().size());
             }
+            System.out.println(current_path.get(current_path.size() - 1).getName() + " "
+                    + current_path.get(current_path.size() - 1).getConstraints().size());
             orderedCurrentPathString += (current_path.get(current_path.size() - 1)).getName();
         }
     }
@@ -139,6 +142,55 @@ public class BacktrackSearch {
             writer.write(fileContent);
             writer.close();
         }
+    }
+
+    public ArrayList<MyVariable> degreeOrdering(ArrayList<MyVariable> input) {
+
+        ArrayList<MyVariable> degreeOrdered = new ArrayList<MyVariable>();
+
+        // going through each element in the arraylist
+        while (input.size() > 0) {
+            int maxDegree = input.get(0).getConstraints().size();
+            MyVariable maxVar = input.get(0);
+            // finding the largest element
+            for (MyVariable var : input) {
+                // if the degree is larger
+                if (var.getConstraints().size() > maxDegree) {
+                    maxVar = var;
+                    maxDegree = var.getConstraints().size();
+                }
+                // if the degree is the same, then break lexiographically
+                else if (var.getConstraints().size() == maxDegree && var.getName().compareTo(maxVar.getName()) < 0) {
+                    maxVar = var;
+                    maxDegree = var.getConstraints().size();
+                }
+            }
+
+            // System.out.println(maxVar.getName());
+            degreeOrdered.add(maxVar);
+            input.remove(maxVar);
+
+            // once the max degree has been found, remove all the instances in the neighbors
+            // of all the other variables
+            for (MyVariable var : input) {
+                ArrayList<MyConstraint> constraints = var.getConstraints();
+                // remove the max var from all the neighbors and update the neighbors
+                Iterator<MyConstraint> iterator = constraints.iterator();
+                while (iterator.hasNext()) {
+                    MyConstraint next = iterator.next();
+                    if (next.getScope().size() > 1) {
+                        if (next.getScope().get(0).getName().equals(maxVar.getName())
+                                || next.getScope().get(1).getName().equals(maxVar.getName())) {
+                            iterator.remove();
+                        }
+                    }
+                }
+                // update the neighbors
+                var.setConstraints(constraints);
+            }
+
+        }
+        return degreeOrdered;
     }
 
     public ArrayList<MyVariable> getCopyCurrentPath() {

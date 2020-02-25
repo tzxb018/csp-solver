@@ -162,6 +162,7 @@ public class MyVariable {
 
 	public void setConstraints(ArrayList<MyConstraint> constraints) {
 		this.constraints = constraints;
+
 	}
 
 	public void setNeighbors(ArrayList<MyVariable> neighbors) {
