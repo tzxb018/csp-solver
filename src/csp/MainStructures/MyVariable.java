@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 
@@ -26,6 +28,7 @@ public class MyVariable {
 	protected int[] initialDomain;
 	public ArrayList<Integer> currentDomain;
 	protected ArrayList<MyConstraint> constraints;
+	protected ArrayList<MyConstraint> constraints_static;
 	protected ArrayList<MyVariable> neighbors;
 
 	// Creating a lexiographic comparator for the comparator by looking at the
@@ -72,25 +75,6 @@ public class MyVariable {
 			if (sComp != 0) {
 				return sComp;
 			}
-			return v1.getName().compareTo(v2.getName());
-
-		}
-	};
-
-	// Creating a comparator with degree sizes with ties broken up with
-	// lexiographical ordering
-	public static final Comparator<MyVariable> DEG_COMPARATOR = new Comparator<MyVariable>() {
-		@Override
-		public int compare(MyVariable v1, MyVariable v2) {
-
-			Integer s1 = v1.getConstraints().size();
-			Integer s2 = v2.getConstraints().size();
-			int sComp = s1.compareTo(s2);
-
-			if (sComp != 0) {
-				return -sComp;
-			}
-
 			return v1.getName().compareTo(v2.getName());
 
 		}
@@ -162,7 +146,7 @@ public class MyVariable {
 
 	public void setConstraints(ArrayList<MyConstraint> constraints) {
 		this.constraints = constraints;
-
+		this.constraints_static = constraints;
 	}
 
 	public void setNeighbors(ArrayList<MyVariable> neighbors) {
@@ -194,6 +178,37 @@ public class MyVariable {
 		for (int i : this.initialDomain) {
 			this.currentDomain.add(i);
 		}
+	}
+
+	public int getDegree() {
+
+		ArrayList<MyConstraint> list = (ArrayList<MyConstraint>) this.constraints.clone();
+		ArrayList<MyConstraint> dupes = new ArrayList<MyConstraint>();
+		Iterator<MyConstraint> iterator = list.iterator();
+
+		// removing all the unary constraints from being counted as a degreee
+		while (iterator.hasNext()) {
+			if (iterator.next().getScope().size() == 1) {
+				iterator.remove();
+			}
+		}
+
+		for (int i = 0; i < list.size(); i++) {
+			MyConstraint test = list.get(i);
+			for (int j = i + 1; j < list.size(); j++) {
+				MyConstraint c = list.get(j);
+				if (c.getScope().size() > 1 && test.getScope().size() > 1) {
+
+					if (test.getScope().get(0).getName().equals(c.getScope().get(0).getName())
+							&& test.getScope().get(1).getName().equals(c.getScope().get(1).getName())) {
+						dupes.add(c);
+					}
+				}
+			}
+		}
+		list.removeAll(dupes);
+
+		return list.size();
 	}
 
 	public String toString() {

@@ -2,6 +2,7 @@ package csp.MainStructures;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 
 /**
  * 
@@ -30,7 +31,6 @@ public class MyProblem {
             setNeighborsForVariable(myVar);
         }
 
-
         // sorting the two lists, constraints and variables lexiographically
         for (MyVariable myVar : variables) {
             ArrayList<MyConstraint> toSortConstraints = myVar.getConstraints();
@@ -38,10 +38,33 @@ public class MyProblem {
             myVar.setConstraints(toSortConstraints);
         }
 
-
         this.extension = (constraints.get(0).getClass().toString().contains("Extension"));
 
     }
+
+    // public void normalizeConstraints(ArrayList<MyConstraint> list_constraints) {
+    // ArrayList<MyConstraint> normalizedConstraints = new
+    // ArrayList<MyConstraint>();
+
+    // Iterator<MyConstraint> constraintIterator = list_constraints.iterator();
+
+    // while (constraintIterator.hasNext()) {
+    // MyConstraint unnomralizedConstraint = constraintIterator.next();
+
+    // for (MyConstraint c : list_constraints) {
+    // if (c.getScope().size() > 1) {
+    // if
+    // (c.getScope().get(0).getName().equals(unnomralizedConstraint.getScope().get(0).getName())
+    // && c
+    // .getScope().get(1).getName().equals(unnomralizedConstraint.getScope().get(1).getName()))
+    // {
+
+    // }
+    // }
+    // }
+    // }
+
+    // }
 
     // Sets all the constraints linked to the variable
     public void setConstraintsForVariable(MyVariable myVar) {

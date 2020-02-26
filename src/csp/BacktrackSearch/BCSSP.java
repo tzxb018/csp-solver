@@ -73,13 +73,6 @@ public class BCSSP {
 
         captureTime = getCpuTime();
 
-        // making sure that both domain and current domain are set to what NC finds
-        // since NC updates only current domain, we will deep copy current domain into
-        // the domain
-        for (MyVariable var : variables) {
-            System.out.println(Arrays.toString(var.getDomain()) + "  " + var.getCurrentDomain());
-        }
-
         consistent = true;
         status = "unknown";
         int i = 1;
@@ -116,7 +109,7 @@ public class BCSSP {
 
                     for (MyVariable var : current_path) {
                         if (var != null) {
-                            System.out.println(var.getName());
+                            // System.out.println(var.getName());
                             solution += (var.getCurrentDomain().get(0) + " ");
                         }
                     }
@@ -137,23 +130,33 @@ public class BCSSP {
             else if (i == 0) {
 
                 status = "false";
-                System.out.println("cc: " + this.cc);
-                System.out.println("nv: " + this.nv);
-                System.out.println("bt: " + this.bt);
-                this.cpuTime = (long) ((getCpuTime() - captureTime) / 1000000.0);
-                System.out.println("cpu: " + this.cpuTime);
 
                 if (this.numberOfSolutions == 0) {
+                    System.out.println("cc: " + this.cc);
+                    System.out.println("nv: " + this.nv);
+                    System.out.println("bt: " + this.bt);
+                    this.cpuTime = (long) ((getCpuTime() - captureTime) / 1000000.0);
+                    System.out.println("cpu: " + this.cpuTime);
                     this.firstSolution = "No Solution";
                     System.out.println("First solution: No Solution");
-                }
-                else{
+                    System.out.println("all-sol cc: " + this.cc);
+                    System.out.println("all-sol nv: " + this.nv);
+                    System.out.println("all-sol bt: " + this.bt);
+                    this.cpuTime = (long) ((getCpuTime() - captureTime) / 1000000.0);
+                    System.out.println("all-sol cpu: " + this.cpuTime);
+                    System.out.println("Number of solutions: " + this.numberOfSolutions);
+
+                } else {
+                    System.out.println("all-sol cc: " + this.cc);
+                    System.out.println("all-sol nv: " + this.nv);
+                    System.out.println("all-sol bt: " + this.bt);
+                    this.cpuTime = (long) ((getCpuTime() - captureTime) / 1000000.0);
+                    System.out.println("all-sol cpu: " + this.cpuTime);
                     System.out.println("Number of solutions: " + this.numberOfSolutions);
                 }
 
                 return false;
             }
-            // System.out.println();
         }
 
         return true; // idk

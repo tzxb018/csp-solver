@@ -59,6 +59,8 @@ public class BacktrackSearch {
         // if we are using static ordering
         if (staticOrdering) {
             System.out.println("var-static-dynamic: static");
+            System.out.println("value-ordering-heuristic: " + ordering_heursitic);
+            System.out.println("val-static-dynamic: static");
 
             // running NC before running search
             ArrayList<MyConstraint> unaryConstraints = new ArrayList<MyConstraint>();
@@ -110,8 +112,8 @@ public class BacktrackSearch {
                 case ("DEG"):
                     this.current_path = degreeOrdering(this.current_path);
                     break;
-                case ("DDR"):
-                    Collections.sort(current_path, MyVariable.DDR_COMPARATOR);
+                case ("DD"):
+                    this.current_path = ddrOrdering(this.current_path);
                     break;
 
             }
@@ -120,10 +122,9 @@ public class BacktrackSearch {
             // orderedCurrentPathString = "[";
             for (int i = 1; i < current_path.size() - 1; i++) {
                 orderedCurrentPathString += (current_path.get(i).getName() + ",");
-                System.out.println(current_path.get(i).getName() + " " + current_path.get(i).getConstraints().size());
+                // System.out.println(current_path.get(i).getName());
             }
-            System.out.println(current_path.get(current_path.size() - 1).getName() + " "
-                    + current_path.get(current_path.size() - 1).getConstraints().size());
+            // System.out.println(current_path.get(current_path.size() - 1).getName());
             orderedCurrentPathString += (current_path.get(current_path.size() - 1)).getName();
         }
     }
@@ -135,7 +136,7 @@ public class BacktrackSearch {
             bcssp.execute(this.variables.size(), "unknown");
 
             String fileContent = myProblem.getProblemName() + "," + "BT" + "," + this.orderingHeuristic + ","
-                    + this.orderedCurrentPathString + "\n";
+                    + bcssp.getCSVRow() + "\n";
 
             BufferedWriter writer = new BufferedWriter(
                     new FileWriter("/home/tbessho/Documents/Tools2008/absconCVS4/out.csv", true));
@@ -147,28 +148,33 @@ public class BacktrackSearch {
     public ArrayList<MyVariable> degreeOrdering(ArrayList<MyVariable> input) {
 
         ArrayList<MyVariable> degreeOrdered = new ArrayList<MyVariable>();
+        for (MyVariable v : input) {
+            v.getDegree();
+        }
 
         // going through each element in the arraylist
         while (input.size() > 0) {
-            int maxDegree = input.get(0).getConstraints().size();
+            int maxDegree = input.get(0).getDegree();
             MyVariable maxVar = input.get(0);
             // finding the largest element
             for (MyVariable var : input) {
                 // if the degree is larger
-                if (var.getConstraints().size() > maxDegree) {
+                if (var.getDegree() > maxDegree) {
                     maxVar = var;
-                    maxDegree = var.getConstraints().size();
+                    maxDegree = var.getDegree();
                 }
                 // if the degree is the same, then break lexiographically
-                else if (var.getConstraints().size() == maxDegree && var.getName().compareTo(maxVar.getName()) < 0) {
+                else if (var.getDegree() == maxDegree && var.getName().compareTo(maxVar.getName()) < 0) {
                     maxVar = var;
-                    maxDegree = var.getConstraints().size();
+                    maxDegree = var.getDegree();
                 }
             }
 
-            // System.out.println(maxVar.getName());
+            // System.out.println();
+            // System.out.println(maxVar.getName() + " " + maxVar.getConstraints());
             degreeOrdered.add(maxVar);
             input.remove(maxVar);
+            // System.out.println();
 
             // once the max degree has been found, remove all the instances in the neighbors
             // of all the other variables
@@ -183,6 +189,8 @@ public class BacktrackSearch {
                                 || next.getScope().get(1).getName().equals(maxVar.getName())) {
                             iterator.remove();
                         }
+                    } else {
+                        iterator.remove();
                     }
                 }
                 // update the neighbors
@@ -191,6 +199,63 @@ public class BacktrackSearch {
 
         }
         return degreeOrdered;
+    }
+
+    public ArrayList<MyVariable> ddrOrdering(ArrayList<MyVariable> input) {
+
+        ArrayList<MyVariable> ddrOrdered = new ArrayList<MyVariable>();
+        for (MyVariable v : input) {
+            v.getDegree();
+        }
+
+        // going through each element in the arraylist
+        while (input.size() > 0) {
+            MyVariable maxVar = input.get(0);
+            // finding the largest element
+            for (MyVariable var : input) {
+                double dom1 = maxVar.getDomain().length;
+                double dom2 = var.getDomain().length;
+                double deg1 = maxVar.getDegree();
+                double deg2 = var.getDegree();
+                // if the ddr is larger than the max var's ddr
+                if (dom1 * deg2 > dom2 * deg1) {
+                    maxVar = var;
+                }
+                // if the degree is the same, then break lexiographically
+                else if (dom1 * deg2 == dom2 * deg1 && var.getName().compareTo(maxVar.getName()) < 0) {
+                    maxVar = var;
+                }
+            }
+
+            // System.out.println();
+            // System.out.println(maxVar.getName() + " " + maxVar.getConstraints());
+            ddrOrdered.add(maxVar);
+            input.remove(maxVar);
+            // System.out.println();
+
+            // once the max degree has been found, remove all the instances in the neighbors
+            // of all the other variables
+            for (MyVariable var : input) {
+                ArrayList<MyConstraint> constraints = var.getConstraints();
+                // remove the max var from all the neighbors and update the neighbors
+                Iterator<MyConstraint> iterator = constraints.iterator();
+                while (iterator.hasNext()) {
+                    MyConstraint next = iterator.next();
+                    if (next.getScope().size() > 1) {
+                        if (next.getScope().get(0).getName().equals(maxVar.getName())
+                                || next.getScope().get(1).getName().equals(maxVar.getName())) {
+                            iterator.remove();
+                        }
+                    } else {
+                        iterator.remove();
+                    }
+                }
+                // update the neighbors
+                var.setConstraints(constraints);
+            }
+
+        }
+        return ddrOrdered;
     }
 
     public ArrayList<MyVariable> getCopyCurrentPath() {
