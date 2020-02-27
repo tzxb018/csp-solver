@@ -22,8 +22,11 @@ This assignment requried me to create and use these data structures to run searc
 * Assignments: this data strucutre is an Array that holds the current assignments of all the varaibles. If the variable has not been assigned yet, the assignment for that variable will be initialized as -1.
 
 ### Compiling
-The main method to use to compile this project is still the same. The MyParser.java file should be used to compile the projects. In the MyParser.java file, the file will look for all the flags given and the agruments behind the flags, which should be seperated by spaces. The arguments given in the terminal are read in as an array with the space character as a tokenizer
-
+The main method to use to compile this project is still the same. The MyParser.java file should be used to compile the projects. In the MyParser.java file, the file will look for all the flags given and the agruments behind the flags, which should be seperated by spaces. The flag needs to be placed before the agrument itself; however, the ordering of the which flags does not matter. Here is an example: -f ~/xmls/zebra-supports2.xml -s BT -u LX. The following are the flags built into the MyParser class:
+* -f: path to the xcsp file
+* -s: type of search algorithm (currently, only "BT" is implemented)
+* -u: type of variable sorting heurisitc (options include: LX (lexiographical ordering), LD (largest domains), DEG (degree ordering), and DD (domain to degree ratio ordering)
+* -a: type of arc consistency algorithm (options include: ac1, ac3) (not used in this assignment)
 
 ## Homework 2
 
