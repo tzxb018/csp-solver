@@ -1,5 +1,32 @@
-CSP Solver with Java
+CSP Solver with Java (CSCE 421)
 ===========
+
+## Authors
+
+* **Tomohide Bessho** - *UNL Undergraduate Student* - https://github.com/tzxb018
+## Homework 3 (2/27/2020)
+
+### Overview
+This assignment requried me to create and use these data structures to run search to find the solutions to the given CSP problems. Although there are several types of search and hybrids of these search, this assignment was focused on creating the basic search algoirhtm called backtracking.
+
+### New and Updated Files/Directories
+* /src/csp/BacktrackSearch/: a directory that holds all the .java files related to backtrack search
+* /src/csp/BacktrackSearch/BacktrackSearch.java: the file that takes in the problem instance, sorts the variables into the variable-ordering heuristic, and initalizes the backtrack search
+* /src/csp/BacktrackSearch/BCSSP.java: this file is responsible for running the backtrack search algorithm. In this file, you will find the main algoirhtm and the fucntions BT_Label and BT_Unlabel
+*/src/csp/MainStructures/: this directory holds all the .java files responsible for holding information/data strucutres about the CSP problem
+*/src/csp/MainStructures/MyVariable.java: updated this data structure to be able to find the degree of the current variable with the given constraints (weeds out unary constraints and will normailze the constraints to count the degree correctly)
+*/src/csp/MyParser.java: updated how the program can take in inputs in the command line (will be explained below)
+
+### Data Structures
+* Current_path: this data strucutre is an ArrayList that holds the MyVariable data structure. The current_path data strucutre will start with a null pointer at the index 0 (to indicate the top of the tree), and then the variables in sequential order after being sorted by the inputted variable-order heuristic.
+* Assignments: this data strucutre is an Array that holds the current assignments of all the varaibles. If the variable has not been assigned yet, the assignment for that variable will be initialized as -1.
+
+### Compiling
+The main method to use to compile this project is still the same. The MyParser.java file should be used to compile the projects. In the MyParser.java file, the file will look for all the flags given and the agruments behind the flags, which should be seperated by spaces. The arguments given in the terminal are read in as an array with the space character as a tokenizer
+
+
+## Homework 2
+
 Tomo Bessho
 2/14/2020
 CSCE 421
@@ -10,6 +37,7 @@ The AC-1 and AC-3 algorithms use the revised function to determine if there has 
 
 The program is run through the MyParser.java class, where it takes in two arguments marked by the flags -f and -a. -f distinguishes which file to run, and -a distingushes which algorithm to run ("ac1" for AC-1 and "ac3" for AC-3). The program then makes a myProblem instance, a data structure that holds all the constraints, variables, and whether it is an extension problem or not, and feeds the myProblem instance into the ACAlgorithms class to run the algorithm. 
 
+## Homework 1
 
 The purpose of this assignment is to parse a CSP XML file and parse it in a readable format. The parser will take in a CSP XML file (done in /src/csp/MyParser.java), parse the data, and format it in a readable way for the user to read. The MyParser.java is considered the driver class, and should be run from this script. 
 The parser class reads in the problem name, all the variables, and the constraints from the XML file and then puts this information in a problem data structure (called /src/csp/MyProblem.java). The MyProblem data structure takes the constraints and variables and fills in the necessary information for the two data structures. 
