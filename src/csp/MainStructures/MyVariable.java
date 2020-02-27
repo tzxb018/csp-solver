@@ -1,16 +1,10 @@
 package csp.MainStructures;
 
-import abscon.instance.tools.InstanceParser;
-import abscon.instance.components.PDomain;
 import abscon.instance.components.PVariable;
 import java.lang.String;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.Objects;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 
@@ -193,12 +187,20 @@ public class MyVariable {
 			}
 		}
 
+		// going through all the constraints of the variable
 		for (int i = 0; i < list.size(); i++) {
 			MyConstraint test = list.get(i);
+
+			// finding the constraints that share the same scope as the instantiated
+			// constraint
 			for (int j = i + 1; j < list.size(); j++) {
+
 				MyConstraint c = list.get(j);
+
+				// if not a unary constraint (to avoid errors)
 				if (c.getScope().size() > 1 && test.getScope().size() > 1) {
 
+					// if the scope matches, add to the dupliated scope array list
 					if (test.getScope().get(0).getName().equals(c.getScope().get(0).getName())
 							&& test.getScope().get(1).getName().equals(c.getScope().get(1).getName())) {
 						dupes.add(c);
@@ -206,6 +208,9 @@ public class MyVariable {
 				}
 			}
 		}
+
+		// go through the constraint list and remove all the cosntraints that have the
+		// same scope
 		list.removeAll(dupes);
 
 		return list.size();

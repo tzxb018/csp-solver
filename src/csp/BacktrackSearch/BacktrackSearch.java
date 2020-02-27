@@ -45,8 +45,9 @@ public class BacktrackSearch {
      *                           problem, then this will also tell the algorithm if
      *                           the extension variables are supports or conflict
      * @param ordering_heursitic defines how the variables will be ordered
+     * @throws IOException
      */
-    public BacktrackSearch(MyProblem myProblem, String ordering_heursitic, boolean staticOrdering) {
+    public BacktrackSearch(MyProblem myProblem, String ordering_heursitic, boolean staticOrdering) throws IOException {
 
         this.myProblem = myProblem;
         this.variables = myProblem.getVariables();
@@ -118,25 +119,31 @@ public class BacktrackSearch {
 
             }
 
+            // for writing the order of the varialbes to a csv file
+            // csvOrder("BT");
+
             current_path.add(0, null); // pointer starts at 1
             // orderedCurrentPathString = "[";
-            for (int i = 1; i < current_path.size() - 1; i++) {
-                orderedCurrentPathString += (current_path.get(i).getName() + ",");
-                // System.out.println(current_path.get(i).getName());
-            }
-            // System.out.println(current_path.get(current_path.size() - 1).getName());
-            orderedCurrentPathString += (current_path.get(current_path.size() - 1)).getName();
+            // for (int i = 1; i < current_path.size() - 1; i++) {
+            // orderedCurrentPathString += (current_path.get(i).getName() + ",");
+            // }
+            // orderedCurrentPathString += (current_path.get(current_path.size() -
+            // 1)).getName();
         }
     }
 
-    public void runSearch(String searchType) throws IOException {
+    // function to write the order of the variables after ordering heuristic to a
+    // csv file
+    public void csvOrder(String searchType) throws IOException {
 
         if (searchType.equals("BT")) {
-            BCSSP bcssp = new BCSSP(this.myProblem, this.current_path, this.assignments);
-            bcssp.execute(this.variables.size(), "unknown");
 
-            String fileContent = myProblem.getProblemName() + "," + "BT" + "," + this.orderingHeuristic + ","
-                    + bcssp.getCSVRow() + "\n";
+            String fileContent = myProblem.getProblemName() + "," + this.orderingHeuristic + ",";
+
+            for (MyVariable v : current_path) {
+                fileContent += v.getName() + ",";
+            }
+            fileContent += "\n";
 
             BufferedWriter writer = new BufferedWriter(
                     new FileWriter("/home/tbessho/Documents/Tools2008/absconCVS4/out.csv", true));
@@ -145,8 +152,30 @@ public class BacktrackSearch {
         }
     }
 
+    public void runSearch(String searchType) throws IOException {
+
+        if (searchType.equals("BT")) {
+            // Run BCSSP
+            BCSSP bcssp = new BCSSP(this.myProblem, this.current_path, this.assignments);
+            bcssp.execute(this.variables.size(), "unknown");
+
+            // Writing the results to a csv file
+            // String fileContent = myProblem.getProblemName() + "," + "BT" + "," +
+            // this.orderingHeuristic + ","
+            // + bcssp.getCSVRow() + "\n";
+
+            // BufferedWriter writer = new BufferedWriter(
+            // new FileWriter("/home/tbessho/Documents/Tools2008/absconCVS4/out.csv",
+            // true));
+            // writer.write(fileContent);
+            // writer.close();
+        }
+    }
+
+    // function for ordering by degree size
     public ArrayList<MyVariable> degreeOrdering(ArrayList<MyVariable> input) {
 
+        // setting the degree sizes of all the variables
         ArrayList<MyVariable> degreeOrdered = new ArrayList<MyVariable>();
         for (MyVariable v : input) {
             v.getDegree();
@@ -170,21 +199,24 @@ public class BacktrackSearch {
                 }
             }
 
-            // System.out.println();
-            // System.out.println(maxVar.getName() + " " + maxVar.getConstraints());
+            // add the variable with the max degree to the array list and remove from the
+            // inital list to avoid redundancy
             degreeOrdered.add(maxVar);
             input.remove(maxVar);
-            // System.out.println();
 
             // once the max degree has been found, remove all the instances in the neighbors
             // of all the other variables
             for (MyVariable var : input) {
                 ArrayList<MyConstraint> constraints = var.getConstraints();
+
                 // remove the max var from all the neighbors and update the neighbors
                 Iterator<MyConstraint> iterator = constraints.iterator();
                 while (iterator.hasNext()) {
                     MyConstraint next = iterator.next();
+
+                    // making sure it is not a unary constraint
                     if (next.getScope().size() > 1) {
+                        // finding the constraints that make the variable incident with the max var
                         if (next.getScope().get(0).getName().equals(maxVar.getName())
                                 || next.getScope().get(1).getName().equals(maxVar.getName())) {
                             iterator.remove();
@@ -201,8 +233,10 @@ public class BacktrackSearch {
         return degreeOrdered;
     }
 
+    // function used to do ddr ordering heuristic for the variables
     public ArrayList<MyVariable> ddrOrdering(ArrayList<MyVariable> input) {
 
+        // setting the degree sizes of all the variables
         ArrayList<MyVariable> ddrOrdered = new ArrayList<MyVariable>();
         for (MyVariable v : input) {
             v.getDegree();
@@ -227,11 +261,8 @@ public class BacktrackSearch {
                 }
             }
 
-            // System.out.println();
-            // System.out.println(maxVar.getName() + " " + maxVar.getConstraints());
             ddrOrdered.add(maxVar);
             input.remove(maxVar);
-            // System.out.println();
 
             // once the max degree has been found, remove all the instances in the neighbors
             // of all the other variables

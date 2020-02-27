@@ -1,17 +1,11 @@
 package csp.BacktrackSearch;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.*;
 
 import csp.CheckSupportRevise;
-import csp.MyACAlgorithms;
 import csp.MainStructures.MyConstraint;
-import csp.MainStructures.MyExtensionConstraint;
-import csp.MainStructures.MyIntensionConstraint;
 import csp.MainStructures.MyProblem;
 import csp.MainStructures.MyVariable;
 
@@ -34,9 +28,14 @@ public class BCSSP {
     protected int nv;
     protected int bt;
 
+    protected int first_cc;
+    protected int first_nv;
+    protected int first_bt;
+
     protected long captureTime;
     protected long runningTime;
     protected long cpuTime;
+    protected long first_cpu;
 
     protected String firstSolution;
     protected int numberOfSolutions;
@@ -52,8 +51,10 @@ public class BCSSP {
         this.bt = 0;
     }
 
+    // function for returning a csv row of the information of each problem
     public String getCSVRow() {
-        return this.cc + "," + this.nv + "," + this.bt + "," + this.cpuTime + "," + firstSolution + "\n";
+        return this.first_cc + "," + this.first_nv + "," + this.first_bt + "," + this.first_cpu + "," + this.cc + ","
+                + this.nv + "," + this.bt + "," + this.cpuTime + "," + this.numberOfSolutions;
 
     }
 
@@ -96,20 +97,27 @@ public class BCSSP {
 
             // determining if there is a solution or not
             if (i > n) {
-
+                // if this is the first solution
                 if (this.numberOfSolutions == 0) {
                     System.out.println("cc: " + this.cc);
                     System.out.println("nv: " + this.nv);
                     System.out.println("bt: " + this.bt);
                     this.cpuTime = (long) ((getCpuTime() - captureTime) / 1000000.0);
+
+                    // copying the data for the first solution found into other variables
+                    this.first_cc = this.cc;
+                    this.first_nv = this.nv;
+                    this.first_bt = this.bt;
+                    this.first_cpu = this.cpuTime;
+
                     System.out.println("cpu: " + this.cpuTime);
 
                     String solution = "";
                     current_path.remove(0);
 
+                    // adding the assignments of the all variables to the solution
                     for (MyVariable var : current_path) {
                         if (var != null) {
-                            // System.out.println(var.getName());
                             solution += (var.getCurrentDomain().get(0) + " ");
                         }
                     }
@@ -122,6 +130,8 @@ public class BCSSP {
                     this.numberOfSolutions++;
 
                 }
+
+                // backtrack one level to find more solutions
                 i = i - 1;
                 consistent = true;
                 current_path.get(i).currentDomain.remove(0);
@@ -131,7 +141,14 @@ public class BCSSP {
 
                 status = "false";
 
+                // if there were no solutions found in totoal
                 if (this.numberOfSolutions == 0) {
+
+                    this.first_cc = this.cc;
+                    this.first_nv = this.nv;
+                    this.first_bt = this.bt;
+                    this.first_cpu = this.cpuTime;
+
                     System.out.println("cc: " + this.cc);
                     System.out.println("nv: " + this.nv);
                     System.out.println("bt: " + this.bt);
@@ -147,6 +164,8 @@ public class BCSSP {
                     System.out.println("Number of solutions: " + this.numberOfSolutions);
 
                 } else {
+
+                    // output all the info after finding all the solutions
                     System.out.println("all-sol cc: " + this.cc);
                     System.out.println("all-sol nv: " + this.nv);
                     System.out.println("all-sol bt: " + this.bt);
@@ -159,13 +178,14 @@ public class BCSSP {
             }
         }
 
-        return true; // idk
+        return true;
     }
 
     public int BT_label(int i) {
         consistent = false;
         CheckSupportRevise csr = new CheckSupportRevise(myProblem.getConstraints(), this.current_path,
                 myProblem.getExtension());
+
         // going through each possible assignment in the current domain of the variable
         // at v[i]
         Iterator<Integer> iterator = current_path.get(i).getCurrentDomain().iterator();
@@ -181,7 +201,21 @@ public class BCSSP {
 
             // back checking against all past variables with their respective assignments
             for (int h = 1; h <= i - 1; h++) {
-                consistent = csr.check(current_path.get(h), assignments[h], current_path.get(i), assignments[i]);
+                // need to make sure that there is a constraint in between the two variables
+                for (MyConstraint c : myProblem.getConstraints()) {
+                    if (c.getScope().size() > 1) {
+                        if ((c.getScope().get(0).getName().equals(current_path.get(h).getName())
+                                && c.getScope().get(1).getName().equals(current_path.get(i).getName()))
+                                || (c.getScope().get(1).getName().equals(current_path.get(h).getName())
+                                        && c.getScope().get(0).getName().equals(current_path.get(i).getName()))) {
+                            consistent = csr.check(current_path.get(h), assignments[h], current_path.get(i),
+                                    assignments[i]);
+
+                            this.cc++;
+                        }
+                    }
+                }
+
                 // System.out.println(current_path.get(h).getName() + " " + assignments[h] + "
                 // <> "
                 // + current_path.get(i).getName() + " " + assignments[i] + " ==> " +
@@ -191,11 +225,10 @@ public class BCSSP {
                     iterator.remove();
                     break;
                 }
+
             }
 
         }
-
-        this.cc += csr.getCC();
 
         if (consistent) {
             return i + 1; // an assignment to v[i] works
@@ -208,14 +241,11 @@ public class BCSSP {
     public int BT_unlabel(int i) {
         this.bt++;
         int h = i - 1;
-        // System.out.println("domain: " + i + " " +
-        // current_path.get(h).getCurrentDomain());
+
 
         current_path.get(i).resetDomain();
 
-        // current_domains.set(i, domains.get(i)); // resetting the domain to be the
         // starting domain at level i
-        // Iterator<Integer> iterator = current_domains.get(h).iterator();
         if (h > 0) {
             Iterator<Integer> iterator = current_path.get(h).currentDomain.iterator();
 

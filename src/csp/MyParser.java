@@ -41,6 +41,7 @@ public class MyParser {
 		String orderingHeuristic = "";
 		String searchAlgorithm = "";
 
+		// parsing the inputs from the command line
 		for (int i = 0; i < args.length; i += 2) {
 			if (args[i].equals("-f")) {
 				filename = args[i + 1];
@@ -118,33 +119,37 @@ public class MyParser {
 		// // String fileName =
 		// "/home/tbessho/Documents/Tools2008/absconCVS4/v32_d8_p20/v32_d8_p20_t" + i;
 
-		// File dir = new File("/home/tbessho/Documents/Tools2008/absconCVS4/problems/");
+		// File dir = new
+		// File("/home/tbessho/Documents/Tools2008/absconCVS4/problems/");
 		// File[] directoryListing = dir.listFiles();
-		// String[] typesOfOrder = { "LX", "LD", "DEG", "DDR" };
 
-		// // for (File child : directoryListing) {
-		// // for (String typeoforder : typesOfOrder) {
-		// // // String[] argsString = { "-f", child.getAbsolutePath(), "-s", "BT", "-u",
-		// // // typeoforder };
-		// // String[] argsString = { "-f",
-		// // "/home/tbessho/Documents/Tools2008/absconCVS4/problems/zebra-supports.xml",
-		// // "-s", "BT", "-u", typeoforder };
-
-		// // MyParser parser = new MyParser(argsString);
-		// // System.out.println(Arrays.toString(argsString));
-		// // }
-		// String[] argsString = { "-f", "/home/tbessho/Documents/Tools2008/absconCVS4/problems/zebra-intension.xml", "-s",
-		// 		"BT", "-u", "DEG" };
-
-		// MyParser parser = new MyParser(argsString);
-
-		// }
-		// // }
-
-		// String[] argsString = { "-f", child.getAbsolutePath(), "-s", "BT", "-u",
-		// typeoforder };
-		// MyParser parser = new MyParser(argsString);
-		MyParser parser = new MyParser(args);
+		if (args[0].equals("csv")) {
+			String[] typesOfOrder = { "LX", "LD", "DEG", "DDR" };
+			String[] fileLocations = { "/home/tbessho/Documents/Tools2008/absconCVS4/problems/3q-conflicts.xml",
+					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/3q-intension.xml",
+					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/4q-conflicts.xml",
+					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/4q-supports.xml",
+					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/5q-intesion.xml",
+					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/6q-conflicts.xml",
+					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/6q-intension.xml",
+					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/random_20_8_100_20.xml",
+					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/chain4-conflicts.xml",
+					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/map-coloring-australia.xml",
+					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/map-coloring-australia-intension.xml",
+					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/k4-coloring.xml",
+					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/zebra-extension-supports-and-conflicts.xml",
+					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/zebra-intension.xml",
+					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/zebra-supports.xml",
+					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/12q.xml" };
+			for (String fileLoc : fileLocations) {
+				for (String typeoforder : typesOfOrder) {
+					String[] argsString = { "-f", fileLoc, "-s", "BT", "-u", typeoforder };
+					MyParser parser = new MyParser(argsString);
+				}
+			}
+		} else {
+			MyParser parser = new MyParser(args);
+		}
 
 	}
 }
