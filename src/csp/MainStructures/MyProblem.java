@@ -1,7 +1,8 @@
-package csp.Structures;
+package csp.MainStructures;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 
 /**
  * 
@@ -12,10 +13,10 @@ import java.util.Collections;
 
 public class MyProblem {
 
-    protected String problemName;
-    protected ArrayList<MyVariable> variables;
-    protected ArrayList<MyConstraint> constraints;
-    protected boolean extension; // determines if the problem is intension or extension
+    public String problemName;
+    public ArrayList<MyVariable> variables;
+    public ArrayList<MyConstraint> constraints;
+    public boolean extension; // determines if the problem is intension or extension
 
     // Stores the important informations about the problem, the variables (which
     // have their own domains) and the constraints (the three compoennets of a csp)
@@ -40,6 +41,30 @@ public class MyProblem {
         this.extension = (constraints.get(0).getClass().toString().contains("Extension"));
 
     }
+
+    // public void normalizeConstraints(ArrayList<MyConstraint> list_constraints) {
+    // ArrayList<MyConstraint> normalizedConstraints = new
+    // ArrayList<MyConstraint>();
+
+    // Iterator<MyConstraint> constraintIterator = list_constraints.iterator();
+
+    // while (constraintIterator.hasNext()) {
+    // MyConstraint unnomralizedConstraint = constraintIterator.next();
+
+    // for (MyConstraint c : list_constraints) {
+    // if (c.getScope().size() > 1) {
+    // if
+    // (c.getScope().get(0).getName().equals(unnomralizedConstraint.getScope().get(0).getName())
+    // && c
+    // .getScope().get(1).getName().equals(unnomralizedConstraint.getScope().get(1).getName()))
+    // {
+
+    // }
+    // }
+    // }
+    // }
+
+    // }
 
     // Sets all the constraints linked to the variable
     public void setConstraintsForVariable(MyVariable myVar) {
@@ -75,6 +100,10 @@ public class MyProblem {
 
     public ArrayList<MyConstraint> getConstraints() {
         return this.constraints;
+    }
+
+    public boolean getExtension() {
+        return this.extension;
     }
 
     public String printDomains() {

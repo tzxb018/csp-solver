@@ -1,0 +1,68 @@
+6q-conflicts,BT,LX,[Q1 Q2 Q3 Q4 Q5 Q6],355,171,25,4,2 4 6 1 3 5 
+6q-conflicts,BT,LD,[Q1 Q2 Q3 Q4 Q5 Q6],355,171,25,2,2 4 6 1 3 5 
+6q-conflicts,BT,DEG,[Q1 Q2 Q3 Q4 Q5 Q6],355,171,25,2,2 4 6 1 3 5 
+6q-conflicts,BT,DDR,[Q1 Q2 Q3 Q4 Q5 Q6],355,171,25,1,2 4 6 1 3 5 
+zebra-intension-binary,BT,LX,[V0 V1 V2 V3 V4 V5 V6 V7 V8 V9 V10 V11 V12 V13 V14 V15 V16 V17 V18 V19 V20 V21 V22 V23 V24],302777,35964,9163,1195,5 3 1 2 4 5 1 4 2 3 3 4 5 2 1 4 5 1 3 2 4 1 2 5 3 
+zebra-intension-binary,BT,LD,[V0 V1 V2 V3 V4 V5 V6 V7 V8 V9 V10 V11 V12 V13 V14 V15 V16 V17 V18 V19 V20 V21 V22 V23 V24],302777,35964,9163,616,5 3 1 2 4 5 1 4 2 3 3 4 5 2 1 4 5 1 3 2 4 1 2 5 3 
+zebra-intension-binary,BT,DEG,[V16 V21 V1 V2 V3 V4 V5 V7 V8 V9 V10 V11 V12 V13 V15 V17 V18 V19 V20 V22 V23 V24 V0 V6 V14],375931942,38518808,7989059,644677,5 1 3 1 2 4 5 4 2 3 3 4 5 2 4 1 3 2 4 2 5 3 5 1 1 
+zebra-intension-binary,BT,DDR,[V0 V6 V14 V1 V2 V3 V4 V5 V7 V8 V9 V10 V11 V12 V13 V15 V16 V17 V18 V19 V20 V21 V22 V23 V24],75506,7702,1545,171,5 1 1 3 1 2 4 5 4 2 3 3 4 5 2 4 5 1 3 2 4 1 2 5 3 
+6q-intension,BT,LX,[V0 V1 V2 V3 V4 V5],355,171,25,11,2 4 6 1 3 5 
+6q-intension,BT,LD,[V0 V1 V2 V3 V4 V5],355,171,25,10,2 4 6 1 3 5 
+6q-intension,BT,DEG,[V0 V1 V2 V3 V4 V5],355,171,25,10,2 4 6 1 3 5 
+6q-intension,BT,DDR,[V0 V1 V2 V3 V4 V5],355,171,25,10,2 4 6 1 3 5 
+4q-conflicts,BT,LX,[V0 V1 V2 V3],36,26,4,0,2 4 1 3 
+4q-conflicts,BT,LD,[V0 V1 V2 V3],36,26,4,0,2 4 1 3 
+4q-conflicts,BT,DEG,[V0 V1 V2 V3],36,26,4,0,2 4 1 3 
+4q-conflicts,BT,DDR,[V0 V1 V2 V3],36,26,4,0,2 4 1 3 
+3q-intension,BT,LX,[V0 V1 V2],17,18,6,1,No Solution
+3q-intension,BT,LD,[V0 V1 V2],17,18,6,0,No Solution
+3q-intension,BT,DEG,[V0 V1 V2],17,18,6,0,No Solution
+3q-intension,BT,DDR [V0 V1 V2],17,18,6,0,No Solution
+orderchain,BT,LX,[V1 V2 V3 V4],98,54,11,0,4 3 2 1 
+orderchain,BT,LD,[V1 V2 V3 V4],98,54,11,0,4 3 2 1 
+orderchain,BT,DEG,[V1 V4 V2 V3],220,126,29,1,4 1 3 2 
+orderchain,BT,DDR,[V2 V3 V1 V4],53,38,7,0,3 2 4 1 
+5q-intension,BT,LX,[V0 V1 V2 V3 V4],26,15,0,1,1 3 5 2 4 
+5q-intension,BT,LD,[V0 V1 V2 V3 V4],26,15,0,1,1 3 5 2 4 
+5q-intension,BT,DEG,[V0 V1 V2 V3 V4],26,15,0,1,1 3 5 2 4 
+5q-intension,BT,DDR,[V0 V1 V2 V3 V4],26,15,0,1,1 3 5 2 4 
+4q-supports,BT,LX,[V0 V1 V2 V3],36,26,4,0,2 4 1 3 
+4q-supports,BT,LD,[V0 V1 V2 V3],36,26,4,0,2 4 1 3 
+4q-supports,BT,DEG,[V0 V1 V2 V3],36,26,4,0,2 4 1 3 
+4q-supports,BT,DDR,[V0 V1 V2 V3],36,26,4,0,2 4 1 3 
+12 queens,BT,LX,[V0 V1 V2 V3 V4 V5 V6 V7 V8 V9 V10 V11],11755,3066,249,284,1 3 5 8 10 12 6 11 2 7 9 4 
+12 queens,BT,LD,[V0 V1 V2 V3 V4 V5 V6 V7 V8 V9 V10 V11],11755,3066,249,195,1 3 5 8 10 12 6 11 2 7 9 4 
+12 queens,BT,DEG,[V0 V1 V2 V3 V4 V5 V6 V7 V8 V9 V10 V11],11755,3066,249,186,1 3 5 8 10 12 6 11 2 7 9 4 
+12 queens,BT,DDR,[V0 V1 V2 V3 V4 V5 V6 V7 V8 V9 V10 V11],11755,3066,249,195,1 3 5 8 10 12 6 11 2 7 9 4 
+20_8_100_20,BT,LX,[V0 V1 V2 V3 V4 V5 V6 V7 V8 V9 V10 V11 V12 V13 V14 V15 V16 V17 V18 V19],188539624,37929050,4741122,308969,5 2 3 0 4 7 3 7 2 1 1 1 1 0 1 4 5 3 1 3 
+20_8_100_20,BT,LD,[V0 V1 V2 V3 V4 V5 V6 V7 V8 V9 V10 V11 V12 V13 V14 V15 V16 V17 V18 V19],188539624,37929050,4741122,282444,5 2 3 0 4 7 3 7 2 1 1 1 1 0 1 4 5 3 1 3 
+20_8_100_20,BT,DEG,[V10 V7 V3 V6 V11 V9 V0 V8 V15 V18 V1 V2 V4 V13 V14 V17 V5 V19 V12 V16],747202824,116128306,14516029,1224232,1 7 0 3 1 1 5 2 4 1 2 3 4 0 1 3 7 3 1 5 
+20_8_100_20,BT,DDR,[V0 V1 V2 V4 V5 V8 V9 V12 V13 V14 V15 V16 V17 V18 V19 V3 V6 V7 V11 V10],1216630,300610,37567,1849,5 2 3 4 7 2 1 1 0 1 4 5 3 1 3 0 3 7 1 1 
+ColAustralia-conflicts,BT,LX,[NSW NT Q SA T V WA],29,12,0,0,1 1 2 3 1 2 2 
+ColAustralia-conflicts,BT,LD,[NSW NT Q SA T V WA],29,12,0,0,1 1 2 3 1 2 2 
+ColAustralia-conflicts,BT,DEG,[T V WA NSW NT Q SA],32,11,0,0,1 1 1 2 2 1 3 
+ColAustralia-conflicts,BT,DDR,[SA NSW NT Q V WA T],33,15,0,0,1 2 2 3 3 3 1 
+zebra,BT,LX,[Chesterfield England Japan Kool LuckyStripe Norway OldGold Parliment Spain Ukrane blue coffee dog fox green horse ivory milk oj red snail tea water yellow zebra],288307,34647,7554,528,2 3 5 1 4 1 3 5 4 2 2 5 4 1 5 2 4 3 4 3 3 2 1 1 5 
+zebra,BT,LD,[Chesterfield England Japan Kool LuckyStripe Norway OldGold Parliment Spain Ukrane blue coffee dog fox green horse ivory milk oj red snail tea water yellow zebra],288307,34647,7554,236,2 3 5 1 4 1 3 5 4 2 2 5 4 1 5 2 4 3 4 3 3 2 1 1 5 
+zebra,BT,DEG,[water zebra Chesterfield England Japan LuckyStripe OldGold Parliment Spain Ukrane blue coffee dog fox horse ivory milk oj red snail tea yellow Kool Norway green],145713279,16792047,4580334,110294,1 5 2 3 5 4 3 5 4 2 2 5 4 1 2 4 3 4 3 3 2 1 1 1 5 
+zebra,BT,DDR,[Kool Norway green Chesterfield England Japan LuckyStripe OldGold Parliment Spain Ukrane blue coffee dog fox horse ivory milk oj red snail tea water yellow zebra],174486,31019,6306,144,1 1 5 2 3 5 4 3 5 4 2 2 5 4 1 2 4 3 4 3 3 2 1 1 5 
+mutexK4,BT,LX,[V1 V2 V3 V4],8,6,0,0,1 2 1 2 
+mutexK4,BT,LD,[V1 V2 V3 V4],8,6,0,0,1 2 1 2 
+mutexK4,BT,DEG,[V1 V2 V3 V4],8,6,0,0,1 2 1 2 
+mutexK4,BT,DDR,[V1 V2 V3 V4],8,6,0,0,1 2 1 2 
+ColAustralia-intension,BT,LX,[NewSouthWales NorthernTerritory Queensland SouthAustralia Tasmania Victoria WesternAustralia],29,12,0,0,1 1 2 3 1 2 2 
+ColAustralia-intension,BT,LD,[NewSouthWales NorthernTerritory Queensland SouthAustralia Tasmania Victoria WesternAustralia],29,12,0,0,1 1 2 3 1 2 2 
+ColAustralia-intension,BT,DEG,[Tasmania Victoria WesternAustralia NewSouthWales NorthernTerritory Queensland SouthAustralia],32,11,0,0,1 1 1 2 2 1 3 
+ColAustralia-intension,BT,DDR,[SouthAustralia NewSouthWales NorthernTerritory Queensland Victoria WesternAustralia Tasmania],33,15,0,0,1 2 2 3 3 3 1 
+3q-conflict,BT,LX,[Q1 Q2 Q3],17,18,6,0,No Solution
+3q-conflict,BT,LD,[Q1 Q2 Q3],17,18,6,0,No Solution
+3q-conflict,BT,DEG,[Q1 Q2 Q3],17,18,6,0,No Solution
+3q-conflict,BT,DDR,[Q1 Q2 Q3],17,18,6,0,No Solution
+zebra-supports,BT,LX,[Chesterfield England Japan Kool LuckyStripe Norway OldGold Parliment Spain Ukrane blue coffee dog fox green horse ivory milk oj red snail tea water yellow zebra],288307,34647,7554,239,2 3 5 1 4 1 3 5 4 2 2 5 4 1 5 2 4 3 4 3 3 2 1 1 5 
+zebra-supports,BT,LD,[Chesterfield England Japan Kool LuckyStripe Norway OldGold Parliment Spain Ukrane blue coffee dog fox green horse ivory milk oj red snail tea water yellow zebra],288307,34647,7554,235,2 3 5 1 4 1 3 5 4 2 2 5 4 1 5 2 4 3 4 3 3 2 1 1 5 
+zebra-supports,BT,DEG,[water zebra Chesterfield England Japan LuckyStripe OldGold Parliment Spain Ukrane blue coffee dog fox horse ivory milk oj red snail tea yellow Kool Norway green],145713279,16792047,4580334,112799,1 5 2 3 5 4 3 5 4 2 2 5 4 1 2 4 3 4 3 3 2 1 1 1 5 
+zebra-supports,BT,DDR,[Kool Norway green Chesterfield England Japan LuckyStripe OldGold Parliment Spain Ukrane blue coffee dog fox horse ivory milk oj red snail tea water yellow zebra],174486,31019,6306,146,1 1 5 2 3 5 4 3 5 4 2 2 5 4 1 2 4 3 4 3 3 2 1 1 5 
+ac3-demo,BT,LX,[V1 V2 V3 V4],6,4,0,0,1 1 1 1 
+ac3-demo,BT,LD,[V1 V2 V3 V4],6,4,0,0,1 1 1 1 
+ac3-demo,BT,DEG,[V1 V4 V2 V3],6,4,0,0,1 1 1 1 
+ac3-demo,BT,DDR,[V2 V3 V1 V4],6,4,0,0,1 1 1 1 

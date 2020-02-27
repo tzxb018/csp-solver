@@ -5,17 +5,18 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 import java.util.TreeMap;
 
-import csp.Structures.MyConstraint;
-import csp.Structures.MyExtensionConstraint;
-import csp.Structures.MyIntensionConstraint;
-import csp.Structures.MyProblem;
-import csp.Structures.MyVariable;
+import csp.MainStructures.MyConstraint;
+import csp.MainStructures.MyExtensionConstraint;
+import csp.MainStructures.MyIntensionConstraint;
+import csp.MainStructures.MyProblem;
+import csp.MainStructures.MyVariable;
 
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -91,7 +92,13 @@ public class MyACAlgorithms {
             // if the unary constrain'ts scope matches the current variable being tested
             if (var.getName().equals(unaryConstraint.getScope().get(0).getName())) {
 
-                Iterator<Integer> iterator = var.getCurrentDomain().iterator();
+                int[] domain = var.getDomain();
+
+                ArrayList<Integer> listToIterate = new ArrayList<Integer>();
+                for (int i = 0; i < domain.length; i++) {
+                    listToIterate.add(domain[i]);
+                }
+                Iterator<Integer> iterator = listToIterate.iterator();
 
                 while (iterator.hasNext()) {
                     int[] tuple = { iterator.next() };
@@ -100,6 +107,8 @@ public class MyACAlgorithms {
                         this.fval++;
                     }
                 }
+
+                var.setDomain(listToIterate);
 
             }
         }
@@ -115,27 +124,32 @@ public class MyACAlgorithms {
             if (var.getName().equals(unaryConstraint.getScope().get(0).getName())) {
 
                 // getting the current domain
-                ArrayList<Integer> domain = var.getCurrentDomain();
+                int[] domain = var.getDomain();
                 ArrayList<Integer> updatedDomain = new ArrayList<Integer>();
 
                 // determining if this is a support or conflict constraint
                 boolean supports = unaryConstraint.getSemantics().contains("supports");
 
                 // iterate through every value in the domain of the current domain
-                Iterator<Integer> iterator = domain.iterator();
+                ArrayList<Integer> listToIterate = new ArrayList<Integer>();
+                for (int i = 0; i < domain.length; i++) {
+                    listToIterate.add(domain[i]);
+                }
+                Iterator<Integer> iterator = listToIterate.iterator();
 
                 // if it is a conflict variable, remove every instance of the value that is in
                 // the unary constraint
                 if (!supports) {
                     while (iterator.hasNext()) {
-                        for (int i = 0; i < unaryConstraint.getRelation().length; i++){
+                        for (int i = 0; i < unaryConstraint.getRelation().length; i++) {
                             if (iterator.hasNext() && iterator.next() == unaryConstraint.getRelation()[i][0]) {
                                 iterator.remove();
                                 this.fval++;
                             }
                         }
-
                     }
+
+                    var.setDomain(listToIterate);
                     // if it is a support variable, the unary constraint will only add the values in
                     // the constraint
                 } else {
@@ -145,9 +159,9 @@ public class MyACAlgorithms {
                         tempCounter++;
                     }
                     // updating the current domain
-                    this.fval += (var.getCurrentDomain().size() - tempCounter);
+                    this.fval += (var.getDomain().length - tempCounter);
 
-                    var.setCurrentDomain(updatedDomain);
+                    var.setDomain(updatedDomain);
 
                 }
 
@@ -297,8 +311,8 @@ public class MyACAlgorithms {
                         System.out.println("iSize: " + df.format(this.iSize));
                         System.out.println("fSize: false\nfEffect: false");
 
-                        printToCSV(csr.getCC(), (getCpuTime() - captureTime) / 1000000, (this.fval + csr.getfval()), this.iSize, -1,
-                                -1);
+                        printToCSV(csr.getCC(), (getCpuTime() - captureTime) / 1000000, (this.fval + csr.getfval()),
+                                this.iSize, -1, -1);
                         return false;
                     }
                 }
@@ -320,8 +334,8 @@ public class MyACAlgorithms {
         System.out.println("fSize: " + df.format(this.computeFSize(variables)));
         System.out.println("fEffect: " + df.format(this.computeFEffect(this.iSize, this.fSize)));
 
-        printToCSV(csr.getCC(), (getCpuTime() - captureTime) / 1000000, (this.fval + csr.getfval()), this.iSize, this.fSize,
-                this.fEffect);
+        printToCSV(csr.getCC(), (getCpuTime() - captureTime) / 1000000, (this.fval + csr.getfval()), this.iSize,
+                this.fSize, this.fEffect);
 
         return true;
 
@@ -492,7 +506,8 @@ public class MyACAlgorithms {
                     System.out.println("fval: " + (this.fval + csr.getfval()));
                     System.out.println("iSize: " + df.format(this.iSize));
                     System.out.println("fSize: false\nfEffect: false");
-                    printToCSV(csr.getCC(), (getCpuTime() - captureTime) / 1000000, this.fval + csr.getfval(), this.iSize, -1, -1);
+                    printToCSV(csr.getCC(), (getCpuTime() - captureTime) / 1000000, this.fval + csr.getfval(),
+                            this.iSize, -1, -1);
 
                     return false;
                 }
@@ -512,8 +527,8 @@ public class MyACAlgorithms {
 
         System.out.println("fSize: " + df.format(this.computeFSize(variables)));
         System.out.println("fEffect: " + df.format(this.computeFEffect(this.iSize, this.fSize)));
-        printToCSV(csr.getCC(), (getCpuTime() - captureTime) / 1000000, this.fval + csr.getfval(), this.iSize, this.fSize,
-                this.fEffect);
+        printToCSV(csr.getCC(), (getCpuTime() - captureTime) / 1000000, this.fval + csr.getfval(), this.iSize,
+                this.fSize, this.fEffect);
 
         return true;
     }

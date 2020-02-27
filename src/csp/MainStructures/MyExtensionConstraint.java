@@ -1,4 +1,4 @@
-package csp.Structures;
+package csp.MainStructures;
 
 import java.util.Objects;
 

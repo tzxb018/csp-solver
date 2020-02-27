@@ -8,10 +8,10 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import csp.Structures.MyConstraint;
-import csp.Structures.MyExtensionConstraint;
-import csp.Structures.MyIntensionConstraint;
-import csp.Structures.MyVariable;
+import csp.MainStructures.MyConstraint;
+import csp.MainStructures.MyExtensionConstraint;
+import csp.MainStructures.MyIntensionConstraint;
+import csp.MainStructures.MyVariable;
 
 /**
  * 
@@ -96,7 +96,6 @@ public class CheckSupportRevise {
         if (extension) {
 
             boolean satisfied = true;
-            int counter = 0;
 
             for (Map.Entry<MyConstraint, Boolean> entry : constraint.entrySet()) {
 
@@ -140,16 +139,8 @@ public class CheckSupportRevise {
 
                     satisfied = satisfied && foundMatch;
 
-                // if (constraint.size() > 1)
-                //     System.out.println(extensionConstraint.getName() + " " + variable1.getName() + " " + val1 + " "
-                //             + variable2.getName() + " " + val2 + " " + ", reversed: " + entry.getValue()
-                //             + ", found match: " + foundMatch + ", SAT: " + satisfied);
-
-                counter++;
-
             }
-            // if (constraint.size() > 1)
-            //     System.out.println("Return of check: " + satisfied + "\n");
+
             return satisfied;
 
         } else
@@ -184,9 +175,7 @@ public class CheckSupportRevise {
         // go through each value of the second MyVariable and find if that value is in
         // the relation with MyVariable 1 using the check function
         for (int i = 0; i < var2.getCurrentDomain().size(); i++) {
-            // System.out.println("SUPPORT FUNCTION:" + var1.getName() + " " + a + " " +
-            // var2.getName() + " "
-            // + var2.getCurrentDomain().get(i));
+
             if (check(var1, a, var2, var2.getCurrentDomain().get(i))) { //
                 return true;
             }
@@ -200,11 +189,6 @@ public class CheckSupportRevise {
         boolean revised = false;
         boolean found = false;
 
-        // System.out.println("REV: " + var1.getName() + " " +
-        // var1.getCurrentDomain().toString());
-        // System.out.println("REV: " + var2.getName() + " " +
-        // var2.getCurrentDomain().toString());
-
         ArrayList<Integer> domainOfVar1 = var1.getCurrentDomain();
         Iterator<Integer> iterator = domainOfVar1.iterator();
 
@@ -212,14 +196,11 @@ public class CheckSupportRevise {
         while (iterator.hasNext()) {
             int val = (int) iterator.next();
             found = supported(var1, val, var2);
-            // System.out.println(var1.getName() + " " + var2.getName() + ", FOUND: " +
-            // found);
 
             // if we find that it is not supported, we need to remove this value from the
             // domain
             if (found == false) {
-                // System.out.println(var2.getCurrentDomain());
-                // System.out.println("*REMOVE: " + var1.getName() + " " + val + " ");
+
                 fval++;
                 revised = true;
                 iterator.remove();
