@@ -5,12 +5,9 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Set;
-import java.util.TreeMap;
 
 import csp.MainStructures.MyConstraint;
 import csp.MainStructures.MyExtensionConstraint;
@@ -18,11 +15,8 @@ import csp.MainStructures.MyIntensionConstraint;
 import csp.MainStructures.MyProblem;
 import csp.MainStructures.MyVariable;
 
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 

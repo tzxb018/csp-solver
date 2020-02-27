@@ -1,8 +1,5 @@
 package csp.MainStructures;
 
-import java.util.ArrayList;
-import java.util.Objects;
-
 import abscon.instance.components.PFunction;
 
 /**
