@@ -153,22 +153,22 @@ public class BacktrackSearch {
 
     public void runSearch(String searchType) throws IOException {
 
-        if (searchType.equals("BT")) {
-            // Run BCSSP
-            BCSSP bcssp = new BCSSP(this.myProblem, this.current_path, this.assignments);
-            bcssp.execute(this.variables.size(), "unknown");
+        // Run BCSSP
+        SearchAlgorithms searchAlgorithms = new SearchAlgorithms(this.myProblem, this.current_path, this.assignments,
+                searchType);
+        searchAlgorithms.BCSSP(this.variables.size(), "unknown");
 
-            // Writing the results to a csv file
-            // String fileContent = myProblem.getProblemName() + "," + "BT" + "," +
-            // this.orderingHeuristic + ","
-            // + bcssp.getCSVRow() + "\n";
+        // Writing the results to a csv fileSD
+        // String fileContent = myProblem.getProblemName() + "," + "BT" + "," +
+        // this.orderingHeuristic + ","
+        // + bcssp.getCSVRow() + "\n";
 
-            // BufferedWriter writer = new BufferedWriter(
-            // new FileWriter("/home/tbessho/Documents/Tools2008/absconCVS4/out.csv",
-            // true));
-            // writer.write(fileContent);
-            // writer.close();
-        }
+        // BufferedWriter writer = new BufferedWriter(
+        // new FileWriter("/home/tbessho/Documents/Tools2008/absconCVS4/out.csv",
+        // true));
+        // writer.write(fileContent);
+        // writer.close();
+
     }
 
     // function for ordering by degree size

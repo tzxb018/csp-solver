@@ -15,7 +15,7 @@ import csp.MainStructures.MyVariable;
  * @version HW 3
  * @since 2/17/2020
  */
-public class BCSSP {
+public class SearchAlgorithms {
 
     protected MyProblem myProblem;
     protected ArrayList<MyVariable> current_path;
@@ -40,11 +40,15 @@ public class BCSSP {
     protected String firstSolution;
     protected int numberOfSolutions;
 
-    public BCSSP(MyProblem myProblem, ArrayList<MyVariable> current_path, int[] assignments) {
+    protected String algorithm;
+
+    public SearchAlgorithms(MyProblem myProblem, ArrayList<MyVariable> current_path, int[] assignments,
+            String algorithm) {
         this.myProblem = myProblem;
         this.current_path = current_path;
         this.assignments = assignments;
         this.variables = myProblem.getVariables();
+        this.algorithm = algorithm;
 
         this.cc = 0;
         this.nv = 0;
@@ -66,7 +70,7 @@ public class BCSSP {
      *               states are 'unknown', 'solution', or 'impossible')
      * @return whether there is a solution in the CSP after running BCSSP
      */
-    public boolean execute(int n, String status) {
+    public boolean BCSSP(int n, String status) {
 
         this.cc = 0;
         this.nv = 0;
@@ -241,7 +245,6 @@ public class BCSSP {
     public int BT_unlabel(int i) {
         this.bt++;
         int h = i - 1;
-
 
         current_path.get(i).resetDomain();
 
