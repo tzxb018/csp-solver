@@ -3,6 +3,7 @@ package csp.BacktrackSearch;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.*;
+import java.util.Map.Entry;
 
 import csp.CheckSupportRevise;
 import csp.MainStructures.MyConstraint;
@@ -17,12 +18,14 @@ import csp.MainStructures.MyVariable;
  */
 public class SearchAlgorithms {
 
-    protected MyProblem myProblem;
-    protected ArrayList<MyVariable> current_path;
-    protected int[] assignments;
+    protected MyProblem myProblem; // instance of the CSP
+    protected ArrayList<MyVariable> current_path; // the current path of all the variables ordered
+    protected int[] assignments; // all the assignments
 
-    protected boolean consistent;
-    protected ArrayList<MyVariable> variables;
+    protected boolean consistent; // global variable to check for consistency
+    protected ArrayList<MyVariable> variables; // all the variables in the CSP
+
+    protected ArrayList<LinkedList<Integer>> conf_set;
 
     protected int cc;
     protected int nv;
@@ -40,7 +43,7 @@ public class SearchAlgorithms {
     protected String firstSolution;
     protected int numberOfSolutions;
 
-    protected String algorithm;
+    protected String algorithm; // type of search algorithm being used (from flag -s in command line)
 
     public SearchAlgorithms(MyProblem myProblem, ArrayList<MyVariable> current_path, int[] assignments,
             String algorithm) {
@@ -53,6 +56,25 @@ public class SearchAlgorithms {
         this.cc = 0;
         this.nv = 0;
         this.bt = 0;
+
+        this.algorithm = algorithm;
+
+        if (algorithm.equals("CBJ")) {
+
+            // initalizing the map conf-set
+            this.conf_set = new ArrayList<LinkedList<Integer>>();
+
+            // iterate through every variable in the current_path and initalize it with {0}
+            for (MyVariable v : current_path) {
+                if (v != null) {
+                    LinkedList<Integer> init = new LinkedList<Integer>();
+                    init.add(0);
+                    conf_set.add(init);
+                }
+            }
+
+            this.conf_set.add(0, null);
+        }
     }
 
     // function for returning a csv row of the information of each problem
@@ -86,18 +108,17 @@ public class SearchAlgorithms {
 
             if (consistent) {
                 // System.out.println("BT LABEL: " + i);
-                i = BT_label(i);
+                if (this.algorithm.equals("BT"))
+                    i = BT_label(i);
+                else if (this.algorithm.equals("CBJ"))
+                    i = CBJ_label(i);
             } else {
                 // System.out.println("BT UNLABEL: " + i);
-                i = BT_unlabel(i);
+                if (this.algorithm.equals("BT"))
+                    i = BT_unlabel(i);
+                else if (this.algorithm.equals("CBJ"))
+                    i = CBJ_unlabel(i);
             }
-
-            // System.out.println("===========");
-            // for (int j = 1; j < current_path.size(); j++){
-            // System.out.println(current_path.get(j).getName() + " " +
-            // current_path.get(j).getCurrentDomain());
-            // }
-            // System.out.println("===========");
 
             // determining if there is a solution or not
             if (i > n) {
@@ -135,10 +156,21 @@ public class SearchAlgorithms {
 
                 }
 
-                // backtrack one level to find more solutions
-                i = i - 1;
-                consistent = true;
-                current_path.get(i).currentDomain.remove(0);
+                if (algorithm.equals("BT")) {
+                    // backtrack one level to find more solutions
+                    i = i - 1;
+                    consistent = true;
+                    current_path.get(i).currentDomain.remove(0);
+                } else if (algorithm.equals("CBJ")) {
+                    // i = i - 1;
+                    // consistent = true;
+                    // LinkedList<Integer> conflict = new LinkedList<Integer>();
+                    // for (int ii = 0; ii < n; ii++) {
+                    // conflict.add(ii);
+                    // }
+                    // conf_set.set(n, conflict);
+                    // System.out.println(conf_set);
+                }
             }
             // reach the top of the tree
             else if (i == 0) {
@@ -266,6 +298,125 @@ public class SearchAlgorithms {
                 consistent = false;
             } else
                 consistent = true;
+        }
+
+        return h;
+
+    }
+
+    public int CBJ_label(int i) {
+        consistent = false;
+        CheckSupportRevise csr = new CheckSupportRevise(myProblem.getConstraints(), this.current_path,
+                myProblem.getExtension());
+
+        // going through each possible assignment in the current domain of the variable
+        // at v[i]
+        Iterator<Integer> iterator = current_path.get(i).getCurrentDomain().iterator();
+        while (iterator.hasNext() && !consistent) {
+
+            // assigning the next possible value for v[i]
+            int next = iterator.next();
+            assignments[i] = next;
+
+            consistent = true;
+            this.nv++;
+
+            // back checking against all past variables with their respective assignments
+            for (int h = 1; h <= i - 1; h++) {
+                // need to make sure that there is a constraint in between the two variables
+                for (MyConstraint c : myProblem.getConstraints()) {
+                    if (c.getScope().size() > 1) {
+
+                        // making sure that the scope of the constraint matches the two variables being
+                        // checked
+                        if ((c.getScope().get(0).getName().equals(current_path.get(h).getName()))) {
+                            consistent = csr.check(current_path.get(h), assignments[h], current_path.get(i),
+                                    assignments[i]);
+
+                            this.cc++;
+                        }
+                    }
+                }
+
+                if (!consistent) {
+
+                    // adding the conflict level (h-1) to the conf-set for this particular variable
+                    LinkedListSetFunctions llsf = new LinkedListSetFunctions();
+                    LinkedList<Integer> addTo = new LinkedList<>();
+                    addTo.add(h);
+
+                    conf_set.set(i, llsf.union(conf_set.get(i), addTo));
+
+                    // removing the inconsistent value from the current domain of the instantiated
+                    // variable and breaking the loop
+                    iterator.remove();
+
+                    break;
+                }
+
+            }
+
+        }
+
+        if (consistent) {
+            return i + 1; // an assignment to v[i] works
+        } else {
+            return i;
+        }
+
+    }
+
+    public int CBJ_unlabel(int i) {
+
+        LinkedListSetFunctions llsf = new LinkedListSetFunctions();
+        int h = llsf.maxInLinkedList(conf_set.get(i));
+
+        if (h > 0) {
+            LinkedList<Integer> temp = conf_set.get(h);
+
+            temp = llsf.union(conf_set.get(h), conf_set.get(i));
+
+            for (int k = 0; k < temp.size(); k++) {
+                if (temp.get(k) == h) {
+                    temp.remove(k);
+                }
+            }
+            conf_set.set(h, temp);
+
+            System.out.println(conf_set);
+
+            for (int j = h + 1; j >= i; j--) {
+
+                // reinitalizing the conf_set for the levels in between h+1 and i
+                LinkedList<Integer> init = new LinkedList<>();
+                init.add(0);
+                conf_set.set(j, init);
+
+                // reseetting the domain
+                current_path.get(i).resetDomain();
+            }
+
+            this.bt++;
+
+            current_path.get(i).resetDomain();
+
+            // starting domain at level i
+            if (h > 0) {
+                Iterator<Integer> iterator = current_path.get(h).currentDomain.iterator();
+
+                // finding the index of assignments[h] in current-domain[h] to remove it
+                while (iterator.hasNext()) {
+                    int nextVal = iterator.next();
+                    if (nextVal == assignments[h]) {
+                        iterator.remove();
+                    }
+                }
+
+                if (current_path.get(h).getCurrentDomain().size() == 0) {
+                    consistent = false;
+                } else
+                    consistent = true;
+            }
         }
 
         return h;
