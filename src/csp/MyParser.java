@@ -3,6 +3,7 @@ package csp;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -15,6 +16,7 @@ import abscon.instance.components.PIntensionConstraint;
 import abscon.instance.components.PVariable;
 import abscon.instance.tools.InstanceParser;
 import csp.BacktrackSearch.BacktrackSearch;
+import csp.BacktrackSearch.LinkedListSetFunctions;
 import csp.MainStructures.MyConstraint;
 import csp.MainStructures.MyExtensionConstraint;
 import csp.MainStructures.MyIntensionConstraint;
@@ -93,6 +95,7 @@ public class MyParser {
 				constraints.add(intcon);
 			}
 		}
+
 		// An instance of the problem to store the variables and constraints in one
 		// place
 		MyProblem myProblem = new MyProblem(problemName, variables, constraints);
