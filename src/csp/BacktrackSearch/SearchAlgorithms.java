@@ -107,13 +107,13 @@ public class SearchAlgorithms {
         while (status.equals("unknown")) {
 
             if (consistent) {
-                // System.out.println("BT LABEL: " + i);
+                System.out.println("BT LABEL: " + i);
                 if (this.algorithm.equals("BT"))
                     i = BT_label(i);
                 else if (this.algorithm.equals("CBJ"))
                     i = CBJ_label(i);
             } else {
-                // System.out.println("BT UNLABEL: " + i);
+                System.out.println("BT UNLABEL: " + i);
                 if (this.algorithm.equals("BT"))
                     i = BT_unlabel(i);
                 else if (this.algorithm.equals("CBJ"))
@@ -326,12 +326,17 @@ public class SearchAlgorithms {
                 // need to make sure that there is a constraint in between the two variables
                 for (MyConstraint c : myProblem.getConstraints()) {
                     if (c.getScope().size() > 1) {
+                        if ((c.getScope().get(0).getName().equals(current_path.get(h).getName())
+                                && c.getScope().get(1).getName().equals(current_path.get(i).getName()))
+                                || (c.getScope().get(1).getName().equals(current_path.get(h).getName())
+                                        && c.getScope().get(0).getName().equals(current_path.get(i).getName()))) {
+                            consistent = csr.check(current_path.get(i), assignments[i], current_path.get(h),
+                                    assignments[h]);
 
-                        // making sure that the scope of the constraint matches the two variables being
-                        // checked
-                        if ((c.getScope().get(0).getName().equals(current_path.get(h).getName()))) {
-                            consistent = csr.check(current_path.get(h), assignments[h], current_path.get(i),
-                                    assignments[i]);
+                            // System.out.println(current_path.get(i).getName() + ":" + assignments[i] + "
+                            // <> "
+                            // + current_path.get(h).getName() + ":" + assignments[h] + " at level " + h + "
+                            // ==> " + consistent);
 
                             this.cc++;
                         }
@@ -340,12 +345,14 @@ public class SearchAlgorithms {
 
                 if (!consistent) {
 
-                    // adding the conflict level (h-1) to the conf-set for this particular variable
+                    // adding the conflict level (h) to the conf-set for this particular variable
                     LinkedListSetFunctions llsf = new LinkedListSetFunctions();
                     LinkedList<Integer> addTo = new LinkedList<>();
                     addTo.add(h);
 
                     conf_set.set(i, llsf.union(conf_set.get(i), addTo));
+
+                    // System.out.println(conf_set);
 
                     // removing the inconsistent value from the current domain of the instantiated
                     // variable and breaking the loop
@@ -374,16 +381,21 @@ public class SearchAlgorithms {
         if (h > 0) {
             LinkedList<Integer> temp = conf_set.get(h);
 
+            System.out.println("before union: " + conf_set.get(h));
+            System.out.println("before union pt2: " + conf_set.get(i));
             temp = llsf.union(conf_set.get(h), conf_set.get(i));
+
+            System.out.println("after union: " + temp);
 
             for (int k = 0; k < temp.size(); k++) {
                 if (temp.get(k) == h) {
                     temp.remove(k);
                 }
             }
+
             conf_set.set(h, temp);
 
-            System.out.println(conf_set);
+            System.out.println("conf set: " + conf_set.get(h));
 
             for (int j = h + 1; j >= i; j--) {
 
@@ -392,8 +404,9 @@ public class SearchAlgorithms {
                 init.add(0);
                 conf_set.set(j, init);
 
+                System.out.println("reset domain at " + j);
                 // reseetting the domain
-                current_path.get(i).resetDomain();
+                current_path.get(j).resetDomain();
             }
 
             this.bt++;

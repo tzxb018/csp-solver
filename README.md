@@ -4,6 +4,12 @@
 
 - **Tomohide Bessho** - _UNL Undergraduate Student_ - https://github.com/tzxb018
 
+## Homework 4 Progress Report (3/6/2020)
+
+### Overview
+
+This assignment requires me to create and use the data strucutres to run conflicted backtrack search (CBJ) to find the solutions of the given CSPs. As of now, I am currently still working on implementing the label and unlabel functions for the CBJ. I have the framework of these functions completed; however, I am having trouble with debugging some issues with finding the correct solution. When comparing my results with the past, it seems that 3q, 4q, and 5q match everyone else's results; however, when I get past 6q, my results differ. I know that my function is wrong because when I run the zebra problem, I cannot find a soluiton. I believe I am struggling with changing the correct conf_sets, as the indecies may be inconsistent in between label and unlabel.
+
 ## Homework 3 (2/27/2020)
 
 ### Overview
@@ -14,9 +20,9 @@ This assignment requried me to create and use these data structures to run searc
 
 - /src/csp/BacktrackSearch/: a directory that holds all the .java files related to backtrack search
 - /src/csp/BacktrackSearch/BacktrackSearch.java: the file that takes in the problem instance, sorts the variables into the variable-ordering heuristic, and initalizes the backtrack search
-- /src/csp/BacktrackSearch/BCSSP.java: this file is responsible for running the backtrack search algorithm. In this file, you will find the main algoirhtm and the fucntions BT_Label and BT_Unlabel
-  _/src/csp/MainStructures/: this directory holds all the .java files responsible for holding information/data strucutres about the CSP problem
-  _/src/csp/MainStructures/MyVariable.java: updated this data structure to be able to find the degree of the current variable with the given constraints (weeds out unary constraints and will normailze the constraints to count the degree correctly)
+- /src/csp/BacktrackSearch/BCSSP.java: this file is responsible for running the backtrack search algorithm. In this file, you will find the main algoirhtm and the fucntions BT*Label and BT_Unlabel
+  */src/csp/MainStructures/: this directory holds all the .java files responsible for holding information/data strucutres about the CSP problem
+  \_/src/csp/MainStructures/MyVariable.java: updated this data structure to be able to find the degree of the current variable with the given constraints (weeds out unary constraints and will normailze the constraints to count the degree correctly)
   \*/src/csp/MyParser.java: updated how the program can take in inputs in the command line (will be explained below)
 
 ### Data Structures
