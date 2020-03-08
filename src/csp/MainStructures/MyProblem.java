@@ -42,26 +42,22 @@ public class MyProblem {
     }
 
     // public void normalizeConstraints(ArrayList<MyConstraint> list_constraints) {
-    // ArrayList<MyConstraint> normalizedConstraints = new
-    // ArrayList<MyConstraint>();
+    //     ArrayList<MyConstraint> normalizedConstraints = new ArrayList<MyConstraint>();
 
-    // Iterator<MyConstraint> constraintIterator = list_constraints.iterator();
+    //     Iterator<MyConstraint> constraintIterator = list_constraints.iterator();
 
-    // while (constraintIterator.hasNext()) {
-    // MyConstraint unnomralizedConstraint = constraintIterator.next();
+    //     while (constraintIterator.hasNext()) {
+    //         MyConstraint unnomralizedConstraint = constraintIterator.next();
 
-    // for (MyConstraint c : list_constraints) {
-    // if (c.getScope().size() > 1) {
-    // if
-    // (c.getScope().get(0).getName().equals(unnomralizedConstraint.getScope().get(0).getName())
-    // && c
-    // .getScope().get(1).getName().equals(unnomralizedConstraint.getScope().get(1).getName()))
-    // {
+    //         for (MyConstraint c : list_constraints) {
+    //             if (c.getScope().size() > 1) {
+    //                 if (c.getScope().get(0).getName().equals(unnomralizedConstraint.getScope().get(0).getName()) && c
+    //                         .getScope().get(1).getName().equals(unnomralizedConstraint.getScope().get(1).getName())) {
 
-    // }
-    // }
-    // }
-    // }
+    //                 }
+    //             }
+    //         }
+    //     }
 
     // }
 
