@@ -107,13 +107,13 @@ public class SearchAlgorithms {
         while (status.equals("unknown")) {
 
             if (consistent) {
-                System.out.println("BT LABEL: " + i);
+                // System.out.println("BT LABEL: " + i);
                 if (this.algorithm.equals("BT"))
                     i = BT_label(i);
                 else if (this.algorithm.equals("CBJ"))
                     i = CBJ_label(i);
             } else {
-                System.out.println("BT UNLABEL: " + i);
+                // System.out.println("BT UNLABEL: " + i);
                 if (this.algorithm.equals("BT"))
                     i = BT_unlabel(i);
                 else if (this.algorithm.equals("CBJ"))
@@ -212,6 +212,11 @@ public class SearchAlgorithms {
 
                 return false;
             }
+
+            // System.out.println(i);
+            // System.out.println("assignments: " + Arrays.toString(assignments));
+            // System.out.println("conf_set: " + conf_set);
+            // System.out.println();
         }
 
         return true;
@@ -333,10 +338,9 @@ public class SearchAlgorithms {
                             consistent = csr.check(current_path.get(i), assignments[i], current_path.get(h),
                                     assignments[h]);
 
-                            // System.out.println(current_path.get(i).getName() + ":" + assignments[i] + "
-                            // <> "
-                            // + current_path.get(h).getName() + ":" + assignments[h] + " at level " + h + "
-                            // ==> " + consistent);
+                            // System.out.println("V" + i + ":" + assignments[i] + " <> " + "V" + h + ":" +
+                            // assignments[h]
+                            // + " at level " + h + " ==> " + consistent);
 
                             this.cc++;
                         }
@@ -375,17 +379,19 @@ public class SearchAlgorithms {
 
     public int CBJ_unlabel(int i) {
 
+        // System.out.println("Before unlabel: " + conf_set);
         LinkedListSetFunctions llsf = new LinkedListSetFunctions();
         int h = llsf.maxInLinkedList(conf_set.get(i));
-
+        // System.out.println("Jump to " + h);
+        // System.out.println(conf_set);
         if (h > 0) {
             LinkedList<Integer> temp = conf_set.get(h);
 
-            System.out.println("before union: " + conf_set.get(h));
-            System.out.println("before union pt2: " + conf_set.get(i));
+            // System.out.println("before union: " + conf_set.get(h));
+            // System.out.println("before union pt2: " + conf_set.get(i));
             temp = llsf.union(conf_set.get(h), conf_set.get(i));
 
-            System.out.println("after union: " + temp);
+            // System.out.println("after union: " + temp);
 
             for (int k = 0; k < temp.size(); k++) {
                 if (temp.get(k) == h) {
@@ -395,16 +401,17 @@ public class SearchAlgorithms {
 
             conf_set.set(h, temp);
 
-            System.out.println("conf set: " + conf_set.get(h));
-
-            for (int j = h + 1; j >= i; j--) {
+            // System.out.println("conf set: " + conf_set.get(h));
+            // System.out.println((h + 1) + " to " + i);
+            for (int j = h + 1; j <= i; j++) {
 
                 // reinitalizing the conf_set for the levels in between h+1 and i
                 LinkedList<Integer> init = new LinkedList<>();
                 init.add(0);
+                // System.out.println("LOOPING TO REST THOSE CONF SETS: " + j);
                 conf_set.set(j, init);
 
-                System.out.println("reset domain at " + j);
+                // System.out.println("reset domain at " + j);
                 // reseetting the domain
                 current_path.get(j).resetDomain();
             }
@@ -431,6 +438,8 @@ public class SearchAlgorithms {
                     consistent = true;
             }
         }
+
+        // System.out.println("After : " + conf_set);
 
         return h;
 

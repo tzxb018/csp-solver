@@ -106,6 +106,9 @@ public class BacktrackSearch {
                 case ("LX"):
                     Collections.sort(current_path, MyVariable.LX_COMPARATOR);
                     break;
+                case ("SOL"):
+                    Collections.sort(current_path, MyVariable.SOL_COMPARATOR);
+                    break;
                 case ("LD"):
                     Collections.sort(current_path, MyVariable.LD_COMPARATOR);
                     break;
