@@ -4,13 +4,36 @@
 
 - **Tomohide Bessho** - _UNL Undergraduate Student_ - https://github.com/tzxb018
 
-## Homework 4 Progress Report (3/6/2020)
+## Homework Reports
+<details><summary>Homework 4 (3/9/2020)</summary>
+<p>
 
-### Overview
+### Overview 
 
+This assignment required me to create and use the data strucutres to implement conflicted backtrack search (CBJ) to find the solutions to the given CSP problems given in a XCSP file. This assignment focused on implementing this different search algorithm into the already implemented BCSSP framework for search. 
+
+### New and Updated Files/Directories
+
+- /src/csp/BacktrackSearch/BacktrackSearch.java: this file has been updated to implement the CBJ algorithm by modifying the already implemented BCSSP framework previously implemented in Homework 3 to use CBJ_Label and CBJ_Unlabel when CBJ is called. It also integrates a new method of finding all solutions by letting the last variable "conflict" with all previous variables. 
+- /src/csp/BacktrackSearch/LinkedListSetFunctions.java: this file does all the set operations given two sets defined by a Linked List. This is used when finding the union between two sets. 
+
+### Data Structures
+
+- conf_set: this data structure is an ArrayList of Linked Lists that holds integers. At each level i (in the ArrayList), the Linked List holds the levels that have been previously conflicted with level i. This structure is used to determine which level to jump to when using CBJ_UNLABEL.
+    - The reason I moved away from the typical ArrayList of ArrayList data strucutres was that conf_set is a data strucutre that experiences frequent deletions. Although it is possible to do deletions with an ArrayList, I would have to use an iterator to iterate through the ArrayList when deleting items. To work around this, I used a Linked List, which is a data structure that handles deletions easier. 
+
+
+</p>
+</details>
+
+<details><summary>Homework 4 Progress Report (3/6/2020)</summary>
+<p>
 This assignment requires me to create and use the data strucutres to run conflicted backtrack search (CBJ) to find the solutions of the given CSPs. As of now, I am currently still working on implementing the label and unlabel functions for the CBJ. I have the framework of these functions completed; however, I am having trouble with debugging some issues with finding the correct solution. When comparing my results with the past, it seems that 3q, 4q, and 5q match everyone else's results; however, when I get past 6q, my results differ. I know that my function is wrong because when I run the zebra problem, I cannot find a soluiton. I believe I am struggling with changing the correct conf_sets, as the indecies may be inconsistent in between label and unlabel.
+</p>
+</details>
 
-## Homework 3 (2/27/2020)
+<details><summary>Homework 3 (2/27/2020)</summary>
+<p>
 
 ### Overview
 
@@ -29,8 +52,24 @@ This assignment requried me to create and use these data structures to run searc
 
 - Current_path: this data strucutre is an ArrayList that holds the MyVariable data structure. The current_path data strucutre will start with a null pointer at the index 0 (to indicate the top of the tree), and then the variables in sequential order after being sorted by the inputted variable-order heuristic.
 - Assignments: this data strucutre is an Array that holds the current assignments of all the varaibles. If the variable has not been assigned yet, the assignment for that variable will be initialized as -1.
+</p>
+</details>
 
-### Compiling
+<details><summary>Homework 3 Progress Report (2/20/2020)</summary>
+ 
+### Overview
+I am currently trying to implement BT, or basic backtracking. I have implemented the pseduocode given in the paper; however, I am finding trouble finding the first solution. The algorithm is not correctly backtracking when calling unlabel. I need to double check how the levels i are being editted in unlabel.
+</p>
+</details>
+This assignment was for me to use the data structures made in assignment 1 and implement AC-1 and AC-3 to reduce the domains of all the variables. I made two new classes, one called searchFunctions (I will change this name later) and ACAlgorithms. The search functions have the three main functions needed in the AC algorithms, check, supported, and revised. The check function takes in the argument of two vvps and returns whether the two vvps are supported or conflicted by the constraint shared between them. The supported function takes in a vvp and a variable to check each value of the second variable to see if that variable supports the current vvp. Lastly, the revised function takes in two variables and returns whether there is a domain change or not by running the supported functions for all the values in the first variable's domain.
+
+The AC-1 and AC-3 algorithms use the revised function to determine if there has been a change made within their respective algorithms. The AC-1 uses a static queue that holds all the relations (in both directions) of all the constraints and the problem and runs revised for each relation to see if it can filter out any values in the domains of any of the variables. This will run until there are no more changes can be made in any of the domains of the variables. AC-3 improves upon this by using a dynamic queue that holds only the relations of the constraints that are affected by a domain change. The number of constraint checks, cpu time, fval, isize, fsize, and feffect are dislayed after runnning each algorithm.
+
+The program is run through the MyParser.java class, where it takes in two arguments marked by the flags -f and -a. -f distinguishes which file to run, and -a distingushes which algorithm to run ("ac1" for AC-1 and "ac3" for AC-3). The program then makes a myProblem instance, a data structure that holds all the constraints, variables, and whether it is an extension problem or not, and feeds the myProblem instance into the ACAlgorithms class to run the algorithm.
+<details><summary>Homework 2 (2/14/2020)</summary>
+
+
+## Compiling
 
 The main method to use to compile this project is still the same. The MyParser.java file should be used to compile the projects. In the MyParser.java file, the file will look for all the flags given and the agruments behind the flags, which should be seperated by spaces. The flag needs to be placed before the agrument itself; however, the ordering of the which flags does not matter. Here is an example: -f ~/xmls/zebra-supports2.xml -s BT -u LX. The following are the flags built into the MyParser class:
 
@@ -45,11 +84,7 @@ Tomo Bessho
 2/14/2020
 CSCE 421
 
-This assignment was for me to use the data structures made in assignment 1 and implement AC-1 and AC-3 to reduce the domains of all the variables. I made two new classes, one called searchFunctions (I will change this name later) and ACAlgorithms. The search functions have the three main functions needed in the AC algorithms, check, supported, and revised. The check function takes in the argument of two vvps and returns whether the two vvps are supported or conflicted by the constraint shared between them. The supported function takes in a vvp and a variable to check each value of the second variable to see if that variable supports the current vvp. Lastly, the revised function takes in two variables and returns whether there is a domain change or not by running the supported functions for all the values in the first variable's domain.
 
-The AC-1 and AC-3 algorithms use the revised function to determine if there has been a change made within their respective algorithms. The AC-1 uses a static queue that holds all the relations (in both directions) of all the constraints and the problem and runs revised for each relation to see if it can filter out any values in the domains of any of the variables. This will run until there are no more changes can be made in any of the domains of the variables. AC-3 improves upon this by using a dynamic queue that holds only the relations of the constraints that are affected by a domain change. The number of constraint checks, cpu time, fval, isize, fsize, and feffect are dislayed after runnning each algorithm.
-
-The program is run through the MyParser.java class, where it takes in two arguments marked by the flags -f and -a. -f distinguishes which file to run, and -a distingushes which algorithm to run ("ac1" for AC-1 and "ac3" for AC-3). The program then makes a myProblem instance, a data structure that holds all the constraints, variables, and whether it is an extension problem or not, and feeds the myProblem instance into the ACAlgorithms class to run the algorithm.
 
 ## Homework 1
 
