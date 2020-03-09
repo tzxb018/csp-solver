@@ -162,13 +162,13 @@ public class SearchAlgorithms {
                     consistent = true;
                     current_path.get(i).currentDomain.remove(0);
                 } else if (algorithm.equals("CBJ")) {
-                    // i = i - 1;
-                    // consistent = true;
-                    // LinkedList<Integer> conflict = new LinkedList<Integer>();
-                    // for (int ii = 0; ii < n; ii++) {
-                    // conflict.add(ii);
-                    // }
-                    // conf_set.set(n, conflict);
+                    i = i - 1;
+                    consistent = false;
+                    LinkedList<Integer> conflict = new LinkedList<Integer>();
+                    for (int ii = 0; ii < n; ii++) {
+                        conflict.add(ii);
+                    }
+                    conf_set.set(n, conflict);
                     // System.out.println(conf_set);
                 }
             }

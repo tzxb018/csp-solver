@@ -46,7 +46,8 @@ public class BacktrackSearch {
      * @param ordering_heursitic defines how the variables will be ordered
      * @throws IOException
      */
-    public BacktrackSearch(MyProblem myProblem, String ordering_heursitic, boolean staticOrdering) throws IOException {
+    public BacktrackSearch(MyProblem myProblem, String ordering_heursitic, boolean staticOrdering, String searchType)
+            throws IOException {
 
         this.myProblem = myProblem;
         this.variables = myProblem.getVariables();
@@ -54,6 +55,7 @@ public class BacktrackSearch {
         this.assignments = new int[variables.size() + 1];
         this.orderingHeuristic = ordering_heursitic;
 
+        System.out.println("Search: " + searchType);
         System.out.println("variable-order-heuristic: " + ordering_heursitic);
 
         // if we are using static ordering
@@ -122,7 +124,7 @@ public class BacktrackSearch {
             }
 
             // for writing the order of the varialbes to a csv file
-            // csvOrder("BT");
+            // csvOrder();
 
             current_path.add(0, null); // pointer starts at 1
             // orderedCurrentPathString = "[";
@@ -136,22 +138,20 @@ public class BacktrackSearch {
 
     // function to write the order of the variables after ordering heuristic to a
     // csv file
-    public void csvOrder(String searchType) throws IOException {
+    public void csvOrder() throws IOException {
 
-        if (searchType.equals("BT")) {
+        String fileContent = myProblem.getProblemName() + "," + this.orderingHeuristic + ",";
 
-            String fileContent = myProblem.getProblemName() + "," + this.orderingHeuristic + ",";
-
-            for (MyVariable v : current_path) {
-                fileContent += v.getName() + ",";
-            }
-            fileContent += "\n";
-
-            BufferedWriter writer = new BufferedWriter(
-                    new FileWriter("/home/tbessho/Documents/Tools2008/absconCVS4/out.csv", true));
-            writer.write(fileContent);
-            writer.close();
+        for (MyVariable v : current_path) {
+            fileContent += v.getName() + ",";
         }
+        fileContent += "\n";
+
+        BufferedWriter writer = new BufferedWriter(
+                new FileWriter("/home/tbessho/Documents/Tools2008/absconCVS4/out.csv", true));
+        writer.write(fileContent);
+        writer.close();
+
     }
 
     public void runSearch(String searchType) throws IOException {
@@ -162,9 +162,9 @@ public class BacktrackSearch {
         searchAlgorithms.BCSSP(this.variables.size(), "unknown");
 
         // Writing the results to a csv fileSD
-        // String fileContent = myProblem.getProblemName() + "," + "BT" + "," +
+        // String fileContent = myProblem.getProblemName() + "," + searchType + "," +
         // this.orderingHeuristic + ","
-        // + bcssp.getCSVRow() + "\n";
+        // + searchAlgorithms.getCSVRow() + "\n";
 
         // BufferedWriter writer = new BufferedWriter(
         // new FileWriter("/home/tbessho/Documents/Tools2008/absconCVS4/out.csv",

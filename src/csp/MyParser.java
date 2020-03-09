@@ -108,7 +108,7 @@ public class MyParser {
 			ac.AC3(myProblem);
 
 		if (!orderingHeuristic.equals("") && !searchAlgorithm.equals("")) {
-			BacktrackSearch bt = new BacktrackSearch(myProblem, orderingHeuristic, true);
+			BacktrackSearch bt = new BacktrackSearch(myProblem, orderingHeuristic, true, searchAlgorithm);
 			bt.runSearch(searchAlgorithm);
 
 		}
@@ -126,7 +126,7 @@ public class MyParser {
 		// File[] directoryListing = dir.listFiles();
 
 		if (args[0].equals("csv")) {
-			String[] typesOfOrder = { "LX", "LD", "DEG", "DDR" };
+			String[] typesOfOrder = { "LX", "LD", "DEG", "DD" };
 			String[] fileLocations = { "/home/tbessho/Documents/Tools2008/absconCVS4/problems/3q-conflicts.xml",
 					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/3q-intension.xml",
 					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/4q-conflicts.xml",
@@ -145,7 +145,7 @@ public class MyParser {
 					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/12q.xml" };
 			for (String fileLoc : fileLocations) {
 				for (String typeoforder : typesOfOrder) {
-					String[] argsString = { "-f", fileLoc, "-s", "BT", "-u", typeoforder };
+					String[] argsString = { "-f", fileLoc, "-s", "CBJ", "-u", typeoforder };
 					MyParser parser = new MyParser(argsString);
 				}
 			}
