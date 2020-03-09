@@ -1,8 +1,11 @@
 # CSP Solver with Java (CSCE 421)
 
+To read the README.md file in the formatted version: go to this link: https://github.com/tzxb018/csp-solver
+
 ## Authors
 
 - **Tomohide Bessho** - _UNL Undergraduate Student_ - https://github.com/tzxb018
+
 
 ## Homework Reports
 <details><summary>Homework 4 (3/9/2020)</summary>
@@ -28,7 +31,9 @@ This assignment required me to create and use the data strucutres to implement c
 
 <details><summary>Homework 4 Progress Report (3/6/2020)</summary>
 <p>
+    
 This assignment requires me to create and use the data strucutres to run conflicted backtrack search (CBJ) to find the solutions of the given CSPs. As of now, I am currently still working on implementing the label and unlabel functions for the CBJ. I have the framework of these functions completed; however, I am having trouble with debugging some issues with finding the correct solution. When comparing my results with the past, it seems that 3q, 4q, and 5q match everyone else's results; however, when I get past 6q, my results differ. I know that my function is wrong because when I run the zebra problem, I cannot find a soluiton. I believe I am struggling with changing the correct conf_sets, as the indecies may be inconsistent in between label and unlabel.
+
 </p>
 </details>
 
@@ -64,15 +69,20 @@ I am currently trying to implement BT, or basic backtracking. I have implemented
 
 <details><summary>Homework 2 (2/14/2020)</summary>
     
- This assignment was for me to use the data structures made in assignment 1 and implement AC-1 and AC-3 to reduce the domains of all the variables. I made two new classes, one called searchFunctions (I will change this name later) and ACAlgorithms. The search functions have the three main functions needed in the AC algorithms, check, supported, and revised. The check function takes in the argument of two vvps and returns whether the two vvps are supported or conflicted by the constraint shared between them. The supported function takes in a vvp and a variable to check each value of the second variable to see if that variable supports the current vvp. Lastly, the revised function takes in two variables and returns whether there is a domain change or not by running the supported functions for all the values in the first variable's domain.
+### Overview of Homework 2
+
+This assignment was for me to use the data structures made in assignment 1 and implement AC-1 and AC-3 to reduce the domains of all the variables. I made two new classes, one called searchFunctions (I will change this name later) and ACAlgorithms. The search functions have the three main functions needed in the AC algorithms, check, supported, and revised. The check function takes in the argument of two vvps and returns whether the two vvps are supported or conflicted by the constraint shared between them. The supported function takes in a vvp and a variable to check each value of the second variable to see if that variable supports the current vvp. Lastly, the revised function takes in two variables and returns whether there is a domain change or not by running the supported functions for all the values in the first variable's domain.
 
 The AC-1 and AC-3 algorithms use the revised function to determine if there has been a change made within their respective algorithms. The AC-1 uses a static queue that holds all the relations (in both directions) of all the constraints and the problem and runs revised for each relation to see if it can filter out any values in the domains of any of the variables. This will run until there are no more changes can be made in any of the domains of the variables. AC-3 improves upon this by using a dynamic queue that holds only the relations of the constraints that are affected by a domain change. The number of constraint checks, cpu time, fval, isize, fsize, and feffect are dislayed after runnning each algorithm.
 
 The program is run through the MyParser.java class, where it takes in two arguments marked by the flags -f and -a. -f distinguishes which file to run, and -a distingushes which algorithm to run ("ac1" for AC-1 and "ac3" for AC-3). The program then makes a myProblem instance, a data structure that holds all the constraints, variables, and whether it is an extension problem or not, and feeds the myProblem instance into the ACAlgorithms class to run the algorithm.
+
 </p>
 </details>
 
 <details><summary>Homework 1 (1/31/2020)</summary>
+
+### Overview of Homework 1
 
 The purpose of this assignment is to parse a CSP XML file and parse it in a readable format. The parser will take in a CSP XML file (done in /src/csp/MyParser.java), parse the data, and format it in a readable way for the user to read. The MyParser.java is considered the driver class, and should be run from this script.
 The parser class reads in the problem name, all the variables, and the constraints from the XML file and then puts this information in a problem data structure (called /src/csp/MyProblem.java). The MyProblem data structure takes the constraints and variables and fills in the necessary information for the two data structures.
