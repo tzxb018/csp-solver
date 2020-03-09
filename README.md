@@ -101,3 +101,8 @@ The main method to use to compile this project is still the same. The MyParser.j
 - -s: type of search algorithm (currently, only "BT" is implemented)
 - -u: type of variable sorting heurisitc (options include: LX (lexiographical ordering), LD (least domains), DEG (degree ordering), and DD (domain to degree ratio ordering)
 - -a: type of arc consistency algorithm (options include: ac1, ac3) (not used in this assignment)
+
+## Acknowledgements
+
+The backtracking algorithms are based on the research of Patrick Prosser  
+Prosser, P. (1993), HYBRID ALGORITHMS FOR THE CONSTRAINT SATISFACTION PROBLEM. Computational Intelligence, 9: 268-299. doi:10.1111/j.1467-8640.1993.tb00310.x
