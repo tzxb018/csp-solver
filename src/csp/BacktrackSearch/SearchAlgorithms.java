@@ -13,7 +13,7 @@ import csp.MainStructures.MyVariable;
 /**
  * 
  * @author Tomo Bessho
- * @version HW 3
+ * @version HW 3, 4
  * @since 2/17/2020
  */
 public class SearchAlgorithms {

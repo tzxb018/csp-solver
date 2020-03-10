@@ -2,6 +2,13 @@ package csp.BacktrackSearch;
 
 import java.util.*;
 
+/**
+ * 
+ * @author Tomo Bessho
+ * @version HW 4
+ * @since 3/1/2020
+ */
+
 public class LinkedListSetFunctions {
 
     // returns the unions of the two sets (expressed with a linked list)

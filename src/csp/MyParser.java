@@ -26,7 +26,7 @@ import csp.MainStructures.MyVariable;
 /**
  * 
  * @author Tomo Bessho
- * @version HW 2
+ * @version HW 2,3,4
  * @since 2/11/2020
  */
 
