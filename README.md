@@ -102,7 +102,7 @@ The organization and usages of these different data structures should lead to ea
 The main method to use to compile this project is still the same. The MyParser.java file should be used to compile the projects. In the MyParser.java file, the file will look for all the flags given and the agruments behind the flags, which should be seperated by spaces. The flag needs to be placed before the agrument itself; however, the ordering of the which flags does not matter. Here is an example: -f ~/xmls/zebra-supports2.xml -s BT -u LX. The following are the flags built into the MyParser class:
 
 - -f: path to the xcsp file
-- -s: type of search algorithm (currently, only "BT" is implemented)
+- -s: type of search algorithm (currently, the options include: "BT" (backtracking), and "CBJ" (conflicted-backtracking))
 - -u: type of variable sorting heurisitc (options include: LX (lexiographical ordering), LD (least domains), DEG (degree ordering), and DD (domain to degree ratio ordering)
 - -a: type of arc consistency algorithm (options include: ac1, ac3) (not used in this assignment)
 
