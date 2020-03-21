@@ -25,7 +25,14 @@ public class SearchAlgorithms {
     protected boolean consistent; // global variable to check for consistency
     protected ArrayList<MyVariable> variables; // all the variables in the CSP
 
-    protected ArrayList<LinkedList<Integer>> conf_set;
+    protected ArrayList<LinkedList<Integer>> conf_set; // for CBJ
+
+    // for FC
+    protected ArrayList<Stack<Stack<Integer>>> reductions; // store sets of values remove from current-domain[j] by some
+    // variable before v[j]
+    protected ArrayList<Stack<Integer>> future_fc; // subset of the future variables that v[i] checks against
+                                                   // (redundant)
+    protected ArrayList<Stack<Integer>> past_fc; // past variables that checked against v[i]
 
     protected int cc;
     protected int nv;
@@ -350,11 +357,11 @@ public class SearchAlgorithms {
                 if (!consistent) {
 
                     // adding the conflict level (h) to the conf-set for this particular variable
-                    LinkedListSetFunctions llsf = new LinkedListSetFunctions();
+                    SetFunctions llsf = new SetFunctions();
                     LinkedList<Integer> addTo = new LinkedList<>();
                     addTo.add(h);
 
-                    conf_set.set(i, llsf.union(conf_set.get(i), addTo));
+                    conf_set.set(i, llsf.unionLL(conf_set.get(i), addTo));
 
                     // System.out.println(conf_set);
 
@@ -380,7 +387,7 @@ public class SearchAlgorithms {
     public int CBJ_unlabel(int i) {
 
         // System.out.println("Before unlabel: " + conf_set);
-        LinkedListSetFunctions llsf = new LinkedListSetFunctions();
+        SetFunctions llsf = new SetFunctions();
         int h = llsf.maxInLinkedList(conf_set.get(i));
         // System.out.println("Jump to " + h);
         // System.out.println(conf_set);
@@ -389,7 +396,7 @@ public class SearchAlgorithms {
 
             // System.out.println("before union: " + conf_set.get(h));
             // System.out.println("before union pt2: " + conf_set.get(i));
-            temp = llsf.union(conf_set.get(h), conf_set.get(i));
+            temp = llsf.unionLL(conf_set.get(h), conf_set.get(i));
 
             // System.out.println("after union: " + temp);
 
@@ -440,6 +447,168 @@ public class SearchAlgorithms {
         }
 
         // System.out.println("After : " + conf_set);
+
+        return h;
+
+    }
+
+    public boolean check_forward(int i, int j) {
+
+        Stack<Integer> reduction = new Stack<Integer>();
+
+        CheckSupportRevise csr = new CheckSupportRevise(myProblem.getConstraints(), this.current_path,
+                myProblem.getExtension());
+
+        // going through each possible assignment in the current domain of the variable
+        // at v[i]
+        Iterator<Integer> iterator = current_path.get(j).getCurrentDomain().iterator();
+        while (iterator.hasNext() && !consistent) {
+
+            // assigning the next possible value for v[j]
+            int next = iterator.next();
+            assignments[j] = next;
+
+            boolean consistent = true;
+
+            // need to make sure that there is a constraint in between the two variables
+            for (MyConstraint c : myProblem.getConstraints()) {
+                if (c.getScope().size() > 1) {
+                    if ((c.getScope().get(0).getName().equals(current_path.get(j).getName())
+                            && c.getScope().get(1).getName().equals(current_path.get(i).getName()))
+                            || (c.getScope().get(1).getName().equals(current_path.get(j).getName())
+                                    && c.getScope().get(0).getName().equals(current_path.get(i).getName()))) {
+                        consistent = csr.check(current_path.get(i), assignments[i], current_path.get(j),
+                                assignments[j]);
+
+                        // System.out.println("V" + i + ":" + assignments[i] + " <> " + "V" + h + ":" +
+                        // assignments[h]
+                        // + " at level " + h + " ==> " + consistent);
+
+                        this.cc++;
+                    }
+                }
+            }
+
+            // if not check i and j
+            if (!consistent) {
+                reduction.push(assignments[j]);
+            }
+        }
+
+        if (reduction.size() > 0) {
+            SetFunctions sf = new SetFunctions();
+
+            current_path.get(j).setCurrentDomain(sf.setDiff(current_path.get(j).getCurrentDomain(), reduction));
+            this.reductions.get(j).push(reduction);
+            this.future_fc.get(i).push(j);
+            this.past_fc.get(j).push(i);
+        }
+
+        return (current_path.get(j).getCurrentDomain().size() > 0);
+
+    }
+
+    public void undo_reduction(int i) {
+
+        while (!future_fc.get(i).empty()) {
+            int j = future_fc.get(i).pop();
+
+            Stack<Integer> reduction = this.reductions.get(j).pop();
+
+            SetFunctions sf = new SetFunctions();
+            ArrayList<Integer> updatedCurrentDomain = sf.unionAS(current_path.get(j).getCurrentDomain(), reduction);
+
+            current_path.get(j).setCurrentDomain(updatedCurrentDomain);
+
+            this.past_fc.get(j).pop();
+        }
+
+        Stack<Integer> empty = new Stack<>();
+        future_fc.set(i, empty);
+    }
+
+    public void updated_current_domain(int i){
+        current_path.get(i).resetDomain();
+        SetFunctions sf = new SetFunctions();
+
+        ArrayList<Stack<Integer>> reduction_at_i = new ArrayList<>(this.reductions.get(i));
+
+        for (Stack<Integer> reduction : reduction_at_i){
+            current_path.get(i).setCurrentDomain(sf.setDiff(current_path.get(i).getCurrentDomain(), reduction));
+        }
+    }
+
+    public int FC_label(int i) {
+        consistent = false;
+        CheckSupportRevise csr = new CheckSupportRevise(myProblem.getConstraints(), this.current_path,
+                myProblem.getExtension());
+
+        // going through each possible assignment in the current domain of the variable
+        // at v[i]
+        Iterator<Integer> iterator = current_path.get(i).getCurrentDomain().iterator();
+        while (iterator.hasNext() && !consistent) {
+
+            // assigning the next possible value for v[i]
+            int next = iterator.next();
+            assignments[i] = next;
+            // System.out.println("Assignment: " + current_path.get(i).getName() + " <-- " +
+            // assignments[i]);
+            consistent = true;
+            this.nv++;
+
+            // back checking against all past variables with their respective assignments
+            for (int j = i + 1; j <= current_path.size(); j++) {
+
+                consistent = check_forward(i, j);
+
+                // System.out.println(current_path.get(h).getName() + " " + assignments[h] + "
+                // <> "
+                // + current_path.get(i).getName() + " " + assignments[i] + " ==> " +
+                // consistent);
+                // System.out.println(current_path.get(i).getCurrentDomain());
+                if (!consistent) {
+                    iterator.remove();
+                    undo_reduction(i);
+                    break;
+                }
+
+            }
+
+        }
+
+        if (consistent) {
+            return i + 1; // an assignment to v[i] works
+        } else {
+            return i;
+        }
+
+    }
+
+    public int FC_unlabel(int i) {
+        this.bt++;
+        int h = i - 1;
+
+        undo_reduction(h);
+        updated_current_domain(i);
+        // starting domain at level i
+        if (h > 0) {
+            Iterator<Integer> iterator = current_path.get(h).currentDomain.iterator();
+
+            // finding the index of assignments[h] in current-domain[h] to remove it
+            while (iterator.hasNext()) {
+                int nextVal = iterator.next();
+                // System.out.println(nextVal + " == " + assignments[h]);
+                if (nextVal == assignments[h]) {
+                    iterator.remove();
+                }
+            }
+            // System.out.println("updated: " + current_path.get(h).getCurrentDomain());
+
+            if (current_path.get(h).getCurrentDomain().size() == 0) {
+                consistent = false;
+            } else
+                consistent = true;
+        }
 
         return h;
 

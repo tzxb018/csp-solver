@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Stack;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -16,7 +17,7 @@ import abscon.instance.components.PIntensionConstraint;
 import abscon.instance.components.PVariable;
 import abscon.instance.tools.InstanceParser;
 import csp.Search.SearchTypes;
-import csp.Search.LinkedListSetFunctions;
+import csp.Search.SetFunctions;
 import csp.MainStructures.MyConstraint;
 import csp.MainStructures.MyExtensionConstraint;
 import csp.MainStructures.MyIntensionConstraint;
@@ -125,7 +126,7 @@ public class MyParser {
 		// File("/home/tbessho/Documents/Tools2008/absconCVS4/problems/");
 		// File[] directoryListing = dir.listFiles();
 
-		if (args[0].equals("csv")) {
+		if (args.length > 0 && args[0].equals("csv")) {
 			String[] typesOfOrder = { "LX", "LD", "DEG", "DD" };
 			String[] fileLocations = { "/home/tbessho/Documents/Tools2008/absconCVS4/problems/3q-conflicts.xml",
 					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/3q-intension.xml",
@@ -150,6 +151,23 @@ public class MyParser {
 				}
 			}
 		} else {
+
+			// SetFunctions sf = new SetFunctions();
+			// Stack<Integer> s = new Stack<>();
+			// s.push(1);
+			// s.push(2);
+			// s.push(3);
+
+			// ArrayList<Integer> a = new ArrayList<>();
+			// a.add(1);
+			// a.add(5);
+			// a.add(2);
+			// a.add(4);
+
+			// System.out.println(a);
+			// System.out.println(s);
+			// System.out.println(sf.setDiff(a, s));
+
 			MyParser parser = new MyParser(args);
 		}
 
