@@ -1,4 +1,4 @@
-package csp.BacktrackSearch;
+package csp.Search;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;

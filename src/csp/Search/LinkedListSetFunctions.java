@@ -1,4 +1,4 @@
-package csp.BacktrackSearch;
+package csp.Search;
 
 import java.util.*;
 

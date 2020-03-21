@@ -15,8 +15,8 @@ import abscon.instance.components.PExtensionConstraint;
 import abscon.instance.components.PIntensionConstraint;
 import abscon.instance.components.PVariable;
 import abscon.instance.tools.InstanceParser;
-import csp.BacktrackSearch.BacktrackSearch;
-import csp.BacktrackSearch.LinkedListSetFunctions;
+import csp.Search.SearchTypes;
+import csp.Search.LinkedListSetFunctions;
 import csp.MainStructures.MyConstraint;
 import csp.MainStructures.MyExtensionConstraint;
 import csp.MainStructures.MyIntensionConstraint;
@@ -108,8 +108,8 @@ public class MyParser {
 			ac.AC3(myProblem);
 
 		if (!orderingHeuristic.equals("") && !searchAlgorithm.equals("")) {
-			BacktrackSearch bt = new BacktrackSearch(myProblem, orderingHeuristic, true, searchAlgorithm);
-			bt.runSearch(searchAlgorithm);
+			SearchTypes st = new SearchTypes(myProblem, orderingHeuristic, true, searchAlgorithm);
+			st.runSearch(searchAlgorithm);
 
 		}
 

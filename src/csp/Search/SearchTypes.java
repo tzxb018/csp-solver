@@ -1,4 +1,4 @@
-package csp.BacktrackSearch;
+package csp.Search;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -21,7 +21,7 @@ import csp.MainStructures.MyVariable;
  * @since 2/17/2020
  */
 
-public class BacktrackSearch {
+public class SearchTypes {
 
     protected MyProblem myProblem;
     protected ArrayList<MyVariable> variables;
@@ -46,7 +46,7 @@ public class BacktrackSearch {
      * @param ordering_heursitic defines how the variables will be ordered
      * @throws IOException
      */
-    public BacktrackSearch(MyProblem myProblem, String ordering_heursitic, boolean staticOrdering, String searchType)
+    public SearchTypes(MyProblem myProblem, String ordering_heursitic, boolean staticOrdering, String searchType)
             throws IOException {
 
         this.myProblem = myProblem;
