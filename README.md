@@ -6,29 +6,37 @@ To read the README.md file in the formatted version: go to this link: https://gi
 
 - **Tomohide Bessho** - _UNL Undergraduate Student_ - https://github.com/tzxb018
 
-
 ## Homework Reports
+
+<details><summary>Homework 5 Progress Report (3/21/2020)</summary>
+<p>
+
+### Overview
+
+Mostly, I have been working on the first part of the homework, the noncoding, problems (which I have submited). I have also outlined the framework of forward checking; however, I have not yet fully implmemented it yet. I have coded most of the functions relating to foward checking illustrated in the paper, just haven't connected it to the rest of my code yet.
+
+</p>
+</details>
 <details><summary>Homework 4 (3/9/2020)</summary>
 <p>
 
-### Overview 
+### Overview
 
-This assignment required me to create and use the data strucutres to implement conflicted backtrack search (CBJ) to find the solutions to the given CSP problems given in a XCSP file. This assignment focused on implementing this different search algorithm into the already implemented BCSSP framework for search. 
+This assignment required me to create and use the data strucutres to implement conflicted backtrack search (CBJ) to find the solutions to the given CSP problems given in a XCSP file. This assignment focused on implementing this different search algorithm into the already implemented BCSSP framework for search.
 
 ### Impressions
 
-Looking at the results of CBJ compared to BT, it is quite evident that CBJ is much more efficient at finding solutions (or finding that no solution exists) to a CSP. The total number of cc, nv, bt, and cpu time are all less when running CBJ compared to BT for larger problems. Trivial problems, such as 3 queens, will not affect these results since there are minimal conflicts in the CSP. The biggest improvement I saw was when I ran the zebra problem. When running the basic BT, it took a significant amount of time to find all the possible solutions (just 1); however, with CBJ, since it keeps track of all the previous conflicts for each value in the domain of the variable, its ability to find all the solutions (just 1) was much quicker. The ability to keep track of which level each value in the domain of a variable conflicts at with another variable when back checking suprised me, as it was hard to comprehend how keeping track of the deepest level a value conflicted to could improve the performance of backtracking; however, after implementing CBJ, I feel like I have a better grasp on backtracking and how CBJ imporves upon it. 
+Looking at the results of CBJ compared to BT, it is quite evident that CBJ is much more efficient at finding solutions (or finding that no solution exists) to a CSP. The total number of cc, nv, bt, and cpu time are all less when running CBJ compared to BT for larger problems. Trivial problems, such as 3 queens, will not affect these results since there are minimal conflicts in the CSP. The biggest improvement I saw was when I ran the zebra problem. When running the basic BT, it took a significant amount of time to find all the possible solutions (just 1); however, with CBJ, since it keeps track of all the previous conflicts for each value in the domain of the variable, its ability to find all the solutions (just 1) was much quicker. The ability to keep track of which level each value in the domain of a variable conflicts at with another variable when back checking suprised me, as it was hard to comprehend how keeping track of the deepest level a value conflicted to could improve the performance of backtracking; however, after implementing CBJ, I feel like I have a better grasp on backtracking and how CBJ imporves upon it.
 
 ### New and Updated Files/Directories
 
-- /src/csp/BacktrackSearch/BacktrackSearch.java: this file has been updated to implement the CBJ algorithm by modifying the already implemented BCSSP framework previously implemented in Homework 3 to use CBJ_Label and CBJ_Unlabel when CBJ is called. It also integrates a new method of finding all solutions by letting the last variable "conflict" with all previous variables. 
-- /src/csp/BacktrackSearch/LinkedListSetFunctions.java: this file does all the set operations given two sets defined by a Linked List. This is used when finding the union between two sets. 
+- /src/csp/BacktrackSearch/BacktrackSearch.java: this file has been updated to implement the CBJ algorithm by modifying the already implemented BCSSP framework previously implemented in Homework 3 to use CBJ_Label and CBJ_Unlabel when CBJ is called. It also integrates a new method of finding all solutions by letting the last variable "conflict" with all previous variables.
+- /src/csp/BacktrackSearch/LinkedListSetFunctions.java: this file does all the set operations given two sets defined by a Linked List. This is used when finding the union between two sets.
 
 ### Data Structures
 
 - conf_set: this data structure is an ArrayList of Linked Lists that holds integers. At each level i (in the ArrayList), the Linked List holds the levels that have been previously conflicted with level i. This structure is used to determine which level to jump to when using CBJ_UNLABEL.
-    - The reason I moved away from the typical ArrayList of ArrayList data strucutres was that conf_set is a data strucutre that experiences frequent deletions. Although it is possible to do deletions with an ArrayList, I would have to use an iterator to iterate through the ArrayList when deleting items. To work around this, I used a Linked List, which is a data structure that handles deletions easier. 
-
+  - The reason I moved away from the typical ArrayList of ArrayList data strucutres was that conf_set is a data strucutre that experiences frequent deletions. Although it is possible to do deletions with an ArrayList, I would have to use an iterator to iterate through the ArrayList when deleting items. To work around this, I used a Linked List, which is a data structure that handles deletions easier.
 
 </p>
 </details>
@@ -61,8 +69,8 @@ This assignment requried me to create and use these data structures to run searc
 
 - Current_path: this data strucutre is an ArrayList that holds the MyVariable data structure. The current_path data strucutre will start with a null pointer at the index 0 (to indicate the top of the tree), and then the variables in sequential order after being sorted by the inputted variable-order heuristic.
 - Assignments: this data strucutre is an Array that holds the current assignments of all the varaibles. If the variable has not been assigned yet, the assignment for that variable will be initialized as -1.
-</p>
-</details>
+  </p>
+  </details>
 
 <details><summary>Homework 3 Progress Report (2/20/2020)</summary>
  
