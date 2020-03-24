@@ -81,6 +81,26 @@ public class SearchAlgorithms {
             }
 
             this.conf_set.add(0, null);
+        } else if (algorithm.equals("FC")) {
+
+            this.future_fc = new ArrayList<>();
+            this.past_fc = new ArrayList<>();
+            this.reductions = new ArrayList<>();
+
+            // initalizing the data structures
+            // iterate through every variable in the current_path and initalize it with
+            // empty stack
+            for (MyVariable v : current_path) {
+
+                Stack<Integer> init = new Stack<Integer>();
+                Stack<Integer> init1 = new Stack<Integer>();
+                this.future_fc.add(init);
+                this.past_fc.add(init1);
+
+                Stack<Stack<Integer>> init2 = new Stack<Stack<Integer>>();
+                this.reductions.add(init2);
+
+            }
         }
     }
 
@@ -114,18 +134,27 @@ public class SearchAlgorithms {
         while (status.equals("unknown")) {
 
             if (consistent) {
-                // System.out.println("BT LABEL: " + i);
+                // System.out.println("LABEL: " + i);
                 if (this.algorithm.equals("BT"))
                     i = BT_label(i);
                 else if (this.algorithm.equals("CBJ"))
                     i = CBJ_label(i);
+                else if (this.algorithm.equals("FC"))
+                    i = FC_label(i);
             } else {
-                // System.out.println("BT UNLABEL: " + i);
+                // System.out.println("UNLABEL: " + i);
                 if (this.algorithm.equals("BT"))
                     i = BT_unlabel(i);
                 else if (this.algorithm.equals("CBJ"))
                     i = CBJ_unlabel(i);
+                else if (this.algorithm.equals("FC"))
+                    i = FC_unlabel(i);
             }
+
+            // printFCTables();
+            // //printCurrentDomains();
+            // System.out.println("assignments: " + Arrays.toString(this.assignments));
+            // System.out.println();
 
             // determining if there is a solution or not
             if (i > n) {
@@ -147,6 +176,8 @@ public class SearchAlgorithms {
                     String solution = "";
                     current_path.remove(0);
 
+                    // //printCurrentDomains();
+
                     // adding the assignments of the all variables to the solution
                     for (MyVariable var : current_path) {
                         if (var != null) {
@@ -163,7 +194,7 @@ public class SearchAlgorithms {
 
                 }
 
-                if (algorithm.equals("BT")) {
+                if (algorithm.equals("BT") || algorithm.equals("FC")) {
                     // backtrack one level to find more solutions
                     i = i - 1;
                     consistent = true;
@@ -220,10 +251,6 @@ public class SearchAlgorithms {
                 return false;
             }
 
-            // System.out.println(i);
-            // System.out.println("assignments: " + Arrays.toString(assignments));
-            // System.out.println("conf_set: " + conf_set);
-            // System.out.println();
         }
 
         return true;
@@ -454,6 +481,8 @@ public class SearchAlgorithms {
 
     public boolean check_forward(int i, int j) {
 
+        // System.out.println("check forward " + i + " " + j);
+
         Stack<Integer> reduction = new Stack<Integer>();
 
         CheckSupportRevise csr = new CheckSupportRevise(myProblem.getConstraints(), this.current_path,
@@ -462,14 +491,14 @@ public class SearchAlgorithms {
         // going through each possible assignment in the current domain of the variable
         // at v[i]
         Iterator<Integer> iterator = current_path.get(j).getCurrentDomain().iterator();
-        while (iterator.hasNext() && !consistent) {
+
+        while (iterator.hasNext()) {
 
             // assigning the next possible value for v[j]
             int next = iterator.next();
             assignments[j] = next;
 
-            boolean consistent = true;
-
+            // System.out.println("Current assignment at " + j + ": " + assignments[j]);
             // need to make sure that there is a constraint in between the two variables
             for (MyConstraint c : myProblem.getConstraints()) {
                 if (c.getScope().size() > 1) {
@@ -480,9 +509,9 @@ public class SearchAlgorithms {
                         consistent = csr.check(current_path.get(i), assignments[i], current_path.get(j),
                                 assignments[j]);
 
-                        // System.out.println("V" + i + ":" + assignments[i] + " <> " + "V" + h + ":" +
-                        // assignments[h]
-                        // + " at level " + h + " ==> " + consistent);
+                        // System.out.println("V" + i + ":" + assignments[i] + " <> " + "V" + j + ":" +
+                        // assignments[j]
+                        // + " at level " + j + " ==> " + consistent);
 
                         this.cc++;
                     }
@@ -495,13 +524,20 @@ public class SearchAlgorithms {
             }
         }
 
-        if (reduction.size() > 0) {
+        // System.out.println("new reduction at level " + j + ": " + reduction);
+        if (!reduction.empty()) {
             SetFunctions sf = new SetFunctions();
 
             current_path.get(j).setCurrentDomain(sf.setDiff(current_path.get(j).getCurrentDomain(), reduction));
+
             this.reductions.get(j).push(reduction);
             this.future_fc.get(i).push(j);
+            // System.out.println("pushing " + reduction + " into reductions[" + j + "]");
+            // System.out.println("pushing " + j + " into future-fc[" + i + "]");
             this.past_fc.get(j).push(i);
+
+            // System.out.println("reductions update in check forward " + this.reductions);
+            // printFCTables();
         }
 
         return (current_path.get(j).getCurrentDomain().size() > 0);
@@ -509,39 +545,65 @@ public class SearchAlgorithms {
     }
 
     public void undo_reduction(int i) {
-
+        // System.out.println("UNDO REDUCTIONS " + i);
+        // System.out.println("future fc " + this.future_fc);
+        // System.out.println("future fc[" + i + "]: " + this.future_fc.get(i));
         while (!future_fc.get(i).empty()) {
+
             int j = future_fc.get(i).pop();
 
-            Stack<Integer> reduction = this.reductions.get(j).pop();
+            Stack<Integer> reduction = new Stack<Integer>();
+            if (!this.reductions.get(j).empty())
+                reduction = this.reductions.get(j).pop();
+
+            // System.out.println("reduction to be added back " + reduction);
 
             SetFunctions sf = new SetFunctions();
+
             ArrayList<Integer> updatedCurrentDomain = sf.unionAS(current_path.get(j).getCurrentDomain(), reduction);
+
+            // System.out.println("updated domain: " +
+            // current_path.get(j).getCurrentDomain() + " U " + reduction);
 
             current_path.get(j).setCurrentDomain(updatedCurrentDomain);
 
-            this.past_fc.get(j).pop();
+            // System.out.println("updated domain at " + j + ": " +
+            // current_path.get(j).getCurrentDomain());
+
+            // System.out.println("past fc" + this.past_fc);
+            if (!this.past_fc.get(j).empty()) {
+                this.past_fc.get(j).pop();
+            }
         }
 
         Stack<Integer> empty = new Stack<>();
         future_fc.set(i, empty);
+
+        // System.out.println("FINISHED undo reductions: " + future_fc);
+        // printCurrentDomains();
+        //// printFCTables();
     }
 
-    public void updated_current_domain(int i){
+    public void updated_current_domain(int i) {
+
+        // System.out.println("updated current domains " + i);
+
+        // //printCurrentDomains();
+
         current_path.get(i).resetDomain();
         SetFunctions sf = new SetFunctions();
 
         ArrayList<Stack<Integer>> reduction_at_i = new ArrayList<>(this.reductions.get(i));
 
-        for (Stack<Integer> reduction : reduction_at_i){
+        for (Stack<Integer> reduction : reduction_at_i) {
             current_path.get(i).setCurrentDomain(sf.setDiff(current_path.get(i).getCurrentDomain(), reduction));
         }
+
+        // //printCurrentDomains();
     }
 
     public int FC_label(int i) {
         consistent = false;
-        CheckSupportRevise csr = new CheckSupportRevise(myProblem.getConstraints(), this.current_path,
-                myProblem.getExtension());
 
         // going through each possible assignment in the current domain of the variable
         // at v[i]
@@ -551,14 +613,17 @@ public class SearchAlgorithms {
             // assigning the next possible value for v[i]
             int next = iterator.next();
             assignments[i] = next;
+
             // System.out.println("Assignment: " + current_path.get(i).getName() + " <-- " +
             // assignments[i]);
+            // System.out.println("assignments: " + Arrays.toString(this.assignments));
             consistent = true;
             this.nv++;
 
-            // back checking against all past variables with their respective assignments
-            for (int j = i + 1; j <= current_path.size(); j++) {
+            // forward checking against all past variables with their respective assignments
+            for (int j = i + 1; j < current_path.size(); j++) {
 
+                // System.out.println("checking forward at levels " + i + " & " + j);
                 consistent = check_forward(i, j);
 
                 // System.out.println(current_path.get(h).getName() + " " + assignments[h] + "
@@ -637,5 +702,22 @@ public class SearchAlgorithms {
             return 0L;
         return bean.getThreadCpuTime(java.lang.Thread.currentThread().getId())
                 + bean.getThreadUserTime(java.lang.Thread.currentThread().getId());
+    }
+
+    public void printCurrentDomains() {
+        System.out.println("Printing current domains");
+        for (MyVariable v : current_path) {
+            if (v != null) {
+                System.out.println(v.getName() + ": " + v.getCurrentDomain());
+            }
+        }
+    }
+
+    public void printFCTables() {
+
+        for (int i = 1; i < current_path.size(); i++) {
+            System.out.println(current_path.get(i).getName() + ": reductions: " + reductions.get(i) + " future: "
+                    + future_fc.get(i));
+        }
     }
 }

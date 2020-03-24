@@ -24,15 +24,17 @@ public class SetFunctions {
         return s1;
     }
 
-    public ArrayList<Integer> unionAS(ArrayList<Integer> s1, Stack<Integer> s2){
+    public ArrayList<Integer> unionAS(ArrayList<Integer> s1, Stack<Integer> s2) {
 
-        while (!s2.empty()){
+        while (!s2.empty()) {
             int j = s2.pop();
 
-            if (s1.indexOf(j) < 0){
+            if (s1.indexOf(j) < 0) {
                 s1.add(j);
             }
         }
+
+        Collections.sort(s1);
 
         return s1;
     }
@@ -59,12 +61,10 @@ public class SetFunctions {
         // if element from s1 is not in s2, add to return list
         for (Integer i : s1) {
             boolean found = false;
-            System.out.println("i: " + i);
 
             for (Integer j : temp) {
                 if (i == j) {
                     found = true;
-                    System.out.println("found " + j);
                 }
             }
 
@@ -72,6 +72,7 @@ public class SetFunctions {
                 setDiff.add(i);
             }
         }
+
         return setDiff;
     }
 

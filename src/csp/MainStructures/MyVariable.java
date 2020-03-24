@@ -161,10 +161,7 @@ public class MyVariable {
 	}
 
 	public void setCurrentDomain(ArrayList<Integer> currdomain) {
-		this.currentDomain.clear();
-		for (Integer i : currdomain) {
-			this.currentDomain.add(i);
-		}
+		this.currentDomain = currdomain;
 	}
 
 	public void resetDomain() {
