@@ -151,11 +151,6 @@ public class SearchAlgorithms {
                     i = FC_unlabel(i);
             }
 
-            // printFCTables();
-            // //printCurrentDomains();
-            // System.out.println("assignments: " + Arrays.toString(this.assignments));
-            // System.out.println();
-
             // determining if there is a solution or not
             if (i > n) {
                 // if this is the first solution

@@ -43,17 +43,17 @@ public class MyParser {
 		String orderingHeuristic = "";
 		String searchAlgorithm = "";
 
-		// parsing the inputs from the command line
-		for (int i = 0; i < args.length; i += 2) {
-			if (args[i].equals("-f")) {
-				filename = args[i + 1];
-			} else if (args[i].equals("-a")) {
-				ACAlgorithmString = args[i + 1];
-			} else if (args[i].equals("-u")) {
-				orderingHeuristic = args[i + 1];
-			} else if (args[i].equals("-s")) {
-				searchAlgorithm = args[i + 1];
-			}
+		if (args.length == 6 && args[0].equals("-f") && args[2].equals("-s") && args[4].equals("-u")) {
+			// parsing the inputs from the command line
+			filename = args[1];
+			searchAlgorithm = args[3];
+			orderingHeuristic = args[5];
+		} else if (args.length == 4 && args[0].equals("-f") && args[2].equals("-a")) {
+			filename = args[1];
+			ACAlgorithmString = args[3];
+		} else {
+			System.out.println(
+					"Invalid arguments given. \nThey should be in the following form: \n -f <filename> -s <search algorithm> -u <ordering herusitic> \nor\n -a <AC algorithm type>");
 		}
 
 		InstanceParser parser = new InstanceParser();
@@ -146,27 +146,11 @@ public class MyParser {
 					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/12q.xml" };
 			for (String fileLoc : fileLocations) {
 				for (String typeoforder : typesOfOrder) {
-					String[] argsString = { "-f", fileLoc, "-s", "CBJ", "-u", typeoforder };
+					String[] argsString = { "-f", fileLoc, "-s", "FC", "-u", typeoforder };
 					MyParser parser = new MyParser(argsString);
 				}
 			}
 		} else {
-
-			// SetFunctions sf = new SetFunctions();
-			// Stack<Integer> s = new Stack<>();
-			// s.push(1);
-			// s.push(2);
-			// s.push(3);
-
-			// ArrayList<Integer> a = new ArrayList<>();
-			// a.add(1);
-			// a.add(5);
-			// a.add(2);
-			// a.add(4);
-
-			// System.out.println(a);
-			// System.out.println(s);
-			// System.out.println(sf.setDiff(a, s));
 
 			MyParser parser = new MyParser(args);
 		}
