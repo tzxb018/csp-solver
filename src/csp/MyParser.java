@@ -109,7 +109,8 @@ public class MyParser {
 			ac.AC3(myProblem);
 
 		if (!orderingHeuristic.equals("") && !searchAlgorithm.equals("")) {
-			SearchTypes st = new SearchTypes(myProblem, orderingHeuristic, true, searchAlgorithm);
+			boolean staticOrdering = orderingHeuristic.substring(0, 1).equals("d") ? false : true;
+			SearchTypes st = new SearchTypes(myProblem, orderingHeuristic, staticOrdering, searchAlgorithm);
 			st.runSearch(searchAlgorithm);
 
 		}

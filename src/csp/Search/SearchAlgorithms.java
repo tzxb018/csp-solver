@@ -20,7 +20,7 @@ public class SearchAlgorithms {
 
     protected MyProblem myProblem; // instance of the CSP
     protected ArrayList<MyVariable> current_path; // the current path of all the variables ordered
-    protected int[] assignments; // all the assignments
+    protected int assignments[]; // all the assignments
 
     protected boolean consistent; // global variable to check for consistency
     protected ArrayList<MyVariable> variables; // all the variables in the CSP
@@ -33,6 +33,7 @@ public class SearchAlgorithms {
     protected ArrayList<Stack<Integer>> future_fc; // subset of the future variables that v[i] checks against
                                                    // (redundant)
     protected ArrayList<Stack<Integer>> past_fc; // past variables that checked against v[i]
+    protected Map<MyVariable, Integer> assignments_for_FC; // assignment map for FC
 
     protected int cc;
     protected int nv;
@@ -87,6 +88,8 @@ public class SearchAlgorithms {
             this.past_fc = new ArrayList<>();
             this.reductions = new ArrayList<>();
 
+            this.assignments_for_FC = new HashMap<MyVariable, Integer>();
+
             // initalizing the data structures
             // iterate through every variable in the current_path and initalize it with
             // empty stack
@@ -100,7 +103,10 @@ public class SearchAlgorithms {
                 Stack<Stack<Integer>> init2 = new Stack<Stack<Integer>>();
                 this.reductions.add(init2);
 
+                this.assignments_for_FC.put(v, -1);
+
             }
+
         }
     }
 
@@ -119,7 +125,7 @@ public class SearchAlgorithms {
      *               states are 'unknown', 'solution', or 'impossible')
      * @return whether there is a solution in the CSP after running BCSSP
      */
-    public boolean BCSSP(int n, String status) {
+    public boolean BCSSP(int n, String status, String dynamicOrdering) {
 
         this.cc = 0;
         this.nv = 0;
@@ -134,15 +140,15 @@ public class SearchAlgorithms {
         while (status.equals("unknown")) {
 
             if (consistent) {
-                // System.out.println("LABEL: " + i);
+                System.out.println("LABEL: " + i);
                 if (this.algorithm.equals("BT"))
                     i = BT_label(i);
                 else if (this.algorithm.equals("CBJ"))
                     i = CBJ_label(i);
                 else if (this.algorithm.equals("FC"))
-                    i = FC_label(i);
+                    i = FC_label(i, dynamicOrdering);
             } else {
-                // System.out.println("UNLABEL: " + i);
+                System.out.println("UNLABEL: " + i);
                 if (this.algorithm.equals("BT"))
                     i = BT_unlabel(i);
                 else if (this.algorithm.equals("CBJ"))
@@ -185,6 +191,7 @@ public class SearchAlgorithms {
                     current_path.add(0, null); // pointer starts at 1
                     this.numberOfSolutions++;
                 } else {
+                    System.out.println("solution found ");
                     this.numberOfSolutions++;
 
                 }
@@ -264,8 +271,6 @@ public class SearchAlgorithms {
             // assigning the next possible value for v[i]
             int next = iterator.next();
             assignments[i] = next;
-            // System.out.println("Assignment: " + current_path.get(i).getName() + " <-- " +
-            // assignments[i]);
             consistent = true;
             this.nv++;
 
@@ -286,11 +291,6 @@ public class SearchAlgorithms {
                     }
                 }
 
-                // System.out.println(current_path.get(h).getName() + " " + assignments[h] + "
-                // <> "
-                // + current_path.get(i).getName() + " " + assignments[i] + " ==> " +
-                // consistent);
-                // System.out.println(current_path.get(i).getCurrentDomain());
                 if (!consistent) {
                     iterator.remove();
                     break;
@@ -321,12 +321,10 @@ public class SearchAlgorithms {
             // finding the index of assignments[h] in current-domain[h] to remove it
             while (iterator.hasNext()) {
                 int nextVal = iterator.next();
-                // System.out.println(nextVal + " == " + assignments[h]);
                 if (nextVal == assignments[h]) {
                     iterator.remove();
                 }
             }
-            // System.out.println("updated: " + current_path.get(h).getCurrentDomain());
 
             if (current_path.get(h).getCurrentDomain().size() == 0) {
                 consistent = false;
@@ -367,10 +365,6 @@ public class SearchAlgorithms {
                             consistent = csr.check(current_path.get(i), assignments[i], current_path.get(h),
                                     assignments[h]);
 
-                            // System.out.println("V" + i + ":" + assignments[i] + " <> " + "V" + h + ":" +
-                            // assignments[h]
-                            // + " at level " + h + " ==> " + consistent);
-
                             this.cc++;
                         }
                     }
@@ -384,8 +378,6 @@ public class SearchAlgorithms {
                     addTo.add(h);
 
                     conf_set.set(i, llsf.unionLL(conf_set.get(i), addTo));
-
-                    // System.out.println(conf_set);
 
                     // removing the inconsistent value from the current domain of the instantiated
                     // variable and breaking the loop
@@ -408,19 +400,13 @@ public class SearchAlgorithms {
 
     public int CBJ_unlabel(int i) {
 
-        // System.out.println("Before unlabel: " + conf_set);
         SetFunctions llsf = new SetFunctions();
         int h = llsf.maxInLinkedList(conf_set.get(i));
-        // System.out.println("Jump to " + h);
-        // System.out.println(conf_set);
+
         if (h > 0) {
             LinkedList<Integer> temp = conf_set.get(h);
 
-            // System.out.println("before union: " + conf_set.get(h));
-            // System.out.println("before union pt2: " + conf_set.get(i));
             temp = llsf.unionLL(conf_set.get(h), conf_set.get(i));
-
-            // System.out.println("after union: " + temp);
 
             for (int k = 0; k < temp.size(); k++) {
                 if (temp.get(k) == h) {
@@ -430,17 +416,13 @@ public class SearchAlgorithms {
 
             conf_set.set(h, temp);
 
-            // System.out.println("conf set: " + conf_set.get(h));
-            // System.out.println((h + 1) + " to " + i);
             for (int j = h + 1; j <= i; j++) {
 
                 // reinitalizing the conf_set for the levels in between h+1 and i
                 LinkedList<Integer> init = new LinkedList<>();
                 init.add(0);
-                // System.out.println("LOOPING TO REST THOSE CONF SETS: " + j);
                 conf_set.set(j, init);
 
-                // System.out.println("reset domain at " + j);
                 // reseetting the domain
                 current_path.get(j).resetDomain();
             }
@@ -491,7 +473,9 @@ public class SearchAlgorithms {
 
             // assigning the next possible value for v[j]
             int next = iterator.next();
-            assignments[j] = next;
+
+            // assignments[j] = next;
+            this.assignments_for_FC.replace(current_path.get(j), next);
 
             // System.out.println("Current assignment at " + j + ": " + assignments[j]);
             // need to make sure that there is a constraint in between the two variables
@@ -501,8 +485,8 @@ public class SearchAlgorithms {
                             && c.getScope().get(1).getName().equals(current_path.get(i).getName()))
                             || (c.getScope().get(1).getName().equals(current_path.get(j).getName())
                                     && c.getScope().get(0).getName().equals(current_path.get(i).getName()))) {
-                        consistent = csr.check(current_path.get(i), assignments[i], current_path.get(j),
-                                assignments[j]);
+                        consistent = csr.check(current_path.get(i), this.assignments_for_FC.get(current_path.get(i)),
+                                current_path.get(j), this.assignments_for_FC.get(current_path.get(j)));
 
                         // System.out.println("V" + i + ":" + assignments[i] + " <> " + "V" + j + ":" +
                         // assignments[j]
@@ -515,7 +499,7 @@ public class SearchAlgorithms {
 
             // if not check i and j
             if (!consistent) {
-                reduction.push(assignments[j]);
+                reduction.push(this.assignments_for_FC.get(current_path.get(j)));
             }
         }
 
@@ -597,17 +581,103 @@ public class SearchAlgorithms {
         // //printCurrentDomains();
     }
 
-    public int FC_label(int i) {
+    // given a list of future variables, this function will return which variable to
+    // instantite next
+    public MyVariable selectNextInstantiatedVariable(ArrayList<MyVariable> futureVariables, String varOrdering) {
+
+        MyVariable nextToInstantiate = null;
+
+        // if ordering is dyanmic
+        if (varOrdering.equals("dLD")) {
+            // searches for all the variables that have a domain size of 1 in the future
+            // variables to implement the domino effect
+            for (MyVariable v : futureVariables) {
+                // if the current domain has a size 1 and is lexiographically ahead
+                if (v.getCurrentDomain().size() == 1) {
+                    // if a variable has not been found yet
+                    if (nextToInstantiate == null) {
+                        nextToInstantiate = v;
+                    } else {
+                        if (v.getName().compareTo(nextToInstantiate.getName()) < 0) {
+                            nextToInstantiate = v;
+                        }
+                    }
+                }
+            }
+
+            // if there is a variable with a domain size of 1, return this one
+            if (nextToInstantiate != null) {
+                return nextToInstantiate;
+            }
+
+            nextToInstantiate = futureVariables.get(0);
+            // using the variable ordering herusitic to find the best variable
+            if (varOrdering.equals("dLD")) {
+                // searches for all the variables to find the variable with the smallest domain
+                for (MyVariable v : futureVariables) {
+                    // if the current domain has a size 1 and is lexiographically ahead
+                    if (v.getCurrentDomain().size() <= nextToInstantiate.getCurrentDomain().size()
+                            && v.getName().compareTo(nextToInstantiate.getName()) < 0) {
+                        nextToInstantiate = v;
+                    }
+                }
+            }
+
+            return nextToInstantiate;
+
+        } else {
+            // if the variable ordering heursitic is static, just return the next variable
+            // in the list of future variables
+            return futureVariables.get(0);
+        }
+
+    }
+
+    public int FC_label(int i, String varOrdering) {
         consistent = false;
+
+        // getting a list of the future variables
+        ArrayList<MyVariable> uninstantiatedVars = new ArrayList<MyVariable>();
+        for (int k = i; k < current_path.size(); k++) {
+            uninstantiatedVars.add(current_path.get(k));
+        }
+
+        MyVariable instantiatedVar;
+        instantiatedVar = selectNextInstantiatedVariable(uninstantiatedVars, varOrdering);
+        String s = "[";
+        for (MyVariable v : uninstantiatedVars) {
+            if (v.equals(instantiatedVar))
+                s += "*" + v.getName() + "(" + v.getCurrentDomain().size() + "), ";
+            else
+                s += v.getName() + "(" + v.getCurrentDomain().size() + "), ";
+        }
+        System.out.println("List of variables to instantiate from: " + s.substring(0, s.length() - 2) + "]");
+
+        int oldIndex = current_path.indexOf(instantiatedVar);
+
+        // int temp = assignments[oldIndex];
+        // assignments[oldIndex] = assignments[i];
+        // assignments[i] = temp;
+        if (i != oldIndex) {
+            System.out.println("Before: " + current_path);
+            Collections.swap(current_path, i, oldIndex);
+            System.out.println(
+                    "swapped " + current_path.get(i).getName() + " with " + current_path.get(oldIndex).getName());
+            System.out.println("After: " + current_path);
+        }
+
+        System.out.println("Instantiate: " + instantiatedVar.getName() + " with a domain of "
+                + instantiatedVar.getCurrentDomain());
 
         // going through each possible assignment in the current domain of the variable
         // at v[i]
-        Iterator<Integer> iterator = current_path.get(i).getCurrentDomain().iterator();
+        Iterator<Integer> iterator = instantiatedVar.getCurrentDomain().iterator();
         while (iterator.hasNext() && !consistent) {
 
             // assigning the next possible value for v[i]
             int next = iterator.next();
-            assignments[i] = next;
+            // assignments[i] = next;
+            this.assignments_for_FC.put(this.current_path.get(i), next);
 
             // System.out.println("Assignment: " + current_path.get(i).getName() + " <-- " +
             // assignments[i]);
@@ -636,18 +706,31 @@ public class SearchAlgorithms {
 
         }
 
+        printOrdering(i);
+
         if (consistent) {
             return i + 1; // an assignment to v[i] works
         } else {
+            if (i != oldIndex) {
+                System.out.println("8888");
+                System.out.println("Before 1: " + current_path);
+                // Collections.swap(current_path, i, oldIndex);
+                System.out.println(
+                        "swapped " + current_path.get(i).getName() + " with " + current_path.get(oldIndex).getName());
+                System.out.println("After 1: " + current_path);
+            }
+            // temp = assignments[oldIndex];
+            // assignments[oldIndex] = assignments[i];
+            // assignments[i] = temp;
             return i;
         }
 
     }
 
     public int FC_unlabel(int i) {
+        System.out.println("Uninstantiated " + current_path.get(i));
         this.bt++;
         int h = i - 1;
-
         undo_reduction(h);
         updated_current_domain(i);
         // starting domain at level i
@@ -658,7 +741,7 @@ public class SearchAlgorithms {
             while (iterator.hasNext()) {
                 int nextVal = iterator.next();
                 // System.out.println(nextVal + " == " + assignments[h]);
-                if (nextVal == assignments[h]) {
+                if (nextVal == this.assignments_for_FC.get(this.current_path.get(h))) {
                     iterator.remove();
                 }
             }
@@ -669,6 +752,8 @@ public class SearchAlgorithms {
             } else
                 consistent = true;
         }
+
+        printOrdering(h);
 
         return h;
 
@@ -714,5 +799,30 @@ public class SearchAlgorithms {
             System.out.println(current_path.get(i).getName() + ": reductions: " + reductions.get(i) + " future: "
                     + future_fc.get(i));
         }
+    }
+
+    public void printOrdering(int k) {
+        String s = "Instantiated Variables: [";
+        for (int i = 1; i <= k; i++) {
+            if (current_path.get(i) != null) {
+                s += current_path.get(i).getName() + "(" + current_path.get(i).getCurrentDomain().size() + ")= "
+                        + this.assignments_for_FC.get(current_path.get(i)) + ", ";
+            }
+        }
+        s = s.substring(0, s.length() - 2) + "]\nUninstantiated Variables: [";
+        if (k < current_path.size() - 1) {
+            for (int i = k + 1; i < current_path.size(); i++) {
+                if (current_path.get(i) != null) {
+                    s += current_path.get(i).getName() + "(" + current_path.get(i).getCurrentDomain().size() + ")= "
+                            + this.assignments_for_FC.get(current_path.get(i)) + ", ";
+                }
+            }
+            s = s.substring(0, s.length() - 2) + "]";
+
+        } else {
+            s += "]";
+        }
+        s += "\n";
+        System.out.println(s);
     }
 }

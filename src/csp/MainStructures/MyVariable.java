@@ -74,6 +74,25 @@ public class MyVariable {
 		}
 	};
 
+	// Creating a comparator with current domain sizes with ties broken up with
+	// lexiographical ordering
+	public static final Comparator<MyVariable> dLD_COMPARATOR = new Comparator<MyVariable>() {
+		@Override
+		public int compare(MyVariable v1, MyVariable v2) {
+
+			Integer s1 = v1.getCurrentDomain().size();
+			Integer s2 = v2.getCurrentDomain().size();
+
+			int sComp = s1.compareTo(s2);
+
+			if (sComp != 0) {
+				return sComp;
+			}
+			return v1.getName().compareTo(v2.getName());
+
+		}
+	};
+
 	// Creating a comparator with ddr sizes with ties broken up with
 	// lexiographical ordering
 	public static final Comparator<MyVariable> DDR_COMPARATOR = new Comparator<MyVariable>() {
@@ -214,27 +233,32 @@ public class MyVariable {
 	}
 
 	public String toString() {
-		String s = "Name: " + name + ", domain: {";
+		return this.name;
+		// String s = "Name: " + name + ", domain: {";
 
-		for (int i = 0; i < currentDomain.size() - 1; i++) {
-			s += currentDomain.get(i);
-			s += ",";
-		}
-		s += currentDomain.get(currentDomain.size() - 1) + "}, ";
-		s += "constraints: {";
+		// if (currentDomain.size() > 0) {
+		// for (int i = 0; i < currentDomain.size() - 1; i++) {
+		// s += currentDomain.get(i);
+		// s += ",";
+		// }
+		// s += currentDomain.get(currentDomain.size() - 1) + "}, ";
+		// } else {
+		// s += "{}, ";
+		// }
+		// s += "constraints: {";
 
-		for (int i = 0; i < constraints.size() - 1; i++) {
-			s += constraints.get(i).getName() + ",";
-		}
-		s += constraints.get(constraints.size() - 1).getName() + "}";
-		s += ", neighbors: {";
+		// for (int i = 0; i < constraints.size() - 1; i++) {
+		// s += constraints.get(i).getName() + ",";
+		// }
+		// s += constraints.get(constraints.size() - 1).getName() + "}";
+		// s += ", neighbors: {";
 
-		for (int i = 0; i < neighbors.size() - 1; i++) {
-			s += neighbors.get(i).getName() + ",";
-		}
-		s += neighbors.get(neighbors.size() - 1).getName() + "}";
+		// for (int i = 0; i < neighbors.size() - 1; i++) {
+		// s += neighbors.get(i).getName() + ",";
+		// }
+		// s += neighbors.get(neighbors.size() - 1).getName() + "}";
 
-		return s;
+		// return s;
 	}
 
 }

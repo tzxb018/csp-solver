@@ -58,82 +58,87 @@ public class SearchTypes {
         System.out.println("Search: " + searchType);
         System.out.println("variable-order-heuristic: " + ordering_heursitic);
 
-        // if we are using static ordering
-        if (staticOrdering) {
+        if (staticOrdering)
             System.out.println("var-static-dynamic: static");
-            System.out.println("value-ordering-heuristic: " + ordering_heursitic);
-            System.out.println("val-static-dynamic: static");
+        else
+            System.out.println("var-static-dynamic: dynamic");
 
-            // running NC before running search
-            ArrayList<MyConstraint> unaryConstraints = new ArrayList<MyConstraint>();
+        System.out.println("value-ordering-heuristic: " + ordering_heursitic);
+        System.out.println("val-static-dynamic: static");
 
-            // finding the unary constraints
-            for (MyConstraint constraint : myProblem.getConstraints()) {
-                if (constraint.getScope().size() == 1) {
-                    unaryConstraints.add(constraint);
-                }
+        // running NC before running search
+        ArrayList<MyConstraint> unaryConstraints = new ArrayList<MyConstraint>();
+
+        // finding the unary constraints
+        for (MyConstraint constraint : myProblem.getConstraints()) {
+            if (constraint.getScope().size() == 1) {
+                unaryConstraints.add(constraint);
             }
-
-            // executing node consistency
-            if (unaryConstraints.size() > 0) {
-                MyACAlgorithms ac = new MyACAlgorithms();
-
-                // depending on which type of unary constraint it is, run NC
-                if (myProblem.getExtension()) {
-                    for (MyConstraint c : unaryConstraints) {
-                        ac.nodeConsistencyExtension(variables, (MyExtensionConstraint) c);
-                    }
-                } else {
-                    for (MyConstraint c : unaryConstraints) {
-                        ac.nodeConsistencyIntension(variables, (MyIntensionConstraint) c);
-                    }
-                }
-            }
-
-            // adding into the current-path in order lexiographically
-            for (int i = 0; i < variables.size(); i++) {
-                current_path.add(variables.get(i));
-            }
-            // for (MyVariable var : variables) {
-            // current_path.add(var);
-            // }
-
-            for (int i = 0; i < assignments.length; i++) {
-                assignments[i] = -1;
-            }
-
-            // using the ordering heuristic to determine how the variables are put into
-            // current-path
-            switch (ordering_heursitic) {
-                case ("LX"):
-                    Collections.sort(current_path, MyVariable.LX_COMPARATOR);
-                    break;
-                case ("SOL"):
-                    Collections.sort(current_path, MyVariable.SOL_COMPARATOR);
-                    break;
-                case ("LD"):
-                    Collections.sort(current_path, MyVariable.LD_COMPARATOR);
-                    break;
-                case ("DEG"):
-                    this.current_path = degreeOrdering(this.current_path);
-                    break;
-                case ("DD"):
-                    this.current_path = ddrOrdering(this.current_path);
-                    break;
-
-            }
-
-            // for writing the order of the varialbes to a csv file
-            // csvOrder();
-
-            current_path.add(0, null); // pointer starts at 1
-            // orderedCurrentPathString = "[";
-            // for (int i = 1; i < current_path.size() - 1; i++) {
-            // orderedCurrentPathString += (current_path.get(i).getName() + ",");
-            // }
-            // orderedCurrentPathString += (current_path.get(current_path.size() -
-            // 1)).getName();
         }
+
+        // executing node consistency
+        if (unaryConstraints.size() > 0) {
+            MyACAlgorithms ac = new MyACAlgorithms();
+
+            // depending on which type of unary constraint it is, run NC
+            if (myProblem.getExtension()) {
+                for (MyConstraint c : unaryConstraints) {
+                    ac.nodeConsistencyExtension(variables, (MyExtensionConstraint) c);
+                }
+            } else {
+                for (MyConstraint c : unaryConstraints) {
+                    ac.nodeConsistencyIntension(variables, (MyIntensionConstraint) c);
+                }
+            }
+        }
+
+        // adding into the current-path in order lexiographically
+        for (int i = 0; i < variables.size(); i++) {
+            current_path.add(variables.get(i));
+        }
+        // for (MyVariable var : variables) {
+        // current_path.add(var);
+        // }
+
+        for (int i = 0; i < assignments.length; i++) {
+            assignments[i] = -1;
+        }
+
+        // using the ordering heuristic to determine how the variables are put into
+        // current-path
+        switch (ordering_heursitic) {
+            case ("LX"):
+                Collections.sort(current_path, MyVariable.LX_COMPARATOR);
+                break;
+            case ("SOL"):
+                Collections.sort(current_path, MyVariable.SOL_COMPARATOR);
+                break;
+            case ("LD"):
+                Collections.sort(current_path, MyVariable.LD_COMPARATOR);
+                break;
+            case ("dLD"):
+                Collections.sort(current_path, MyVariable.dLD_COMPARATOR);
+                break;
+            case ("DEG"):
+                this.current_path = degreeOrdering(this.current_path);
+                break;
+            case ("DD"):
+                this.current_path = ddrOrdering(this.current_path);
+                break;
+
+        }
+
+        // for writing the order of the varialbes to a csv file
+        // csvOrder();
+
+        current_path.add(0, null); // pointer starts at 1
+        // orderedCurrentPathString = "[";
+        // for (int i = 1; i < current_path.size() - 1; i++) {
+        // orderedCurrentPathString += (current_path.get(i).getName() + ",");
+        // }
+        // orderedCurrentPathString += (current_path.get(current_path.size() -
+        // 1)).getName();
+
     }
 
     // function to write the order of the variables after ordering heuristic to a
@@ -159,7 +164,13 @@ public class SearchTypes {
         // Run BCSSP
         SearchAlgorithms searchAlgorithms = new SearchAlgorithms(this.myProblem, this.current_path, this.assignments,
                 searchType);
-        searchAlgorithms.BCSSP(this.variables.size(), "unknown");
+        if (this.orderingHeuristic.equals("ddeg") || this.orderingHeuristic.equals("dLD")
+                || this.orderingHeuristic.equals("ddd")) {
+            searchAlgorithms.BCSSP(this.variables.size(), "unknown", this.orderingHeuristic);
+
+        } else {
+            searchAlgorithms.BCSSP(this.variables.size(), "unknown", "static");
+        }
 
         // Writing the results to a csv fileSD
         String fileContent = myProblem.getProblemName() + "," + searchType + "," + this.orderingHeuristic + ","
