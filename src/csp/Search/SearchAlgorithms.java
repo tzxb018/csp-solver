@@ -199,10 +199,16 @@ public class SearchAlgorithms {
 
                     // adding the assignments of the all variables to the solution
                     if (algorithm.equals("FC")) {
-                        for (Map.Entry<MyVariable, Integer> entry : this.assignments_for_FC.entrySet()) {
-                            if (entry.getKey() != null) {
-                                solution += entry.getKey() + ": " + entry.getValue() + " ";
-                            }
+
+                        ArrayList<MyVariable> sortedKeys = new ArrayList<MyVariable>(this.assignments_for_FC.keySet());
+
+                        sortedKeys.remove(null);
+
+                        Collections.sort(sortedKeys, MyVariable.SOL_COMPARATOR);
+
+                        // Display the TreeMap which is naturally sorted
+                        for (MyVariable x : sortedKeys) {
+                            solution += (x + ": " + assignments_for_FC.get(x) + " ");
                         }
 
                     } else {
@@ -248,7 +254,7 @@ public class SearchAlgorithms {
 
                 }
 
-                if (algorithm.equals("BT") || algorithm.equals("FC")) {
+                if (algorithm.equals("BT")) {
                     // backtrack one level to find more solutions
                     i = i - 1;
                     consistent = true;
@@ -268,11 +274,9 @@ public class SearchAlgorithms {
                     i = i - 1;
                     consistent = true;
                     current_path.get(i).currentDomain.remove(0);
-                    System.out.println(this.reductions);
-                    Stack<Stack<Integer>> cleared = new Stack<Stack<Integer>>();
-                    this.reductions.remove(i);
-                    this.reductions.add(cleared);
-                    System.out.println(this.reductions);
+
+                    // updated_current_domain(i + 1);
+                    undo_reduction(i);
 
                 }
             }
