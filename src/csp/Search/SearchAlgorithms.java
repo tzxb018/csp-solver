@@ -35,6 +35,11 @@ public class SearchAlgorithms {
     protected ArrayList<Stack<Integer>> past_fc; // past variables that checked against v[i]
     protected Map<MyVariable, Integer> assignments_for_FC; // assignment map for FC
 
+    protected ArrayList<MyVariable> past_variables;
+    protected ArrayList<MyVariable> future_variables;
+
+    protected ArrayList<String> solutions;
+
     protected int cc;
     protected int nv;
     protected int bt;
@@ -60,6 +65,7 @@ public class SearchAlgorithms {
         this.assignments = assignments;
         this.variables = myProblem.getVariables();
         this.algorithm = algorithm;
+        this.solutions = new ArrayList<>();
 
         this.cc = 0;
         this.nv = 0;
@@ -88,6 +94,9 @@ public class SearchAlgorithms {
             this.past_fc = new ArrayList<>();
             this.reductions = new ArrayList<>();
 
+            this.past_variables = new ArrayList<MyVariable>();
+            this.future_variables = new ArrayList<MyVariable>();
+
             this.assignments_for_FC = new HashMap<MyVariable, Integer>();
 
             // initalizing the data structures
@@ -104,8 +113,12 @@ public class SearchAlgorithms {
                 this.reductions.add(init2);
 
                 this.assignments_for_FC.put(v, -1);
+                this.future_variables.add(v);
 
             }
+
+            this.future_variables.remove(null);
+            this.past_variables.add(null);
 
         }
     }
@@ -140,7 +153,7 @@ public class SearchAlgorithms {
         while (status.equals("unknown")) {
 
             if (consistent) {
-                System.out.println("LABEL: " + i);
+                // System.out.println("LABEL: " + i);
                 if (this.algorithm.equals("BT"))
                     i = BT_label(i);
                 else if (this.algorithm.equals("CBJ"))
@@ -148,7 +161,7 @@ public class SearchAlgorithms {
                 else if (this.algorithm.equals("FC"))
                     i = FC_label(i, dynamicOrdering);
             } else {
-                System.out.println("UNLABEL: " + i);
+                // System.out.println("UNLABEL: " + i);
                 if (this.algorithm.equals("BT"))
                     i = BT_unlabel(i);
                 else if (this.algorithm.equals("CBJ"))
@@ -159,6 +172,11 @@ public class SearchAlgorithms {
 
             // determining if there is a solution or not
             if (i > n) {
+                // for fc, need to remove the current instantation
+                if (this.algorithm.equals("FC")) {
+                    MyVariable recent = this.past_variables.remove(this.past_variables.size() - 1);
+                    this.future_variables.add(0, recent);
+                }
                 // if this is the first solution
                 if (this.numberOfSolutions == 0) {
                     System.out.println("cc: " + this.cc);
@@ -180,19 +198,53 @@ public class SearchAlgorithms {
                     // //printCurrentDomains();
 
                     // adding the assignments of the all variables to the solution
-                    for (MyVariable var : current_path) {
-                        if (var != null) {
-                            solution += (var.getCurrentDomain().get(0) + " ");
+                    if (algorithm.equals("FC")) {
+                        for (Map.Entry<MyVariable, Integer> entry : this.assignments_for_FC.entrySet()) {
+                            if (entry.getKey() != null) {
+                                solution += entry.getKey() + ": " + entry.getValue() + " ";
+                            }
                         }
+
+                    } else {
+                        // adding the assignments of the all variables to the solution
+                        for (MyVariable var : current_path) {
+                            if (var != null) {
+                                solution += (var.getName() + ": " + var.getCurrentDomain().get(0) + " ");
+                            }
+                        }
+                        current_path.add(0, null); // pointer starts at 1
                     }
                     this.firstSolution = solution;
                     System.out.println("First solution: " + solution);
 
                     current_path.add(0, null); // pointer starts at 1
                     this.numberOfSolutions++;
+                    solutions.add(solution);
                 } else {
-                    System.out.println("solution found ");
+                    String solution = "";
+                    current_path.remove(0);
+
+                    // //printCurrentDomains();
+
+                    if (algorithm.equals("FC")) {
+                        for (Map.Entry<MyVariable, Integer> entry : this.assignments_for_FC.entrySet()) {
+                            if (entry.getKey() != null) {
+                                solution += entry.getKey() + ": " + entry.getValue() + " ";
+                            }
+                        }
+
+                    } else {
+                        // adding the assignments of the all variables to the solution
+                        for (MyVariable var : current_path) {
+                            if (var != null) {
+                                solution += (var.getName() + ": " + var.getCurrentDomain().get(0) + " ");
+                            }
+                        }
+                    }
+                    current_path.add(0, null); // pointer starts at 1
+
                     this.numberOfSolutions++;
+                    solutions.add(solution);
 
                 }
 
@@ -209,7 +261,19 @@ public class SearchAlgorithms {
                         conflict.add(ii);
                     }
                     conf_set.set(n, conflict);
-                    // System.out.println(conf_set);
+
+                    System.out.println(conf_set);
+                } else if (algorithm.equals("FC")) {
+
+                    i = i - 1;
+                    consistent = true;
+                    current_path.get(i).currentDomain.remove(0);
+                    System.out.println(this.reductions);
+                    Stack<Stack<Integer>> cleared = new Stack<Stack<Integer>>();
+                    this.reductions.remove(i);
+                    this.reductions.add(cleared);
+                    System.out.println(this.reductions);
+
                 }
             }
             // reach the top of the tree
@@ -248,6 +312,8 @@ public class SearchAlgorithms {
                     this.cpuTime = (long) ((getCpuTime() - captureTime) / 1000000.0);
                     System.out.println("all-sol cpu: " + this.cpuTime);
                     System.out.println("Number of solutions: " + this.numberOfSolutions);
+
+                    printSolutions();
                 }
 
                 return false;
@@ -477,7 +543,6 @@ public class SearchAlgorithms {
             // assignments[j] = next;
             this.assignments_for_FC.replace(current_path.get(j), next);
 
-            // System.out.println("Current assignment at " + j + ": " + assignments[j]);
             // need to make sure that there is a constraint in between the two variables
             for (MyConstraint c : myProblem.getConstraints()) {
                 if (c.getScope().size() > 1) {
@@ -636,38 +701,30 @@ public class SearchAlgorithms {
     public int FC_label(int i, String varOrdering) {
         consistent = false;
 
-        // getting a list of the future variables
-        ArrayList<MyVariable> uninstantiatedVars = new ArrayList<MyVariable>();
-        for (int k = i; k < current_path.size(); k++) {
-            uninstantiatedVars.add(current_path.get(k));
-        }
-
         MyVariable instantiatedVar;
-        instantiatedVar = selectNextInstantiatedVariable(uninstantiatedVars, varOrdering);
-        String s = "[";
-        for (MyVariable v : uninstantiatedVars) {
-            if (v.equals(instantiatedVar))
-                s += "*" + v.getName() + "(" + v.getCurrentDomain().size() + "), ";
-            else
-                s += v.getName() + "(" + v.getCurrentDomain().size() + "), ";
-        }
-        System.out.println("List of variables to instantiate from: " + s.substring(0, s.length() - 2) + "]");
+        instantiatedVar = selectNextInstantiatedVariable(this.future_variables, varOrdering);
+        // String s = "[";
+        // for (MyVariable v : future_variables) {
+        // if (v.equals(instantiatedVar))
+        // s += "*" + v.getName() + "(" + v.getCurrentDomain().size() + "), ";
+        // else
+        // s += v.getName() + "(" + v.getCurrentDomain().size() + "), ";
+        // }
+        // System.out.println("List of variables to instantiate from: " + s.substring(0,
+        // s.length() - 2) + "]");
 
-        int oldIndex = current_path.indexOf(instantiatedVar);
+        this.future_variables.remove(instantiatedVar);
+        this.past_variables.add(instantiatedVar);
 
-        // int temp = assignments[oldIndex];
-        // assignments[oldIndex] = assignments[i];
-        // assignments[i] = temp;
-        if (i != oldIndex) {
-            System.out.println("Before: " + current_path);
-            Collections.swap(current_path, i, oldIndex);
-            System.out.println(
-                    "swapped " + current_path.get(i).getName() + " with " + current_path.get(oldIndex).getName());
-            System.out.println("After: " + current_path);
-        }
+        this.current_path = new ArrayList<MyVariable>();
+        this.current_path.addAll(this.past_variables);
+        this.current_path.addAll(this.future_variables);
 
-        System.out.println("Instantiate: " + instantiatedVar.getName() + " with a domain of "
-                + instantiatedVar.getCurrentDomain());
+        // System.out.println("Instantiate: " + instantiatedVar.getName() + " with a
+        // domain of "
+        // + instantiatedVar.getCurrentDomain());
+
+        // printOrdering();
 
         // going through each possible assignment in the current domain of the variable
         // at v[i]
@@ -706,29 +763,32 @@ public class SearchAlgorithms {
 
         }
 
-        printOrdering(i);
+        // printOrdering(i);
 
         if (consistent) {
             return i + 1; // an assignment to v[i] works
         } else {
-            if (i != oldIndex) {
-                System.out.println("8888");
-                System.out.println("Before 1: " + current_path);
-                // Collections.swap(current_path, i, oldIndex);
-                System.out.println(
-                        "swapped " + current_path.get(i).getName() + " with " + current_path.get(oldIndex).getName());
-                System.out.println("After 1: " + current_path);
-            }
-            // temp = assignments[oldIndex];
-            // assignments[oldIndex] = assignments[i];
-            // assignments[i] = temp;
+            MyVariable recent = this.past_variables.remove(this.past_variables.size() - 1);
+            this.future_variables.add(0, recent);
             return i;
         }
 
     }
 
     public int FC_unlabel(int i) {
-        System.out.println("Uninstantiated " + current_path.get(i));
+
+        // printOrdering();
+        MyVariable recent = this.past_variables.remove(this.past_variables.size() - 1);
+        this.future_variables.add(0, recent);
+
+        // System.out.println("Uninstantiated " + recent);
+
+        this.current_path = new ArrayList<MyVariable>();
+        this.current_path.addAll(this.past_variables);
+        this.current_path.addAll(this.future_variables);
+
+        // printOrdering();
+
         this.bt++;
         int h = i - 1;
         undo_reduction(h);
@@ -752,8 +812,6 @@ public class SearchAlgorithms {
             } else
                 consistent = true;
         }
-
-        printOrdering(h);
 
         return h;
 
@@ -801,28 +859,31 @@ public class SearchAlgorithms {
         }
     }
 
-    public void printOrdering(int k) {
-        String s = "Instantiated Variables: [";
-        for (int i = 1; i <= k; i++) {
-            if (current_path.get(i) != null) {
-                s += current_path.get(i).getName() + "(" + current_path.get(i).getCurrentDomain().size() + ")= "
-                        + this.assignments_for_FC.get(current_path.get(i)) + ", ";
+    public void printOrdering() {
+        String s = "Past Variables: [";
+        for (int i = 1; i < this.past_variables.size(); i++) {
+            if (this.past_variables.get(i) != null) {
+                s += this.past_variables.get(i).getName() + "(" + this.past_variables.get(i).getCurrentDomain().size()
+                        + ")= " + this.assignments_for_FC.get(this.past_variables.get(i)) + ", ";
             }
         }
-        s = s.substring(0, s.length() - 2) + "]\nUninstantiated Variables: [";
-        if (k < current_path.size() - 1) {
-            for (int i = k + 1; i < current_path.size(); i++) {
-                if (current_path.get(i) != null) {
-                    s += current_path.get(i).getName() + "(" + current_path.get(i).getCurrentDomain().size() + ")= "
-                            + this.assignments_for_FC.get(current_path.get(i)) + ", ";
-                }
+        s = s.substring(0, s.length() - 2) + "]\nFuture Variables: [";
+        for (int i = 0; i < this.future_variables.size(); i++) {
+            if (this.future_variables.get(i) != null) {
+                s += this.future_variables.get(i).getName() + "("
+                        + this.future_variables.get(i).getCurrentDomain().size() + ")= "
+                        + this.assignments_for_FC.get(this.future_variables.get(i)) + ", ";
             }
-            s = s.substring(0, s.length() - 2) + "]";
-
-        } else {
-            s += "]";
         }
-        s += "\n";
+        s = s.substring(0, s.length() - 2) + "]";
         System.out.println(s);
+        System.out.println("Current path: " + this.current_path);
+        System.out.println();
+    }
+
+    public void printSolutions() {
+        for (int i = 0; i < this.solutions.size(); i++) {
+            System.out.println(this.solutions.get(i));
+        }
     }
 }
