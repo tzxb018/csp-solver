@@ -212,7 +212,7 @@ public class SearchAlgorithms {
 
                         // Display the TreeMap which is naturally sorted
                         for (MyVariable x : sortedKeys) {
-                            solution += (x + ": " + assignments_for_FC.get(x) + " ");
+                            solution += (assignments_for_FC.get(x) + " ");
                         }
 
                     } else {
@@ -262,7 +262,7 @@ public class SearchAlgorithms {
 
                 }
 
-                if (algorithm.equals("BT")) {
+                if (algorithm.equals("BT") || algorithm.equals("FC")) {
                     // backtrack one level to find more solutions
                     i = i - 1;
                     consistent = true;
@@ -331,7 +331,7 @@ public class SearchAlgorithms {
                     System.out.println("all-sol cpu: " + this.cpuTime);
                     System.out.println("Number of solutions: " + this.numberOfSolutions);
 
-                    printSolutions();
+                    // printSolutions();
                 }
 
                 return false;
@@ -725,7 +725,7 @@ public class SearchAlgorithms {
         this.uninstantiated_variables.remove(instantiatedVar);
         this.instantiated_variables.add(instantiatedVar);
 
-        printOrdering();
+        // printOrdering();
 
         this.current_path = new ArrayList<MyVariable>();
         this.current_path.addAll(this.instantiated_variables);

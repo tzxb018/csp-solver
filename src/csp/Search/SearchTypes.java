@@ -173,13 +173,15 @@ public class SearchTypes {
         }
 
         // Writing the results to a csv fileSD
-        String fileContent = myProblem.getProblemName() + "," + searchType + "," + this.orderingHeuristic + ","
-                + searchAlgorithms.getCSVRow() + "\n";
+        // String fileContent = myProblem.getProblemName() + "," + searchType + "," +
+        // this.orderingHeuristic + ","
+        // + searchAlgorithms.getCSVRow() + "\n";
 
-        BufferedWriter writer = new BufferedWriter(
-                new FileWriter("/home/tbessho/Documents/Tools2008/absconCVS4/out.csv", true));
-        writer.write(fileContent);
-        writer.close();
+        // BufferedWriter writer = new BufferedWriter(
+        // new FileWriter("/home/tbessho/Documents/Tools2008/absconCVS4/out.csv",
+        // true));
+        // writer.write(fileContent);
+        // writer.close();
 
     }
 
