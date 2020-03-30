@@ -28,15 +28,16 @@ public class SearchAlgorithms {
     protected ArrayList<LinkedList<Integer>> conf_set; // for CBJ
 
     // for FC
-    protected ArrayList<Stack<Stack<Integer>>> reductions; // store sets of values remove from current-domain[j] by some
+    protected Map<MyVariable, Stack<Stack<Integer>>> reductions; // store sets of values remove from current-domain[j]
+                                                                 // by some
     // variable before v[j]
-    protected ArrayList<Stack<Integer>> future_fc; // subset of the future variables that v[i] checks against
-                                                   // (redundant)
-    protected ArrayList<Stack<Integer>> past_fc; // past variables that checked against v[i]
+    protected Map<MyVariable, Stack<Integer>> future_fc; // subset of the future variables that v[i] checks against
+    // (redundant)
+    protected Map<MyVariable, Stack<Integer>> past_fc; // past variables that checked against v[i]
     protected Map<MyVariable, Integer> assignments_for_FC; // assignment map for FC
 
-    protected ArrayList<MyVariable> past_variables;
-    protected ArrayList<MyVariable> future_variables;
+    protected Stack<MyVariable> instantiated_variables;
+    protected ArrayList<MyVariable> uninstantiated_variables;
 
     protected ArrayList<String> solutions;
 
@@ -90,12 +91,12 @@ public class SearchAlgorithms {
             this.conf_set.add(0, null);
         } else if (algorithm.equals("FC")) {
 
-            this.future_fc = new ArrayList<>();
-            this.past_fc = new ArrayList<>();
-            this.reductions = new ArrayList<>();
+            this.future_fc = new HashMap<>();
+            this.past_fc = new HashMap<>();
+            this.reductions = new HashMap<>();
 
-            this.past_variables = new ArrayList<MyVariable>();
-            this.future_variables = new ArrayList<MyVariable>();
+            this.instantiated_variables = new Stack<MyVariable>();
+            this.uninstantiated_variables = new ArrayList<MyVariable>();
 
             this.assignments_for_FC = new HashMap<MyVariable, Integer>();
 
@@ -106,19 +107,22 @@ public class SearchAlgorithms {
 
                 Stack<Integer> init = new Stack<Integer>();
                 Stack<Integer> init1 = new Stack<Integer>();
-                this.future_fc.add(init);
-                this.past_fc.add(init1);
+
+                this.future_fc.put(v, init);
+                this.past_fc.put(v, init1);
 
                 Stack<Stack<Integer>> init2 = new Stack<Stack<Integer>>();
-                this.reductions.add(init2);
+                this.reductions.put(v, init2);
 
                 this.assignments_for_FC.put(v, -1);
-                this.future_variables.add(v);
+                this.uninstantiated_variables.add(v);
 
             }
 
-            this.future_variables.remove(null);
-            this.past_variables.add(null);
+            // printFCTables();
+
+            this.uninstantiated_variables.remove(null);
+            this.instantiated_variables.add(null);
 
         }
     }
@@ -174,8 +178,8 @@ public class SearchAlgorithms {
             if (i > n) {
                 // for fc, need to remove the current instantation
                 if (this.algorithm.equals("FC")) {
-                    MyVariable recent = this.past_variables.remove(this.past_variables.size() - 1);
-                    this.future_variables.add(0, recent);
+                    MyVariable recent = this.instantiated_variables.remove(this.instantiated_variables.size() - 1);
+                    this.uninstantiated_variables.add(0, recent);
                 }
                 // if this is the first solution
                 if (this.numberOfSolutions == 0) {
@@ -233,12 +237,16 @@ public class SearchAlgorithms {
                     // //printCurrentDomains();
 
                     if (algorithm.equals("FC")) {
-                        for (Map.Entry<MyVariable, Integer> entry : this.assignments_for_FC.entrySet()) {
-                            if (entry.getKey() != null) {
-                                solution += entry.getKey() + ": " + entry.getValue() + " ";
-                            }
-                        }
+                        ArrayList<MyVariable> sortedKeys = new ArrayList<MyVariable>(this.assignments_for_FC.keySet());
 
+                        sortedKeys.remove(null);
+
+                        Collections.sort(sortedKeys, MyVariable.SOL_COMPARATOR);
+
+                        // Display the TreeMap which is naturally sorted
+                        for (MyVariable x : sortedKeys) {
+                            solution += (x + ": " + assignments_for_FC.get(x) + " ");
+                        }
                     } else {
                         // adding the assignments of the all variables to the solution
                         for (MyVariable var : current_path) {
@@ -272,11 +280,17 @@ public class SearchAlgorithms {
                 } else if (algorithm.equals("FC")) {
 
                     i = i - 1;
-                    consistent = true;
-                    current_path.get(i).currentDomain.remove(0);
+                    this.instantiated_variables.peek().currentDomain.remove(0);
+                    consistent = !this.instantiated_variables.peek().getCurrentDomain().isEmpty();
+                    if (consistent) {
+                        this.uninstantiated_variables.add(this.instantiated_variables.pop());
+                    }
+
+                    // undo_reduction(i);
+                    // updated_current_domain(i);
 
                     // updated_current_domain(i + 1);
-                    undo_reduction(i);
+                    // undo_reduction(i);
 
                 }
             }
@@ -578,13 +592,21 @@ public class SearchAlgorithms {
 
             current_path.get(j).setCurrentDomain(sf.setDiff(current_path.get(j).getCurrentDomain(), reduction));
 
-            this.reductions.get(j).push(reduction);
-            this.future_fc.get(i).push(j);
-            // System.out.println("pushing " + reduction + " into reductions[" + j + "]");
-            // System.out.println("pushing " + j + " into future-fc[" + i + "]");
-            this.past_fc.get(j).push(i);
+            // this.reductions.get(j).push(reduction);
+            Stack<Stack<Integer>> updateReduction = this.reductions.get(current_path.get(j));
+            updateReduction.push(reduction);
+            this.reductions.replace(current_path.get(j), updateReduction);
 
-            // System.out.println("reductions update in check forward " + this.reductions);
+            // this.future_fc.get(i).push(j);
+            Stack<Integer> updateFutureFC = this.future_fc.get(current_path.get(i));
+            updateFutureFC.push(j);
+            this.future_fc.replace(current_path.get(i), updateFutureFC);
+
+            // this.past_fc.get(j).push(i);
+            Stack<Integer> updatePastFC = this.past_fc.get(current_path.get(j));
+            updatePastFC.push(i);
+            this.past_fc.replace(current_path.get(j), updatePastFC);
+
             // printFCTables();
         }
 
@@ -593,55 +615,38 @@ public class SearchAlgorithms {
     }
 
     public void undo_reduction(int i) {
-        // System.out.println("UNDO REDUCTIONS " + i);
-        // System.out.println("future fc " + this.future_fc);
-        // System.out.println("future fc[" + i + "]: " + this.future_fc.get(i));
-        while (!future_fc.get(i).empty()) {
 
-            int j = future_fc.get(i).pop();
+        while (!future_fc.get(current_path.get(i)).empty()) {
+
+            int j = future_fc.get(current_path.get(i)).pop();
 
             Stack<Integer> reduction = new Stack<Integer>();
-            if (!this.reductions.get(j).empty())
-                reduction = this.reductions.get(j).pop();
-
-            // System.out.println("reduction to be added back " + reduction);
+            if (!this.reductions.get(current_path.get(j)).empty())
+                reduction = this.reductions.get(current_path.get(j)).pop();
 
             SetFunctions sf = new SetFunctions();
 
             ArrayList<Integer> updatedCurrentDomain = sf.unionAS(current_path.get(j).getCurrentDomain(), reduction);
 
-            // System.out.println("updated domain: " +
-            // current_path.get(j).getCurrentDomain() + " U " + reduction);
-
             current_path.get(j).setCurrentDomain(updatedCurrentDomain);
 
-            // System.out.println("updated domain at " + j + ": " +
-            // current_path.get(j).getCurrentDomain());
-
-            // System.out.println("past fc" + this.past_fc);
-            if (!this.past_fc.get(j).empty()) {
-                this.past_fc.get(j).pop();
+            if (!this.past_fc.get(current_path.get(j)).empty()) {
+                this.past_fc.get(current_path.get(j)).pop();
             }
         }
 
         Stack<Integer> empty = new Stack<>();
-        future_fc.set(i, empty);
+        future_fc.replace(current_path.get(i), empty);
 
-        // System.out.println("FINISHED undo reductions: " + future_fc);
-        // printCurrentDomains();
         //// printFCTables();
     }
 
     public void updated_current_domain(int i) {
 
-        // System.out.println("updated current domains " + i);
-
-        // //printCurrentDomains();
-
         current_path.get(i).resetDomain();
         SetFunctions sf = new SetFunctions();
 
-        ArrayList<Stack<Integer>> reduction_at_i = new ArrayList<>(this.reductions.get(i));
+        ArrayList<Stack<Integer>> reduction_at_i = new ArrayList<>(this.reductions.get(current_path.get(i)));
 
         for (Stack<Integer> reduction : reduction_at_i) {
             current_path.get(i).setCurrentDomain(sf.setDiff(current_path.get(i).getCurrentDomain(), reduction));
@@ -706,7 +711,7 @@ public class SearchAlgorithms {
         consistent = false;
 
         MyVariable instantiatedVar;
-        instantiatedVar = selectNextInstantiatedVariable(this.future_variables, varOrdering);
+        instantiatedVar = selectNextInstantiatedVariable(this.uninstantiated_variables, varOrdering);
         // String s = "[";
         // for (MyVariable v : future_variables) {
         // if (v.equals(instantiatedVar))
@@ -717,16 +722,17 @@ public class SearchAlgorithms {
         // System.out.println("List of variables to instantiate from: " + s.substring(0,
         // s.length() - 2) + "]");
 
-        this.future_variables.remove(instantiatedVar);
-        this.past_variables.add(instantiatedVar);
+        this.uninstantiated_variables.remove(instantiatedVar);
+        this.instantiated_variables.add(instantiatedVar);
+
+        printOrdering();
 
         this.current_path = new ArrayList<MyVariable>();
-        this.current_path.addAll(this.past_variables);
-        this.current_path.addAll(this.future_variables);
+        this.current_path.addAll(this.instantiated_variables);
+        this.current_path.addAll(this.uninstantiated_variables);
 
         // System.out.println("Instantiate: " + instantiatedVar.getName() + " with a
-        // domain of "
-        // + instantiatedVar.getCurrentDomain());
+        // domain of " + instantiatedVar.getCurrentDomain());
 
         // printOrdering();
 
@@ -772,8 +778,8 @@ public class SearchAlgorithms {
         if (consistent) {
             return i + 1; // an assignment to v[i] works
         } else {
-            MyVariable recent = this.past_variables.remove(this.past_variables.size() - 1);
-            this.future_variables.add(0, recent);
+            MyVariable recent = this.instantiated_variables.pop();
+            this.uninstantiated_variables.add(0, recent);
             return i;
         }
 
@@ -782,14 +788,14 @@ public class SearchAlgorithms {
     public int FC_unlabel(int i) {
 
         // printOrdering();
-        MyVariable recent = this.past_variables.remove(this.past_variables.size() - 1);
-        this.future_variables.add(0, recent);
+        MyVariable recent = this.instantiated_variables.pop();
+        this.uninstantiated_variables.add(0, recent);
 
         // System.out.println("Uninstantiated " + recent);
 
         this.current_path = new ArrayList<MyVariable>();
-        this.current_path.addAll(this.past_variables);
-        this.current_path.addAll(this.future_variables);
+        this.current_path.addAll(this.instantiated_variables);
+        this.current_path.addAll(this.uninstantiated_variables);
 
         // printOrdering();
 
@@ -856,27 +862,32 @@ public class SearchAlgorithms {
     }
 
     public void printFCTables() {
-
-        for (int i = 1; i < current_path.size(); i++) {
-            System.out.println(current_path.get(i).getName() + ": reductions: " + reductions.get(i) + " future: "
-                    + future_fc.get(i));
-        }
+        System.out.println("Reductions ");
+        for (Map.Entry<MyVariable, Stack<Stack<Integer>>> entry : this.reductions.entrySet())
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        System.out.println("Future FC");
+        for (Map.Entry<MyVariable, Stack<Integer>> entry : this.future_fc.entrySet())
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        // System.out.println("Past FC");
+        // for (Map.Entry<MyVariable, Stack<Integer>> entry : this.past_fc.entrySet())
+        // System.out.println(entry.getKey() + ": " + entry.getValue());
     }
 
     public void printOrdering() {
         String s = "Past Variables: [";
-        for (int i = 1; i < this.past_variables.size(); i++) {
-            if (this.past_variables.get(i) != null) {
-                s += this.past_variables.get(i).getName() + "(" + this.past_variables.get(i).getCurrentDomain().size()
-                        + ")= " + this.assignments_for_FC.get(this.past_variables.get(i)) + ", ";
+        for (int i = 1; i < this.instantiated_variables.size(); i++) {
+            if (this.instantiated_variables.get(i) != null) {
+                s += this.instantiated_variables.get(i).getName() + "("
+                        + this.instantiated_variables.get(i).getCurrentDomain().size() + ")= "
+                        + this.assignments_for_FC.get(this.instantiated_variables.get(i)) + ", ";
             }
         }
         s = s.substring(0, s.length() - 2) + "]\nFuture Variables: [";
-        for (int i = 0; i < this.future_variables.size(); i++) {
-            if (this.future_variables.get(i) != null) {
-                s += this.future_variables.get(i).getName() + "("
-                        + this.future_variables.get(i).getCurrentDomain().size() + ")= "
-                        + this.assignments_for_FC.get(this.future_variables.get(i)) + ", ";
+        for (int i = 0; i < this.uninstantiated_variables.size(); i++) {
+            if (this.uninstantiated_variables.get(i) != null) {
+                s += this.uninstantiated_variables.get(i).getName() + "("
+                        + this.uninstantiated_variables.get(i).getCurrentDomain().size() + ")= "
+                        + this.assignments_for_FC.get(this.uninstantiated_variables.get(i)) + ", ";
             }
         }
         s = s.substring(0, s.length() - 2) + "]";
