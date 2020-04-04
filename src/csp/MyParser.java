@@ -118,8 +118,8 @@ public class MyParser {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 
-		// // for (int i = 10; i <= 90; i += 10) {
-		// // String fileName =
+		// for (int i = 10; i <= 90; i += 10) {
+		// String fileName =
 		// "/home/tbessho/Documents/Tools2008/absconCVS4/v32_d8_p20/v32_d8_p20_t" + i;
 
 		// File dir = new
@@ -153,6 +153,7 @@ public class MyParser {
 		} else {
 
 			MyParser parser = new MyParser(args);
+
 		}
 
 	}

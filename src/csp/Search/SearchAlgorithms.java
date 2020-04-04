@@ -674,6 +674,123 @@ public class SearchAlgorithms {
 
     }
 
+    public int FCCBJ_Label(int i) {
+        consistent = false;
+
+        // going through each possible assignment in the current domain of the variable
+        // at v[i]
+        Iterator<Integer> iterator = current_path.get(i).getCurrentDomain().iterator();
+        while (iterator.hasNext() && !consistent) {
+
+            // assigning the next possible value for v[i]
+            int next = iterator.next();
+            assignments[i] = next;
+
+            // System.out.println("Assignment: " + current_path.get(i).getName() + " <-- " +
+            // assignments[i]);
+            // System.out.println("assignments: " + Arrays.toString(this.assignments));
+            consistent = true;
+            this.nv++;
+
+            // forward checking against all past variables with their respective assignments
+            for (int j = i + 1; j < current_path.size(); j++) {
+
+                // System.out.println("checking forward at levels " + i + " & " + j);
+                consistent = check_forward(i, j);
+
+                // System.out.println(current_path.get(h).getName() + " " + assignments[h] + "
+                // <> "
+                // + current_path.get(i).getName() + " " + assignments[i] + " ==> " +
+                // consistent);
+                // System.out.println(current_path.get(i).getCurrentDomain());
+                if (!consistent) {
+                    iterator.remove();
+                    undo_reduction(i);
+                    SetFunctions sf = new SetFunctions();
+                    conf_set.set(i, sf.unionLS(conf_set.get(i), past_fc.get(j - 1)));
+
+                    break;
+                }
+
+            }
+
+        }
+
+        if (consistent) {
+            return i + 1; // an assignment to v[i] works
+        } else {
+            return i;
+        }
+
+    }
+
+    public int FCCBJ_unlabel(int i) {
+        
+        // System.out.println("Before unlabel: " + conf_set);
+        SetFunctions llsf = new SetFunctions();
+        int h = llsf.maxInLinkedList(conf_set.get(i));
+        // System.out.println("Jump to " + h);
+        // System.out.println(conf_set);
+        if (h > 0) {
+            LinkedList<Integer> temp = conf_set.get(h);
+
+            // System.out.println("before union: " + conf_set.get(h));
+            // System.out.println("before union pt2: " + conf_set.get(i));
+            temp = llsf.unionLL(conf_set.get(h), conf_set.get(i));
+
+            // System.out.println("after union: " + temp);
+
+            for (int k = 0; k < temp.size(); k++) {
+                if (temp.get(k) == h) {
+                    temp.remove(k);
+                }
+            }
+
+            conf_set.set(h, temp);
+
+            // System.out.println("conf set: " + conf_set.get(h));
+            // System.out.println((h + 1) + " to " + i);
+            for (int j = h + 1; j <= i; j++) {
+
+                // reinitalizing the conf_set for the levels in between h+1 and i
+                LinkedList<Integer> init = new LinkedList<>();
+                init.add(0);
+                // System.out.println("LOOPING TO REST THOSE CONF SETS: " + j);
+                conf_set.set(j, init);
+
+                // System.out.println("reset domain at " + j);
+                // reseetting the domain
+                current_path.get(j).resetDomain();
+            }
+
+            this.bt++;
+
+            current_path.get(i).resetDomain();
+
+            // starting domain at level i
+            if (h > 0) {
+                Iterator<Integer> iterator = current_path.get(h).currentDomain.iterator();
+
+                // finding the index of assignments[h] in current-domain[h] to remove it
+                while (iterator.hasNext()) {
+                    int nextVal = iterator.next();
+                    if (nextVal == assignments[h]) {
+                        iterator.remove();
+                    }
+                }
+
+                if (current_path.get(h).getCurrentDomain().size() == 0) {
+                    consistent = false;
+                } else
+                    consistent = true;
+            }
+        }
+
+        // System.out.println("After : " + conf_set);
+
+        return h;
+
+    }
     /** Get cpu time in nanoseconds. */
     public long getCpuTime() {
         ThreadMXBean bean = ManagementFactory.getThreadMXBean();

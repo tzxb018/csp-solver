@@ -148,7 +148,7 @@ public class SearchTypes {
         fileContent += "\n";
 
         BufferedWriter writer = new BufferedWriter(
-                new FileWriter("/home/tbessho/Documents/Tools2008/absconCVS4/out.csv", true));
+                new FileWriter("C:/Users/14022/Documents/VS Code Projects/csp-solver/out.csv", true));
         writer.write(fileContent);
         writer.close();
 
