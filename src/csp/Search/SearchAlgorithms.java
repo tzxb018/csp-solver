@@ -66,7 +66,7 @@ public class SearchAlgorithms {
 
         this.algorithm = algorithm;
 
-        if (algorithm.equals("CBJ")) {
+        if (algorithm.contains("CBJ")) {
 
             // initalizing the map conf-set
             this.conf_set = new ArrayList<LinkedList<Integer>>();
@@ -81,7 +81,8 @@ public class SearchAlgorithms {
             }
 
             this.conf_set.add(0, null);
-        } else if (algorithm.equals("FC")) {
+        }
+        if (algorithm.contains("FC")) {
 
             this.future_fc = new ArrayList<>();
             this.past_fc = new ArrayList<>();
@@ -141,6 +142,8 @@ public class SearchAlgorithms {
                     i = CBJ_label(i);
                 else if (this.algorithm.equals("FC"))
                     i = FC_label(i);
+                else if (this.algorithm.equals("FCCBJ"))
+                    i = FCCBJ_Label(i);
             } else {
                 // System.out.println("UNLABEL: " + i);
                 if (this.algorithm.equals("BT"))
@@ -149,6 +152,8 @@ public class SearchAlgorithms {
                     i = CBJ_unlabel(i);
                 else if (this.algorithm.equals("FC"))
                     i = FC_unlabel(i);
+                else if (this.algorithm.equals("FCCBJ"))
+                    i = FCCBJ_unlabel(i);
             }
 
             // determining if there is a solution or not
@@ -203,6 +208,16 @@ public class SearchAlgorithms {
                     }
                     conf_set.set(n, conflict);
                     // System.out.println(conf_set);
+                } else if (algorithm.equals("FCCBJ")){
+                    i = i - 1;
+                    consistent = true;
+                    LinkedList<Integer> conflict = new LinkedList<Integer>();
+                    for (int ii = 0; ii < n; ii++) {
+                        conflict.add(ii);
+                    }
+                    conf_set.set(n, conflict);
+                    current_path.get(i).currentDomain.remove(0);
+
                 }
             }
             // reach the top of the tree
@@ -725,47 +740,45 @@ public class SearchAlgorithms {
     }
 
     public int FCCBJ_unlabel(int i) {
-        
+
         // System.out.println("Before unlabel: " + conf_set);
         SetFunctions llsf = new SetFunctions();
-        int h = llsf.maxInLinkedList(conf_set.get(i));
+        // getting the max out of conf-set[i] and past-fc[i]
+        int h1 = llsf.maxInLinkedList(conf_set.get(i));
+        int h2 = llsf.maxInStack(past_fc.get(i));
+        int h = 0;
+        if (h1 > h2)
+            h = h1;
+        else
+            h = h2;
+
         // System.out.println("Jump to " + h);
         // System.out.println(conf_set);
         if (h > 0) {
-            LinkedList<Integer> temp = conf_set.get(h);
 
-            // System.out.println("before union: " + conf_set.get(h));
-            // System.out.println("before union pt2: " + conf_set.get(i));
-            temp = llsf.unionLL(conf_set.get(h), conf_set.get(i));
-
-            // System.out.println("after union: " + temp);
-
-            for (int k = 0; k < temp.size(); k++) {
-                if (temp.get(k) == h) {
-                    temp.remove(k);
+            LinkedList<Integer> replace_at_h = new LinkedList<>();
+            replace_at_h = llsf.unionLL(conf_set.get(h), llsf.unionLS(conf_set.get(i), past_fc.get(i)));
+            for (int k = 0; k < replace_at_h.size(); k++) {
+                if (replace_at_h.get(k) == h) {
+                    replace_at_h.remove(k);
                 }
             }
+            conf_set.set(h, replace_at_h);
 
-            conf_set.set(h, temp);
-
-            // System.out.println("conf set: " + conf_set.get(h));
-            // System.out.println((h + 1) + " to " + i);
             for (int j = h + 1; j <= i; j++) {
 
                 // reinitalizing the conf_set for the levels in between h+1 and i
                 LinkedList<Integer> init = new LinkedList<>();
                 init.add(0);
-                // System.out.println("LOOPING TO REST THOSE CONF SETS: " + j);
-                conf_set.set(j, init);
 
-                // System.out.println("reset domain at " + j);
-                // reseetting the domain
-                current_path.get(j).resetDomain();
+                conf_set.set(j, init);
+                undo_reduction(j);
+                updated_current_domain(j);
             }
 
             this.bt++;
 
-            current_path.get(i).resetDomain();
+            undo_reduction(h);
 
             // starting domain at level i
             if (h > 0) {
@@ -791,6 +804,7 @@ public class SearchAlgorithms {
         return h;
 
     }
+
     /** Get cpu time in nanoseconds. */
     public long getCpuTime() {
         ThreadMXBean bean = ManagementFactory.getThreadMXBean();
