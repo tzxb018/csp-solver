@@ -45,9 +45,9 @@ public class SetFunctions {
     }
 
     public ArrayList<Integer> unionAS(ArrayList<Integer> s1, Stack<Integer> s2) {
-
-        while (!s2.empty()) {
-            int j = s2.pop();
+        Stack<Integer> s2_clone = (Stack<Integer>) s2.clone();
+        while (!s2_clone.empty()) {
+            int j = s2_clone.pop();
 
             if (s1.indexOf(j) < 0) {
                 s1.add(j);

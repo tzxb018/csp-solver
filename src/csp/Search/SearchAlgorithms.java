@@ -208,7 +208,7 @@ public class SearchAlgorithms {
                     }
                     conf_set.set(n, conflict);
                     // System.out.println(conf_set);
-                } else if (algorithm.equals("FCCBJ")){
+                } else if (algorithm.equals("FCCBJ")) {
                     i = i - 1;
                     consistent = true;
                     LinkedList<Integer> conflict = new LinkedList<Integer>();
@@ -581,9 +581,9 @@ public class SearchAlgorithms {
             // current_path.get(j).getCurrentDomain());
 
             // System.out.println("past fc" + this.past_fc);
-            if (!this.past_fc.get(j).empty()) {
+            // if (!this.past_fc.get(j).empty()) {
                 this.past_fc.get(j).pop();
-            }
+            // }
         }
 
         Stack<Integer> empty = new Stack<>();
@@ -690,6 +690,7 @@ public class SearchAlgorithms {
     }
 
     public int FCCBJ_Label(int i) {
+
         consistent = false;
 
         // going through each possible assignment in the current domain of the variable
@@ -710,20 +711,15 @@ public class SearchAlgorithms {
             // forward checking against all past variables with their respective assignments
             for (int j = i + 1; j < current_path.size(); j++) {
 
-                // System.out.println("checking forward at levels " + i + " & " + j);
                 consistent = check_forward(i, j);
-
-                // System.out.println(current_path.get(h).getName() + " " + assignments[h] + "
-                // <> "
-                // + current_path.get(i).getName() + " " + assignments[i] + " ==> " +
-                // consistent);
-                // System.out.println(current_path.get(i).getCurrentDomain());
+                ;
                 if (!consistent) {
                     iterator.remove();
                     undo_reduction(i);
                     SetFunctions sf = new SetFunctions();
+                    // System.out.println(conf_set.get(i) + " U " + past_fc.get(j - 1));
+                    // System.out.println(sf.unionLS(conf_set.get(i), past_fc.get(j - 1)));
                     conf_set.set(i, sf.unionLS(conf_set.get(i), past_fc.get(j - 1)));
-
                     break;
                 }
 
@@ -741,8 +737,8 @@ public class SearchAlgorithms {
 
     public int FCCBJ_unlabel(int i) {
 
-        // System.out.println("Before unlabel: " + conf_set);
         SetFunctions llsf = new SetFunctions();
+
         // getting the max out of conf-set[i] and past-fc[i]
         int h1 = llsf.maxInLinkedList(conf_set.get(i));
         int h2 = llsf.maxInStack(past_fc.get(i));
@@ -752,11 +748,9 @@ public class SearchAlgorithms {
         else
             h = h2;
 
-        // System.out.println("Jump to " + h);
-        // System.out.println(conf_set);
         if (h > 0) {
 
-            LinkedList<Integer> replace_at_h = new LinkedList<>();
+            LinkedList<Integer> replace_at_h = conf_set.get(h);
             replace_at_h = llsf.unionLL(conf_set.get(h), llsf.unionLS(conf_set.get(i), past_fc.get(i)));
             for (int k = 0; k < replace_at_h.size(); k++) {
                 if (replace_at_h.get(k) == h) {
@@ -780,26 +774,22 @@ public class SearchAlgorithms {
 
             undo_reduction(h);
 
-            // starting domain at level i
-            if (h > 0) {
-                Iterator<Integer> iterator = current_path.get(h).currentDomain.iterator();
+            Iterator<Integer> iterator = current_path.get(h).currentDomain.iterator();
 
-                // finding the index of assignments[h] in current-domain[h] to remove it
-                while (iterator.hasNext()) {
-                    int nextVal = iterator.next();
-                    if (nextVal == assignments[h]) {
-                        iterator.remove();
-                    }
+            // finding the index of assignments[h] in current-domain[h] to remove it
+            while (iterator.hasNext()) {
+                int nextVal = iterator.next();
+                if (nextVal == assignments[h]) {
+                    iterator.remove();
                 }
-
-                if (current_path.get(h).getCurrentDomain().size() == 0) {
-                    consistent = false;
-                } else
-                    consistent = true;
             }
-        }
 
-        // System.out.println("After : " + conf_set);
+            if (current_path.get(h).getCurrentDomain().size() == 0) {
+                consistent = false;
+            } else
+                consistent = true;
+
+        }
 
         return h;
 

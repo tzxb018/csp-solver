@@ -8,6 +8,46 @@ To read the README.md file in the formatted version: go to this link: https://gi
 
 ## Homework Reports
 
+<details><summary> Homework 6 Progress Reports (4/6/2020) </summary>
+
+### Overviews
+
+This assignment has me implementing FC-CBJ by using the existing data structures and methods used in FC and CBJ. As of now, I have implemented the pseduocode from the paper and am now working on fixing out some bugs of it. I am currently having issues finding all the solutions and am having trouble finding the correct first solution for the more complex problems (zebra problem). I am also working on implementing the width ordering heuristic.
+
+</p>
+</details>
+<details><summary>Homework 5 (3/30/2020)</summary>
+<p>
+  
+### Overview
+
+This assignment required me to create and use the data strucutres to implement fowrard checking (FC) to find the solutions to the given CSP problems given in a XCSP file. This assignment focused on implementing this different search algorithm into the already implemented BCSSP framework for search.
+
+### Important Notes
+
+I was unable to implement dynmaic variable ordering in this assignment. Therefore, I do not have results for that part of the assignment. I also updated the way that project is compiled. It will still compile the same way as it did previously; however, instead of having the flags be placed in any order, I made it so that it had to be in a certain order (explained in the compile section). This should not affect how the grade checker checks the assignment.
+
+### Impressions
+
+Comparing the results between FC, CBJ, and BT, it is clear that FC is more efficient than BT. However, since FC and CBJ are not really comparable, it is hard to distinguish a concerte relationship between the two. From my results, however, I noticed that on average, it seemed that FC was more efficient than CBJ. The ability to filter out inconsitent values before actually assigning them might be quicker in some instances compared to CBJ.
+
+### New and Updated Files/Directories
+
+- I renamed the directory /src/csp/BacktrackSearch to /src/csp/Search because this directory does both backtrack search and forward search
+- /src/csp/Search/SearchAlgorithms.java: I added FC into the already existing file. This file now holds the code for all three search types, FC, CBJ, and BT
+
+### Data Structures
+
+- reductions: A map that maps a variable to a stack of stack of integers. Each variable is assigned a stack of stacks that represents the reductions made during FC.
+- future_fc: A mpa that maps a variable to a stack of integers. Each variable is assigned a stack that holds the levels at which the variable checks against with another future variable.
+- past_fc: Similar to future_fc, except it holds the level of the variables that have been checked in the past.
+- assignments_for_fc: A map that holds the assignemtns of the variables (used in replace of the arraylist to accomidate for the changing ordering of the variables)
+- instantiated_variabes: A stack that holds all the variables that have been instantiated. A stack is used in case FC needs to backtrack. That way, FC can pop off of this stack.
+- uninstanted_varaibles: An arraylist that holds all the future variables.
+- solutions: An arraylist that holds all the solutions found (just for debugging purposes)
+
+</p>
+</details>
 <details><summary>Homework 5 Progress Report (3/21/2020)</summary>
 <p>
 
