@@ -5,7 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 import csp.MyACAlgorithms;
 import csp.MainStructures.MyConstraint;
@@ -120,6 +123,10 @@ public class SearchTypes {
                 case ("DD"):
                     this.current_path = ddrOrdering(this.current_path);
                     break;
+                case ("W"):
+                    this.current_path = widthOrdering(this.current_path);
+                    Collections.reverse(this.current_path);
+                    break;
 
             }
 
@@ -127,12 +134,12 @@ public class SearchTypes {
             // csvOrder();
 
             current_path.add(0, null); // pointer starts at 1
-            // orderedCurrentPathString = "[";
-            // for (int i = 1; i < current_path.size() - 1; i++) {
-            // orderedCurrentPathString += (current_path.get(i).getName() + ",");
-            // }
-            // orderedCurrentPathString += (current_path.get(current_path.size() -
-            // 1)).getName();
+            orderedCurrentPathString = "[";
+            for (int i = 1; i < current_path.size() - 1; i++) {
+                orderedCurrentPathString += (current_path.get(i).getName() + ",");
+            }
+            orderedCurrentPathString += (current_path.get(current_path.size() - 1)).getName();
+            // System.out.println(orderedCurrentPathString);
         }
     }
 
@@ -287,6 +294,95 @@ public class SearchTypes {
 
         }
         return ddrOrdered;
+    }
+
+    public ArrayList<MyVariable> widthOrdering(ArrayList<MyVariable> input) {
+
+        // setting the degree sizes of all the variables
+        ArrayList<MyVariable> widthOrdered = new ArrayList<MyVariable>();
+        Iterator<MyVariable> iterator1 = input.iterator();
+        while (iterator1.hasNext()) {
+            MyVariable v = iterator1.next();
+            v.getDegree();
+            // removing all the nodes that have a degree of 0
+            if (v.getDegree() == 0) {
+                widthOrdered.add(v);
+                iterator1.remove();
+            }
+        }
+
+        // sorting the list lexiographically, since all the variables here have degree 0
+        // atm
+        Collections.sort(widthOrdered, MyVariable.LX_COMPARATOR);
+        int k = 0;
+
+        // while there are nodes in the graph
+        while (input.size() > 0) {
+            k++; // incrementing the value of the current width
+
+            int minDegree = 0;
+            while (minDegree <= k && input.size() > 0) {
+                while (input.size() > 0) {
+                    MyVariable minVar = computeMinDegree(input);
+                    minDegree = minVar.getDegree();
+
+                    // add the variable with the min degree to the array list and remove from the
+                    // inital list to avoid redundancy
+                    widthOrdered.add(minVar);
+                    input.remove(minVar);
+
+                    // once the max degree has been found, remove all the instances in the neighbors
+                    // of all the other variables
+                    for (MyVariable var : input) {
+                        ArrayList<MyConstraint> constraints = var.getConstraints();
+
+                        // remove the max var from all the neighbors and update the neighbors
+                        Iterator<MyConstraint> iterator = constraints.iterator();
+                        while (iterator.hasNext()) {
+                            MyConstraint next = iterator.next();
+
+                            // making sure it is not a unary constraint
+                            if (next.getScope().size() > 1) {
+                                // finding the constraints that make the variable incident with the max var
+                                if (next.getScope().get(0).getName().equals(minVar.getName())
+                                        || next.getScope().get(1).getName().equals(minVar.getName())) {
+                                    iterator.remove();
+                                }
+                            } else {
+                                iterator.remove();
+                            }
+                        }
+                        // update the neighbors
+                        var.setConstraints(constraints);
+                    }
+                }
+            }
+
+        }
+        return widthOrdered;
+    }
+
+    public MyVariable computeMinDegree(ArrayList<MyVariable> input) {
+
+        // finding the variable with the smallest degree
+        int minDegree = input.get(0).getDegree();
+        MyVariable minVar = input.get(0);
+
+        // finding the smallest element
+        for (MyVariable var : input) {
+            // if the degree is smaller
+            if (var.getDegree() < minDegree) {
+                minVar = var;
+                minDegree = var.getDegree();
+            }
+            // if the degree is the same, then break lexiographically
+            else if (var.getDegree() == minDegree && var.getName().compareTo(minVar.getName()) < 0) {
+                minVar = var;
+                minDegree = var.getDegree();
+            }
+        }
+
+        return minVar;
     }
 
     public ArrayList<MyVariable> getCopyCurrentPath() {
