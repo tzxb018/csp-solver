@@ -25,6 +25,7 @@ public class SetFunctions {
     }
 
     public LinkedList<Integer> unionLS(LinkedList<Integer> s1, Stack<Integer> s2) {
+        
         Stack<Integer> copy_of_s2 = new Stack<>();
         copy_of_s2 = (Stack<Integer>) s2.clone();
 
@@ -76,7 +77,7 @@ public class SetFunctions {
     public int maxInStack(Stack<Integer> s1) {
         Stack<Integer> copy_of_s1 = new Stack<>();
         copy_of_s1 = (Stack<Integer>) s1.clone();
-        int max = Integer.MIN_VALUE;
+        int max = 0;
         while (!copy_of_s1.empty()) {
             int next = copy_of_s1.pop();
             if (next > max) {

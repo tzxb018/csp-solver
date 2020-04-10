@@ -127,26 +127,17 @@ public class MyParser {
 		// File[] directoryListing = dir.listFiles();
 
 		if (args.length > 0 && args[0].equals("csv")) {
-			String[] typesOfOrder = { "LX", "LD", "DEG", "DD" };
-			String[] fileLocations = { "/home/tbessho/Documents/Tools2008/absconCVS4/problems/3q-conflicts.xml",
-					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/3q-intension.xml",
-					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/4q-conflicts.xml",
-					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/4q-supports.xml",
-					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/5q-intesion.xml",
-					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/6q-conflicts.xml",
-					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/6q-intension.xml",
-					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/random_20_8_100_20.xml",
-					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/chain4-conflicts.xml",
-					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/map-coloring-australia.xml",
-					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/map-coloring-australia-intension.xml",
-					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/k4-coloring.xml",
-					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/zebra-extension-supports-and-conflicts.xml",
-					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/zebra-intension.xml",
-					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/zebra-supports.xml",
-					"/home/tbessho/Documents/Tools2008/absconCVS4/problems/12q.xml" };
+			String[] typesOfOrder = { "LX", "LD", "DEG", "DD", "W" };
+			String[] fileLocations = { "3q-conflicts.xml", "3q-intension.xml", "4q-conflicts.xml", "4q-supports.xml",
+					"5q-intesion.xml", "6q-conflicts.xml", "6q-intension.xml", "random_20_8_100_20.xml",
+					"chain4-conflicts.xml", "map-coloring-australia.xml", "map-coloring-australia-intension.xml",
+					"k4-coloring.xml", "zebra-extension-supports-and-conflicts.xml", "zebra-intension.xml",
+					"zebra-supports.xml", "12q.xml" };
 			for (String fileLoc : fileLocations) {
 				for (String typeoforder : typesOfOrder) {
-					String[] argsString = { "-f", fileLoc, "-s", "FC", "-u", typeoforder };
+					String loc = "C:\\Users\\14022\\Documents\\VS Code Projects\\csp-solver\\problems\\" + fileLoc;
+
+					String[] argsString = { "-f", loc, "-s", "FCCBJ", "-u", typeoforder };
 					MyParser parser = new MyParser(argsString);
 				}
 			}
