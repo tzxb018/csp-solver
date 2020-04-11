@@ -8,9 +8,29 @@ To read the README.md file in the formatted version: go to this link: https://gi
 
 ## Homework Reports
 
+<details><summary> Homework 6 (4/11/2020) </summary>
+
+### Overview
+
+For this assignment, I implemented FC-CBJ by using the existing data structures and methods from FC and CBJ. I modified the FC_label and FC_unlabel functions to keep modularity. I also reused the same BCSSP framework I have been using the for the past assignments to implement FC-CBJ as well. I made sure to implement min-wdith ordering for bonus credit and compared the results from running FC and FC-CBJ for all the instances in the 17d problems. 
+
+### New and Updated Directories
+
+- /src/csp/Search/SetFunctions.java: I updated this script to have more set functions for the different data structures in FC and CBJ. Since FC used stacks and CBJ used Linked Lists, I had to incorporate those two different data structures to output the correct data set for the algorithm to use.
+- /src/csp/Search/SearchTypes.java: I implemented static min-width ordering for ordering the variables before running the search algorithsm.
+- /src/csp/Search/SearchAlgorithms.java: I added FC-CBJ by modifying the existing code for FC to use the data structures and logic from CBJ if FC-CBJ is called.
+- /src/csp/MyParser.java: I added three new ways to compile the code. This is strictly for debugging and outputting the results for the excel files. The code still compiles the same way as it has before.
+
+### Impressions betwween FC and FC-CBJ (also found in the excel file)
+
+For this analysis, I chose to use width ordering as my variable ordering, as it seemed to be the most efficient compared to the other static orderings. Looking at the data, it is clear that FC-CBJ is more efficient than FC. The #CC, #NV, #CPU time are all lower with FC-CBJ than FC alone. This makes sense, as FC-CBJ builds upon and improves FC by keeping track of the previous conflicts made. By using this data, FC-CBJ prevents from doing any extra backtracking FC does alone, making it more efficient. Thus, there are lower #BT with FC-CBJ compared to FC. 
+
+</p>
+</details>
+
 <details><summary> Homework 6 Progress Reports (4/6/2020) </summary>
 
-### Overviews
+### Overview
 
 This assignment has me implementing FC-CBJ by using the existing data structures and methods used in FC and CBJ. As of now, I have implemented the pseduocode from the paper and am now working on fixing out some bugs of it. I am currently having issues finding all the solutions and am having trouble finding the correct first solution for the more complex problems (zebra problem). I am also working on implementing the width ordering heuristic.
 
@@ -144,6 +164,14 @@ The organization and usages of these different data structures should lead to ea
 
 </p>
 </details>
+
+## Overall Impressions of Different Search Algorithms
+
+Overall, it seems like FC-CBJ is the most efficient algorithm out of the four algorithms, while BT is the least efficient. This makes sense as BT is the trivial version of all of these algorithms, since CBJ, FC, and FC-CBJ builds upon and improves BT. Comparing FC and CBJ is difficult, as they are different algorithms are not actually comparable (as we learned in class). FC seems to do better on the 20_80_100_20 instance; however, looking at the Zebra problems, CBJ does better than FC on some instances and variable orderings while FC does better than others. Looking at the 12-queens, it is clear that FC does better than FC in this case. Overall though, it is clear that FC-CBJ does the best out of all four algorithms, as it reports better numbers for all cases. The other trivial cases, such as the chain problem, 3 -6 queen problems, don't yield us any comprehensible conclusions, as they report the same numbers for all algorithms. 
+
+## Overall Impressions of Variable Ordering Heuristics
+
+From the static variable orderings, it seems that min-width ordering does the best when it comes to the variable orderings. Degree ordering and DDR ordering also does well, but not as well as min-width ordering. I was surprised by the effect of the ordering of the variables before running any of the search algorithms. By taking the time to order the variables so that the amount of backtracking is minimzed before even running the algorithms has a significant impact, as seen with the larger problems (12 queens, zebra, 20_80_100_20). This can be seen with the significant decrease in #BT when using min-width compared to the other orderings. From this, I learned that variable ordering is critical to maximzing the efficiency of solving a CSP. Although I was unable to implement the dynamic ordering of variables, I learned from my peer's results and class that dynamically changing the order of the variables will make the algorithms even more efficient. 
 
 ## Compiling
 
