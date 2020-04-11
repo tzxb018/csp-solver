@@ -169,13 +169,15 @@ public class SearchTypes {
         searchAlgorithms.BCSSP(this.variables.size(), "unknown");
 
         // Writing the results to a csv fileSD
-        String fileContent = myProblem.getProblemName() + "," + searchType + "," + this.orderingHeuristic + ","
-                + searchAlgorithms.getCSVRow() + "\n";
+        // String fileContent = myProblem.getProblemName() + "," + searchType + "," +
+        // this.orderingHeuristic + ","
+        // + searchAlgorithms.getCSVRow() + "\n";
 
-        BufferedWriter writer = new BufferedWriter(
-                new FileWriter("C:\\Users\\14022\\Documents\\VS Code Projects\\csp-solver\\out.csv", true));
-        writer.write(fileContent);
-        writer.close();
+        // BufferedWriter writer = new BufferedWriter(
+        // new FileWriter("C:\\Users\\14022\\Documents\\VS Code
+        // Projects\\csp-solver\\out.csv", true));
+        // writer.write(fileContent);
+        // writer.close();
 
     }
 

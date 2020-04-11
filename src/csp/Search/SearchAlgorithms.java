@@ -74,9 +74,9 @@ public class SearchAlgorithms {
             // iterate through every variable in the current_path and initalize it with {0}
             for (MyVariable v : current_path) {
 
-                LinkedList<Integer> init = new LinkedList<Integer>();
-                init.add(0);
-                conf_set.add(init);
+                LinkedList<Integer> init3 = new LinkedList<Integer>();
+                init3.add(0);
+                conf_set.add(init3);
 
             }
 
@@ -182,6 +182,8 @@ public class SearchAlgorithms {
 
                     current_path.add(0, null); // pointer starts at 1
                     this.numberOfSolutions++;
+
+                    // return true; // for finding one solution
                 } else {
                     this.numberOfSolutions++;
 
@@ -393,8 +395,6 @@ public class SearchAlgorithms {
 
                     conf_set.set(i, llsf.unionLL(conf_set.get(i), addTo));
 
-                    // System.out.println(conf_set);
-
                     // removing the inconsistent value from the current domain of the instantiated
                     // variable and breaking the loop
                     iterator.remove();
@@ -416,19 +416,13 @@ public class SearchAlgorithms {
 
     public int CBJ_unlabel(int i) {
 
-        // System.out.println("Before unlabel: " + conf_set);
         SetFunctions llsf = new SetFunctions();
         int h = llsf.maxInLinkedList(conf_set.get(i));
-        // System.out.println("Jump to " + h);
-        // System.out.println(conf_set);
+
         if (h > 0) {
             LinkedList<Integer> temp = conf_set.get(h);
 
-            // System.out.println("before union: " + conf_set.get(h));
-            // System.out.println("before union pt2: " + conf_set.get(i));
             temp = llsf.unionLL(conf_set.get(h), conf_set.get(i));
-
-            // System.out.println("after union: " + temp);
 
             for (int k = 0; k < temp.size(); k++) {
                 if (temp.get(k) == h) {
@@ -438,17 +432,13 @@ public class SearchAlgorithms {
 
             conf_set.set(h, temp);
 
-            // System.out.println("conf set: " + conf_set.get(h));
-            // System.out.println((h + 1) + " to " + i);
             for (int j = h + 1; j <= i; j++) {
 
                 // reinitalizing the conf_set for the levels in between h+1 and i
                 LinkedList<Integer> init = new LinkedList<>();
                 init.add(0);
-                // System.out.println("LOOPING TO REST THOSE CONF SETS: " + j);
                 conf_set.set(j, init);
 
-                // System.out.println("reset domain at " + j);
                 // reseetting the domain
                 current_path.get(j).resetDomain();
             }
@@ -540,8 +530,8 @@ public class SearchAlgorithms {
             this.past_fc.get(j).push(i);
 
             // System.out.println("reductions update in check forward " + this.reductions);
-            // printFCTables();
         }
+        // printFCTables();
 
         return (current_path.get(j).getCurrentDomain().size() > 0);
 
@@ -591,8 +581,6 @@ public class SearchAlgorithms {
 
         // System.out.println("updated current domains " + i);
 
-        // //printCurrentDomains();
-
         current_path.get(i).resetDomain();
         SetFunctions sf = new SetFunctions();
 
@@ -602,7 +590,6 @@ public class SearchAlgorithms {
             current_path.get(i).setCurrentDomain(sf.setDiff(current_path.get(i).getCurrentDomain(), reduction));
         }
 
-        // //printCurrentDomains();
     }
 
     public int FC_label(int i, String algoType) {
@@ -618,23 +605,14 @@ public class SearchAlgorithms {
             int next = iterator.next();
             assignments[i] = next;
 
-            // System.out.println("Assignment: " + current_path.get(i).getName() + " <-- " +
-            // assignments[i]);
-            // System.out.println("assignments: " + Arrays.toString(this.assignments));
             consistent = true;
             this.nv++;
 
             // forward checking against all past variables with their respective assignments
             for (int j = i + 1; j < current_path.size(); j++) {
 
-                // System.out.println("checking forward at levels " + i + " & " + j);
                 consistent = check_forward(i, j);
 
-                // System.out.println(current_path.get(h).getName() + " " + assignments[h] + "
-                // <> "
-                // + current_path.get(i).getName() + " " + assignments[i] + " ==> " +
-                // consistent);
-                // System.out.println(current_path.get(i).getCurrentDomain());
                 if (!consistent) {
                     iterator.remove();
                     undo_reduction(i);
@@ -643,7 +621,10 @@ public class SearchAlgorithms {
                     if (algoType.equals("FCCBJ")) {
                         SetFunctions sf = new SetFunctions();
                         LinkedList<Integer> union_of_conf_set_i_and_past_fc = new LinkedList<>();
-                        union_of_conf_set_i_and_past_fc = sf.unionLS(this.conf_set.get(i), this.past_fc.get(j - 1));
+                        union_of_conf_set_i_and_past_fc = sf.unionLS(this.conf_set.get(i), this.past_fc.get(j));
+                        // System.out.println(this.conf_set.get(i) + " U " + this.past_fc.get(j - 1) + "
+                        // = "
+                        // + union_of_conf_set_i_and_past_fc);
                         conf_set.set(i, union_of_conf_set_i_and_past_fc);
                     }
                     break;
@@ -668,21 +649,24 @@ public class SearchAlgorithms {
             h = i - 1;
         else if (algoType.equals("FCCBJ")) {
             SetFunctions sf = new SetFunctions();
+            // System.out.println("conf set i: " + this.conf_set.get(i));
 
-            System.out.println("past: " + this.past_fc.get(i));
-            System.out.println("conf set: " + this.conf_set.get(i));
+            // System.out.println("past: " + this.past_fc.get(i));
             int max_of_past = sf.maxInStack(this.past_fc.get(i));
             int max_of_conf_set = sf.maxInLinkedList(this.conf_set.get(i));
             if (max_of_conf_set > max_of_past)
                 h = max_of_conf_set;
             else
                 h = max_of_past;
-            System.out.println(h);
+            // System.out.println("conf set h: " + this.conf_set.get(h));
+
+            // System.out.println(h);
 
             LinkedList<Integer> union_of_confset_and_past = sf.unionLS(this.conf_set.get(i), this.past_fc.get(i));
             LinkedList<Integer> union_of_confset_h = sf.unionLL(this.conf_set.get(h), union_of_confset_and_past);
-            System.out.println(this.conf_set.get(i) + " U " + this.past_fc.get(i) + " U " + this.conf_set.get(h) + " = "
-                    + union_of_confset_h);
+            // System.out.println(this.conf_set.get(i) + " U " + this.past_fc.get(i) + " U "
+            // + this.conf_set.get(h) + " = "
+            // + union_of_confset_h);
 
             // removing h from the union of conf_set[h], conf_set[i], and past-fc[i]
             for (int k = 0; k < union_of_confset_h.size(); k++) {
@@ -690,12 +674,13 @@ public class SearchAlgorithms {
                     union_of_confset_h.remove(k);
                 }
             }
-            System.out.println("removed " + h + ": " + union_of_confset_h);
+            // System.out.println("removed " + h + ": " + union_of_confset_h);
 
-            conf_set.set(h, union_of_confset_h);
+            this.conf_set.set(h, union_of_confset_h);
+            // System.out.println(this.conf_set);
 
             // System.out.println(i + " " + (h + 1));
-            for (int j = h + 1; j <= i; j++) {
+            for (int j = i; j >= h + 1; j--) {
                 LinkedList<Integer> init2 = new LinkedList<>();
                 init2.add(0);
                 this.conf_set.set(j, init2);
@@ -704,12 +689,18 @@ public class SearchAlgorithms {
                 updated_current_domain(j);
             }
 
+            // System.out.println();
+
         }
 
         undo_reduction(h);
-        updated_current_domain(i);
+
+        if (algoType.equals("FC"))
+            updated_current_domain(i);
+
         // starting domain at level i
         if (h > 0) {
+
             Iterator<Integer> iterator = current_path.get(h).currentDomain.iterator();
 
             // finding the index of assignments[h] in current-domain[h] to remove it
@@ -726,7 +717,6 @@ public class SearchAlgorithms {
                 consistent = false;
             } else
                 consistent = true;
-            System.out.println();
         }
 
         return h;
@@ -770,8 +760,7 @@ public class SearchAlgorithms {
     public void printFCTables() {
 
         for (int i = 1; i < current_path.size(); i++) {
-            System.out.println(current_path.get(i).getName() + ": reductions: " + reductions.get(i) + " future: "
-                    + future_fc.get(i));
+            System.out.println(current_path.get(i).getName() + ": past" + this.past_fc.get(i));
         }
     }
 }
