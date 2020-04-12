@@ -96,6 +96,7 @@ public class Setup {
             // adding into the current-path in order lexiographically
             for (int i = 0; i < variables.size(); i++) {
                 current_path.add(variables.get(i));
+                System.out.println(variables.get(i).getName() + ": " + variables.get(i).getNeighbors());
             }
 
             for (int i = 0; i < assignments.length; i++) {
@@ -137,7 +138,7 @@ public class Setup {
             for (int i = 1; i < current_path.size() - 1; i++) {
                 orderedCurrentPathString += (current_path.get(i).getName() + ",");
             }
-            orderedCurrentPathString += (current_path.get(current_path.size() - 1)).getName()+ "]";
+            orderedCurrentPathString += (current_path.get(current_path.size() - 1)).getName() + "]";
             System.out.println(orderedCurrentPathString);
         }
     }
@@ -179,7 +180,5 @@ public class Setup {
         // writer.close();
 
     }
-
-   
 
 }

@@ -126,7 +126,7 @@ public class MyVariable {
 	}
 
 	public void addNeighbors(MyVariable var) {
-		neighbors.add(var);
+		this.neighbors.add(var);
 	}
 
 	public ArrayList<MyConstraint> getConstraints() {
@@ -135,6 +135,7 @@ public class MyVariable {
 	}
 
 	public ArrayList<MyVariable> getNeighbors() {
+		
 		return this.neighbors;
 	}
 
@@ -143,9 +144,6 @@ public class MyVariable {
 		this.constraints_static = constraints;
 	}
 
-	public void setNeighbors(ArrayList<MyVariable> neighbors) {
-		this.neighbors = neighbors;
-	}
 
 	public ArrayList<Integer> getCurrentDomain() {
 		return this.currentDomain;
@@ -214,27 +212,28 @@ public class MyVariable {
 	}
 
 	public String toString() {
-		String s = "Name: " + name + ", domain: {";
+		return this.name;
+		// String s = "Name: " + name + ", domain: {";
 
-		for (int i = 0; i < currentDomain.size() - 1; i++) {
-			s += currentDomain.get(i);
-			s += ",";
-		}
-		s += currentDomain.get(currentDomain.size() - 1) + "}, ";
-		s += "constraints: {";
+		// for (int i = 0; i < currentDomain.size() - 1; i++) {
+		// 	s += currentDomain.get(i);
+		// 	s += ",";
+		// }
+		// s += currentDomain.get(currentDomain.size() - 1) + "}, ";
+		// s += "constraints: {";
 
-		for (int i = 0; i < constraints.size() - 1; i++) {
-			s += constraints.get(i).getName() + ",";
-		}
-		s += constraints.get(constraints.size() - 1).getName() + "}";
-		s += ", neighbors: {";
+		// for (int i = 0; i < constraints.size() - 1; i++) {
+		// 	s += constraints.get(i).getName() + ",";
+		// }
+		// s += constraints.get(constraints.size() - 1).getName() + "}";
+		// s += ", neighbors: {";
 
-		for (int i = 0; i < neighbors.size() - 1; i++) {
-			s += neighbors.get(i).getName() + ",";
-		}
-		s += neighbors.get(neighbors.size() - 1).getName() + "}";
+		// for (int i = 0; i < neighbors.size() - 1; i++) {
+		// 	s += neighbors.get(i).getName() + ",";
+		// }
+		// s += neighbors.get(neighbors.size() - 1).getName() + "}";
 
-		return s;
+		// return s;
 	}
 
 }

@@ -42,22 +42,26 @@ public class MyProblem {
     }
 
     // public void normalizeConstraints(ArrayList<MyConstraint> list_constraints) {
-    //     ArrayList<MyConstraint> normalizedConstraints = new ArrayList<MyConstraint>();
+    // ArrayList<MyConstraint> normalizedConstraints = new
+    // ArrayList<MyConstraint>();
 
-    //     Iterator<MyConstraint> constraintIterator = list_constraints.iterator();
+    // Iterator<MyConstraint> constraintIterator = list_constraints.iterator();
 
-    //     while (constraintIterator.hasNext()) {
-    //         MyConstraint unnomralizedConstraint = constraintIterator.next();
+    // while (constraintIterator.hasNext()) {
+    // MyConstraint unnomralizedConstraint = constraintIterator.next();
 
-    //         for (MyConstraint c : list_constraints) {
-    //             if (c.getScope().size() > 1) {
-    //                 if (c.getScope().get(0).getName().equals(unnomralizedConstraint.getScope().get(0).getName()) && c
-    //                         .getScope().get(1).getName().equals(unnomralizedConstraint.getScope().get(1).getName())) {
+    // for (MyConstraint c : list_constraints) {
+    // if (c.getScope().size() > 1) {
+    // if
+    // (c.getScope().get(0).getName().equals(unnomralizedConstraint.getScope().get(0).getName())
+    // && c
+    // .getScope().get(1).getName().equals(unnomralizedConstraint.getScope().get(1).getName()))
+    // {
 
-    //                 }
-    //             }
-    //         }
-    //     }
+    // }
+    // }
+    // }
+    // }
 
     // }
 
@@ -76,11 +80,16 @@ public class MyProblem {
 
     // Sets all the neighbors of the variable
     public void setNeighborsForVariable(MyVariable myVar) {
-        // Looping through the variables and adding all the variables that are not
-        // itself
-        for (MyVariable v : variables) {
-            if (!v.getName().equals(myVar.getName())) {
-                myVar.addNeighbors(v);
+        // Looping through the constraints to see if there is a constraint (not unary)
+        // that has a scope with it in it
+        // Add the other variable in the scope as its neighbor
+        for (MyConstraint c : this.constraints) {
+            if (c.getScope().size() > 1) {
+                if (c.getScope().get(0).getName().equals(myVar.getName())) {
+                    myVar.addNeighbors(c.getScope().get(1));
+                } else if (c.getScope().get(1).getName().equals(myVar.getName())) {
+                    myVar.addNeighbors(c.getScope().get(0));
+                }
             }
         }
     }
