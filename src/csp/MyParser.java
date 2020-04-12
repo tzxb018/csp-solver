@@ -17,7 +17,7 @@ import abscon.instance.components.PExtensionConstraint;
 import abscon.instance.components.PIntensionConstraint;
 import abscon.instance.components.PVariable;
 import abscon.instance.tools.InstanceParser;
-import csp.Search.SearchTypes;
+import csp.Search.Setup;
 import csp.Search.SetFunctions;
 import csp.MainStructures.MyConstraint;
 import csp.MainStructures.MyExtensionConstraint;
@@ -110,7 +110,7 @@ public class MyParser {
 			ac.AC3(myProblem);
 
 		if (!orderingHeuristic.equals("") && !searchAlgorithm.equals("")) {
-			SearchTypes st = new SearchTypes(myProblem, orderingHeuristic, true, searchAlgorithm);
+			Setup st = new Setup(myProblem, orderingHeuristic, true, searchAlgorithm);
 			st.runSearch(searchAlgorithm);
 
 		}
