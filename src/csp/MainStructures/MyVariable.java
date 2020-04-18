@@ -5,6 +5,7 @@ import java.lang.String;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * 
@@ -23,7 +24,7 @@ public class MyVariable {
 	public ArrayList<Integer> currentDomain;
 	protected ArrayList<MyConstraint> constraints;
 	protected ArrayList<MyConstraint> constraints_static;
-	protected ArrayList<MyVariable> neighbors;
+	protected LinkedList<MyVariable> neighbors;
 
 	// Creating a lexiographic comparator for the comparator by looking at the
 	// variable's name
@@ -109,7 +110,7 @@ public class MyVariable {
 		}
 
 		constraints = new ArrayList<MyConstraint>();
-		neighbors = new ArrayList<MyVariable>();
+		neighbors = new LinkedList<MyVariable>();
 
 	}
 
@@ -126,7 +127,10 @@ public class MyVariable {
 	}
 
 	public void addNeighbors(MyVariable var) {
-		this.neighbors.add(var);
+		if (!this.neighbors.contains(var))
+			this.neighbors.add(var);
+		else
+			System.out.println("DUPLICATE");
 	}
 
 	public ArrayList<MyConstraint> getConstraints() {
@@ -134,8 +138,7 @@ public class MyVariable {
 
 	}
 
-	public ArrayList<MyVariable> getNeighbors() {
-		
+	public LinkedList<MyVariable> getNeighbors() {
 		return this.neighbors;
 	}
 
@@ -143,7 +146,6 @@ public class MyVariable {
 		this.constraints = constraints;
 		this.constraints_static = constraints;
 	}
-
 
 	public ArrayList<Integer> getCurrentDomain() {
 		return this.currentDomain;
@@ -216,24 +218,37 @@ public class MyVariable {
 		// String s = "Name: " + name + ", domain: {";
 
 		// for (int i = 0; i < currentDomain.size() - 1; i++) {
-		// 	s += currentDomain.get(i);
-		// 	s += ",";
+		// s += currentDomain.get(i);
+		// s += ",";
 		// }
 		// s += currentDomain.get(currentDomain.size() - 1) + "}, ";
 		// s += "constraints: {";
 
 		// for (int i = 0; i < constraints.size() - 1; i++) {
-		// 	s += constraints.get(i).getName() + ",";
+		// s += constraints.get(i).getName() + ",";
 		// }
 		// s += constraints.get(constraints.size() - 1).getName() + "}";
 		// s += ", neighbors: {";
 
 		// for (int i = 0; i < neighbors.size() - 1; i++) {
-		// 	s += neighbors.get(i).getName() + ",";
+		// s += neighbors.get(i).getName() + ",";
 		// }
 		// s += neighbors.get(neighbors.size() - 1).getName() + "}";
 
 		// return s;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this)
+			return true;
+
+		MyVariable v = (MyVariable) o;
+		if (v.getName().equals(this.getName())) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }

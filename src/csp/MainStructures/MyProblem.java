@@ -27,11 +27,40 @@ public class MyProblem {
         // assigning all the constraints and neighbors for each variable
         for (MyVariable myVar : variables) {
             setConstraintsForVariable(myVar);
-            setNeighborsForVariable(myVar);
+        }
+
+        // adding "edges" for each constraint by adding neighbors for each constraint
+        // for the two corresponding variables
+        for (MyConstraint c : this.constraints) {
+            if (c.getScope().size() > 1) {
+                MyVariable scope1 = null;
+                MyVariable scope2 = null;
+                for (MyVariable v : this.variables) {
+                    if (v.equals(c.getScope().get(0))) {
+                        scope1 = v;
+                    } else if (v.equals(c.getScope().get(1))) {
+                        scope2 = v;
+                    }
+                }
+                for (MyVariable v : this.variables) {
+                    if (v.equals(scope1)) {
+                        v.addNeighbors(scope2);
+                    } else if (v.equals(scope2)) {
+                        v.addNeighbors(scope1);
+                    }
+                }
+            }
         }
 
         // sorting the two lists, constraints and variables lexiographically
         for (MyVariable myVar : variables) {
+            // System.out.println(myVar + ": " + myVar.getNeighbors());
+            // if (myVar.getNeighbors().size() > 0) {
+            // for (MyVariable v : myVar.getNeighbors()) {
+            // System.out.println(v + ": " + v.getNeighbors());
+            // }
+            // }
+            // System.out.println();
             ArrayList<MyConstraint> toSortConstraints = myVar.getConstraints();
             Collections.sort(toSortConstraints, MyConstraint.ConstraintComparer);
             myVar.setConstraints(toSortConstraints);
@@ -86,9 +115,19 @@ public class MyProblem {
         for (MyConstraint c : this.constraints) {
             if (c.getScope().size() > 1) {
                 if (c.getScope().get(0).getName().equals(myVar.getName())) {
-                    myVar.addNeighbors(c.getScope().get(1));
+                    for (MyVariable v : this.variables) {
+                        if (v.getName().equals(c.getScope().get(1).getName())) {
+                            myVar.addNeighbors(v);
+                        }
+                    }
+                    // myVar.addNeighbors(c.getScope().get(1));
                 } else if (c.getScope().get(1).getName().equals(myVar.getName())) {
-                    myVar.addNeighbors(c.getScope().get(0));
+                    for (MyVariable v : this.variables) {
+                        if (v.getName().equals(c.getScope().get(0).getName())) {
+                            myVar.addNeighbors(v);
+                        }
+                    }
+                    // myVar.addNeighbors(c.getScope().get(0));
                 }
             }
         }

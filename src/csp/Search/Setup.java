@@ -96,7 +96,8 @@ public class Setup {
             // adding into the current-path in order lexiographically
             for (int i = 0; i < variables.size(); i++) {
                 current_path.add(variables.get(i));
-                System.out.println(variables.get(i).getName() + ": " + variables.get(i).getNeighbors());
+                // System.out.println(variables.get(i).getName() + ": " +
+                // variables.get(i).getNeighbors());
             }
 
             for (int i = 0; i < assignments.length; i++) {
@@ -127,6 +128,9 @@ public class Setup {
                     this.current_path = ordering.widthOrdering(this.current_path);
                     Collections.reverse(this.current_path);
                     break;
+                case ("MFO"):
+                    // this.current_path = ordering.minfill(this.current_path);
+                    Collections.reverse(this.current_path);
 
             }
 
@@ -166,7 +170,7 @@ public class Setup {
         // Run BCSSP
         SearchAlgorithms searchAlgorithms = new SearchAlgorithms(this.myProblem, this.current_path, this.assignments,
                 searchType);
-        searchAlgorithms.BCSSP(this.variables.size(), "unknown");
+        // searchAlgorithms.BCSSP(this.variables.size(), "unknown");
 
         // Writing the results to a csv fileSD
         // String fileContent = myProblem.getProblemName() + "," + searchType + "," +
