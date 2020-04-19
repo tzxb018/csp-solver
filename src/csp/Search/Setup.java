@@ -16,6 +16,11 @@ import csp.MainStructures.MyExtensionConstraint;
 import csp.MainStructures.MyIntensionConstraint;
 import csp.MainStructures.MyProblem;
 import csp.MainStructures.MyVariable;
+import csp.Search.OrderingHeuristics.DDR;
+import csp.Search.OrderingHeuristics.DEG;
+import csp.Search.OrderingHeuristics.Maxcard;
+import csp.Search.OrderingHeuristics.Minfill;
+import csp.Search.OrderingHeuristics.Minwidth;
 
 /**
  * 
@@ -106,7 +111,6 @@ public class Setup {
 
             // using the ordering heuristic to determine how the variables are put into
             // current-path
-            Ordering ordering = new Ordering();
 
             switch (ordering_heursitic) {
                 case ("LX"):
@@ -119,18 +123,26 @@ public class Setup {
                     Collections.sort(current_path, MyVariable.LD_COMPARATOR);
                     break;
                 case ("DEG"):
-                    this.current_path = ordering.degreeOrdering(this.current_path);
+                    DEG deg = new DEG();
+                    this.current_path = deg.degreeOrdering(this.current_path);
                     break;
                 case ("DD"):
-                    this.current_path = ordering.ddrOrdering(this.current_path);
+                    DDR ddr = new DDR();
+                    this.current_path = ddr.ddrOrdering(this.current_path);
                     break;
                 case ("W"):
-                    this.current_path = ordering.widthOrdering(this.current_path);
+                    Minwidth w = new Minwidth();
+                    this.current_path = w.widthOrdering(this.current_path);
                     Collections.reverse(this.current_path);
                     break;
-                case ("MFO"):
-                    // this.current_path = ordering.minfill(this.current_path);
+                case ("MF"):
+                    Minfill mf = new Minfill();
+                    this.current_path = mf.minfill(this.current_path);
                     Collections.reverse(this.current_path);
+                case ("MC"):
+                    Maxcard mc = new Maxcard();
+                    this.current_path = mc.maxCardinality(this.current_path);
+                    // Collections.reverse(this.current_path);
 
             }
 
