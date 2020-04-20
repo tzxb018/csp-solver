@@ -53,7 +53,7 @@ public class Minfill {
 
         }
 
-        // System.out.println(ordered);
+        System.out.println(ordered);
 
         return ordered;
 
@@ -65,13 +65,15 @@ public class Minfill {
         for (MyVariable v : V) {
             LinkedList<MyVariable> neigh = new LinkedList<>();
             neigh = v.getNeighbors(); // getting the neighbors of each variable
+            if (v.getName().equals("Kool"))
+                System.out.println(neigh);
             int count = 0;
             // System.out.println(v);
             for (int i = 0; i < neigh.size(); i++) {
                 for (int j = i + 1; j < neigh.size(); j++) {
                     // checking if the two neighbors do not share an edge together
                     // meaning checking to see if the two negihbors are NOT neighbors of each other
-                    if (notInEdge(neigh.get(i), neigh.get(j))) {
+                    if (!isEdge(neigh.get(i), neigh.get(j))) {
                         count++;
                     }
                 }
@@ -101,37 +103,36 @@ public class Minfill {
                 }
 
                 MyVariable v_double_prime = neigh.get(j);
-                if (!v_prime.equals(v_double_prime)) {
-                    // if v' and v'' are not an edge
-                    if (!v_prime.getNeighbors().contains(v_double_prime)) {
+                // if v' and v'' are not an edge
+                if (!isEdge(v_prime, v_double_prime)) {
 
-                        for (MyVariable x : v_prime.getNeighbors()) {
+                    for (MyVariable x : v_prime.getNeighbors()) {
 
-                            // if <x, v''> is an edge
-                            if (x.getNeighbors().contains(v_double_prime)) {
-                                // assert line
-                                fcount.replace(x.getName(), fcount.get(x.getName()) - 1);
-                                if (fcount.get(x.getName()) < 0) {
-                                    fcount.replace(x.getName(), 0);
-                                }
-                            } else {
-                                fcount.replace(v_prime.getName(), fcount.get(v_prime.getName()) + 1);
-                            }
+                        // if <x, v''> is an edge]
+                        if (isEdge(x, v_double_prime)) {
+                            // assert line
+                            fcount.replace(x.getName(), fcount.get(x.getName()) - 1);
+                            if (fcount.get(x.getName()) < 0)
+                                System.out.println(x.getName() + " IS BELOW ZERO");
+                            assert fcount.get(x.getName()) >= 0;
+                        } else {
+                            fcount.replace(v_prime.getName(), fcount.get(v_prime.getName()) + 1);
                         }
-
-                        for (MyVariable x : v_double_prime.getNeighbors()) {
-                            if (!x.getName().equals(v.getName())) {
-                                if (!x.getNeighbors().contains(v_prime)) {
-                                    fcount.replace(v_double_prime.getName(), fcount.get(v_double_prime.getName()) + 1);
-                                }
-                            }
-                        }
-
-                        // adding the edge <v', v''>
-                        v_prime.addNeighbors(v_double_prime);
-                        v_double_prime.addNeighbors(v_prime);
-
                     }
+
+                    for (MyVariable x : v_double_prime.getNeighbors()) {
+                        if (!x.getName().equals(v.getName())) {
+                            // if (!x.getNeighbors().contains(v_prime)) {
+                            if (!isEdge(x, v_prime)) {
+                                fcount.replace(v_double_prime.getName(), fcount.get(v_double_prime.getName()) + 1);
+                            }
+                        }
+                    }
+
+                    // adding the edge <v', v''>
+                    v_prime.addNeighbors(v_double_prime);
+                    v_double_prime.addNeighbors(v_prime);
+
                 }
 
             }
@@ -151,12 +152,16 @@ public class Minfill {
 
                 if (!y.getName().equals(v.getName())) {
 
-                    if (!y.getNeighbors().contains(v)) {
+                    // if (!y.getNeighbors().contains(v)) {
+                    if (!isEdge(y, v)) {
 
                         fcount.replace(v_prime.getName(), fcount.get(v_prime.getName()) - 1);
-                        if (fcount.get(v_prime.getName()) < 0) {
-                            fcount.replace(v_prime.getName(), 0);
-                        }
+                        if (fcount.get(v_prime.getName()) < 0)
+                            System.out.println(v_prime + " is below zero");
+                        assert fcount.get(v_prime.getName()) >= 0;
+                        // if (fcount.get(v_prime.getName()) < 0) {
+                        // fcount.replace(v_prime.getName(), 0);
+                        // }
 
                         if (fcount.get(v_prime.getName()) == 0) {
                             break;
@@ -166,14 +171,17 @@ public class Minfill {
             }
         }
         graph.remove(v);
+        for (MyVariable var : graph) {
+            var.removeNeighbor(v);
+        }
         return graph;
     }
 
-    public boolean notInEdge(MyVariable v1, MyVariable v2) {
-
-        if (!v1.getNeighbors().contains(v2) || !v2.getNeighbors().contains(v1)) {
+    public boolean isEdge(MyVariable v1, MyVariable v2) {
+        if (v1.getNeighbors().contains(v2) || v2.getNeighbors().contains(v1)) {
             return true;
-        } else
+        } else {
             return false;
+        }
     }
 }

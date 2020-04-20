@@ -129,8 +129,12 @@ public class MyVariable {
 	public void addNeighbors(MyVariable var) {
 		if (!this.neighbors.contains(var))
 			this.neighbors.add(var);
-		else
-			System.out.println("DUPLICATE");
+	}
+
+	public void removeNeighbor(MyVariable var) {
+		if (this.neighbors.contains((var))) {
+			this.neighbors.remove(var);
+		}
 	}
 
 	public ArrayList<MyConstraint> getConstraints() {
