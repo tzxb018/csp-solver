@@ -118,80 +118,70 @@ public class MyParser {
 	}
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-		String[] debug = { "-f",
-				"C:\\Users\\14022\\Documents\\VS Code Projects\\csp-solver\\problems\\zebra-extension-supports-and-conflicts.xml",
-				"-s", "CBJ", "-u", "MF" };
-		MyParser p = new MyParser(debug);
+		// String[] debug = { "-f",
+		// "C:\\Users\\14022\\Documents\\VS Code
+		// Projects\\csp-solver\\problems\\zebra-extension-supports-and-conflicts.xml",
+		// "-s", "CBJ", "-u", "MF" };
+		// MyParser p = new MyParser(debug);
 
-		// if (args.length > 0 && args[0].equals("csv")) {
-		// String[] typesOfOrder = { "LX", "LD", "DEG", "DD", "W" };
-		// String[] typesOfAlgo = { "BT", "CBJ", "FC", "FCCBJ" };
+		if (args.length > 0 && args[0].equals("csv")) {
+			String[] typesOfOrder = { "LX", "LD", "DEG", "DD", "W" };
+			String[] typesOfAlgo = { "BT", "CBJ", "FC", "FCCBJ" };
 
-		// String[] fileLocations = { "3q-conflicts.xml", "3q-intension.xml",
-		// "4q-conflicts.xml", "4q-supports.xml",
-		// "5q-intesion.xml", "6q-conflicts.xml", "6q-intension.xml",
-		// "random_20_8_100_20.xml",
-		// "chain4-conflicts.xml", "map-coloring-australia.xml",
-		// "map-coloring-australia-intension.xml",
-		// "k4-coloring.xml", "zebra-extension-supports-and-conflicts.xml",
-		// "zebra-intension.xml",
-		// "zebra-supports.xml", "12q.xml" };
-		// for (String algo : typesOfAlgo) {
-		// for (String fileLoc : fileLocations) {
-		// String loc = "C:\\Users\\14022\\Documents\\VS Code
-		// Projects\\csp-solver\\problems\\" + fileLoc;
+			String[] fileLocations = { "3q-conflicts.xml", "3q-intension.xml", "4q-conflicts.xml", "4q-supports.xml",
+					"5q-intesion.xml", "6q-conflicts.xml", "6q-intension.xml", "random_20_8_100_20.xml",
+					"chain4-conflicts.xml", "map-coloring-australia.xml", "map-coloring-australia-intension.xml",
+					"k4-coloring.xml", "zebra-extension-supports-and-conflicts.xml", "zebra-intension.xml",
+					"zebra-supports.xml", "12q.xml" };
+			for (String algo : typesOfAlgo) {
+				for (String fileLoc : fileLocations) {
+					String loc = "C:\\Users\\14022\\Documents\\VS Code Projects\\csp-solver\\problems\\" + fileLoc;
 
-		// String[] argsString = { "-f", loc, "-s", algo, "-u", "W" };
-		// MyParser parser = new MyParser(argsString);
-		// }
-		// }
+					String[] argsString = { "-f", loc, "-s", algo, "-u", "W" };
+					MyParser parser = new MyParser(argsString);
+				}
+			}
 
-		// } else if (args.length > 0 && args[0].equals("17d")) {
+		} else if (args.length > 0 && args[0].equals("17d")) {
 
-		// for (int i = 10; i <= 90; i += 10) {
-		// String dir = "C:\\Users\\14022\\Documents\\VS Code
-		// Projects\\csp-solver\\v32_d8_p20\\v32_d8_p20_t" + i;
-		// for (int j = 0; j < 50; j++) {
-		// String appender = "\\v32_d8_p20_t" + i + "_" + j + ".xcsp";
-		// String fileName = dir + appender;
-		// // System.out.println(fileName);
-		// // System.out.println();
-		// String[] aStrings = { "-f", fileName, "-s", "FCCBJ", "-u", "W" };
-		// MyParser parser = new MyParser(aStrings);
+			for (int i = 10; i <= 90; i += 10) {
+				String dir = "C:\\Users\\14022\\Documents\\VS Code Projects\\csp-solver\\v32_d8_p20\\v32_d8_p20_t" + i;
+				for (int j = 0; j < 50; j++) {
+					String appender = "\\v32_d8_p20_t" + i + "_" + j + ".xcsp";
+					String fileName = dir + appender;
+					// System.out.println(fileName);
+					// System.out.println();
+					String[] aStrings = { "-f", fileName, "-s", "FCCBJ", "-u", "W" };
+					MyParser parser = new MyParser(aStrings);
 
-		// }
+				}
 
-		// }
+			}
 
-		// } else if (args.length > 0 && args[0].equals("order")) {
-		// String[] typesOfOrder = { "LX", "LD", "DEG", "DD", "W" };
-		// // String[] typesOfAlgo = { "BT", "CBJ", "FC", "FCCBJ" };
+		} else if (args.length > 0 && args[0].equals("order")) {
+			String[] typesOfOrder = { "LX", "LD", "DEG", "DD", "W" };
+			// String[] typesOfAlgo = { "BT", "CBJ", "FC", "FCCBJ" };
 
-		// String[] fileLocations = { "3q-conflicts.xml", "3q-intension.xml",
-		// "4q-conflicts.xml", "4q-supports.xml",
-		// "5q-intesion.xml", "6q-conflicts.xml", "6q-intension.xml",
-		// "random_20_8_100_20.xml",
-		// "chain4-conflicts.xml", "map-coloring-australia.xml",
-		// "map-coloring-australia-intension.xml",
-		// "k4-coloring.xml", "zebra-extension-supports-and-conflicts.xml",
-		// "zebra-intension.xml",
-		// "zebra-supports.xml", "12q.xml" };
-		// for (String fileLoc : fileLocations) {
-		// for (String algo : typesOfOrder) {
+			String[] fileLocations = { "3q-conflicts.xml", "3q-intension.xml", "4q-conflicts.xml", "4q-supports.xml",
+					"5q-intesion.xml", "6q-conflicts.xml", "6q-intension.xml", "random_20_8_100_20.xml",
+					"chain4-conflicts.xml", "map-coloring-australia.xml", "map-coloring-australia-intension.xml",
+					"k4-coloring.xml", "zebra-extension-supports-and-conflicts.xml", "zebra-intension.xml",
+					"zebra-supports.xml", "12q.xml" };
+			for (String fileLoc : fileLocations) {
+				for (String algo : typesOfOrder) {
 
-		// String loc = "C:\\Users\\14022\\Documents\\VS Code
-		// Projects\\csp-solver\\problems\\" + fileLoc;
+					String loc = "C:\\Users\\14022\\Documents\\VS Code Projects\\csp-solver\\problems\\" + fileLoc;
 
-		// String[] argsString = { "-f", loc, "-s", "FCCBJ", "-u", algo };
-		// MyParser parser = new MyParser(argsString);
+					String[] argsString = { "-f", loc, "-s", "FCCBJ", "-u", algo };
+					MyParser parser = new MyParser(argsString);
 
-		// }
-		// }
-		// } else {
+				}
+			}
+		} else {
 
-		// MyParser parser = new MyParser(args);
+			MyParser parser = new MyParser(args);
 
-		// }
+		}
 
 	}
 }

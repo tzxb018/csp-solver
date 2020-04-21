@@ -139,22 +139,23 @@ public class Setup {
                     Minfill mf = new Minfill();
                     this.current_path = mf.minfill(this.current_path);
                     Collections.reverse(this.current_path);
+                    break;
                 case ("MC"):
                     Maxcard mc = new Maxcard();
                     this.current_path = mc.maxCardinality(this.current_path);
-                    // Collections.reverse(this.current_path);
+                    break;
+                // Collections.reverse(this.current_path);
 
             }
 
             // for writing the order of the varialbes to a csv file
             // csvOrder();
-
-            current_path.add(0, null); // pointer starts at 1
+            this.current_path.add(0, null); // pointer starts at 1
             orderedCurrentPathString = "[";
-            for (int i = 1; i < current_path.size() - 1; i++) {
-                orderedCurrentPathString += (current_path.get(i).getName() + ",");
+            for (int i = 1; i < this.current_path.size() - 1; i++) {
+                orderedCurrentPathString += (this.current_path.get(i).getName() + ",");
             }
-            orderedCurrentPathString += (current_path.get(current_path.size() - 1)).getName() + "]";
+            orderedCurrentPathString += (this.current_path.get(this.current_path.size() - 1)).getName() + "]";
             System.out.println(orderedCurrentPathString);
         }
     }

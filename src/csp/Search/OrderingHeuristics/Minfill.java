@@ -12,13 +12,13 @@ public class Minfill {
     public ArrayList<MyVariable> minfill(ArrayList<MyVariable> input) {
 
         // for (MyVariable v : input) {
-        // System.out.println(v + "; " + v.getNeighbors());
+        // //System.out.println(v + "; " + v.getNeighbors());
         // if (v.getNeighbors().size() > 0) {
         // for (MyVariable n : v.getNeighbors()) {
-        // System.out.println(n + ": " + n.getNeighbors());
+        // //System.out.println(n + ": " + n.getNeighbors());
         // }
         // }
-        // System.out.println();
+        // //System.out.println();
         // }
 
         ArrayList<MyVariable> ordered = new ArrayList<>();
@@ -41,19 +41,19 @@ public class Minfill {
                     minVar = var;
                 }
             }
-            System.out.println(s);
+            // System.out.println(s);
             ordered.add(minVar); // adding to perfect elimination order
-            System.out.println("===============");
-            System.out.println(minVar);
-            System.out.println(fcount);
-            // System.out.println(graph);
+            // System.out.println("===============");
+            // System.out.println(minVar);
+            // System.out.println(fcount);
+            // //System.out.println(graph);
 
             graph = addFillEdgesAndRemoveNode(graph, minVar);
-            System.out.println();
+            // System.out.println();
 
         }
 
-        System.out.println(ordered);
+        // System.out.println(ordered);
 
         return ordered;
 
@@ -81,13 +81,13 @@ public class Minfill {
 
             fcount.put(v.getName(), count);
         }
-        System.out.println("Initial fcount: " + fcount);
-        System.out.println();
+        // System.out.println("Initial fcount: " + fcount);
+        // System.out.println();
         return fcount;
     }
 
     public ArrayList<MyVariable> addFillEdgesAndRemoveNode(ArrayList<MyVariable> variables, MyVariable v) {
-        System.out.println("addfill");
+        // System.out.println("addfill");
         LinkedList<MyVariable> neigh = v.getNeighbors();
         for (int i = 0; i < neigh.size(); i++) { // i = 0?
 
@@ -95,8 +95,8 @@ public class Minfill {
                 break;
 
             MyVariable v_prime = neigh.get(i);
-            // System.out.println("v' = " + v_prime);
-            // System.out.println(v_prime + " " + v_prime.getNeighbors());
+            // //System.out.println("v' = " + v_prime);
+            // //System.out.println(v_prime + " " + v_prime.getNeighbors());
             for (int j = i + 1; j < neigh.size(); j++) {
                 if (fcount.get(v.getName()) == 0) {
                     break;
@@ -113,8 +113,8 @@ public class Minfill {
                             // assert line
                             fcount.replace(x.getName(), fcount.get(x.getName()) - 1);
                             if (fcount.get(x.getName()) < 0)
-                                System.out.println(x.getName() + " IS BELOW ZERO");
-                            assert fcount.get(x.getName()) >= 0;
+                                // System.out.println(x.getName() + " IS BELOW ZERO");
+                                assert fcount.get(x.getName()) >= 0;
                         } else {
                             fcount.replace(v_prime.getName(), fcount.get(v_prime.getName()) + 1);
                         }
@@ -146,7 +146,7 @@ public class Minfill {
                 continue;
             }
 
-            // System.out.println(v_prime.getName() + " neightbors: " +
+            // //System.out.println(v_prime.getName() + " neightbors: " +
             // v_prime.getNeighbors());
             for (MyVariable y : v_prime.getNeighbors()) {
 
@@ -157,8 +157,8 @@ public class Minfill {
 
                         fcount.replace(v_prime.getName(), fcount.get(v_prime.getName()) - 1);
                         if (fcount.get(v_prime.getName()) < 0)
-                            System.out.println(v_prime + " is below zero");
-                        assert fcount.get(v_prime.getName()) >= 0;
+                            // System.out.println(v_prime + " is below zero");
+                            assert fcount.get(v_prime.getName()) >= 0;
                         // if (fcount.get(v_prime.getName()) < 0) {
                         // fcount.replace(v_prime.getName(), 0);
                         // }
