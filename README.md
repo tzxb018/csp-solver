@@ -8,6 +8,10 @@ To read the README.md file in the formatted version: go to this link: https://gi
 
 ## Homework Reports
 
+<details><summary> Final Homework Progress Report (4/21/2020) </summary>
+
+</p>
+</details>
 <details><summary> Homework 6 (4/11/2020) </summary>
 
 ### Overview
