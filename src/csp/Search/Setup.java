@@ -18,8 +18,7 @@ import csp.MainStructures.MyProblem;
 import csp.MainStructures.MyVariable;
 import csp.Search.OrderingHeuristics.DDR;
 import csp.Search.OrderingHeuristics.DEG;
-import csp.Search.OrderingHeuristics.Maxcard;
-import csp.Search.OrderingHeuristics.Minfill;
+import csp.Search.TreeDecompisition.*;
 import csp.Search.OrderingHeuristics.Minwidth;
 
 /**

@@ -1,8 +1,7 @@
-package csp.Search.OrderingHeuristics;
+package csp.Search.TreeDecompisition;
 
 import java.util.*;
 
-import csp.MainStructures.MyConstraint;
 import csp.MainStructures.MyVariable;
 
 public class Maxcard {
