@@ -25,6 +25,7 @@ public class MyVariable {
 	protected ArrayList<MyConstraint> constraints;
 	protected ArrayList<MyConstraint> constraints_static;
 	protected LinkedList<MyVariable> neighbors;
+	protected LinkedList<MyVariable> neighbors_static;
 
 	// Creating a lexiographic comparator for the comparator by looking at the
 	// variable's name
@@ -111,6 +112,7 @@ public class MyVariable {
 
 		constraints = new ArrayList<MyConstraint>();
 		neighbors = new LinkedList<MyVariable>();
+		neighbors_static = new LinkedList<MyVariable>();
 
 	}
 
@@ -127,14 +129,24 @@ public class MyVariable {
 	}
 
 	public void addNeighbors(MyVariable var) {
-		if (!this.neighbors.contains(var))
+		if (!this.neighbors.contains(var)) {
 			this.neighbors.add(var);
+			this.neighbors_static.add(var);
+		}
 	}
 
 	public void removeNeighbor(MyVariable var) {
 		if (this.neighbors.contains((var))) {
 			this.neighbors.remove(var);
 		}
+	}
+
+	public LinkedList<MyVariable> getNeighborsStatic() {
+		return this.neighbors_static;
+	}
+
+	public void resetNeighbors() {
+		this.neighbors = this.neighbors_static;
 	}
 
 	public ArrayList<MyConstraint> getConstraints() {

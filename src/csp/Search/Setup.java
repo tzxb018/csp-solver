@@ -42,6 +42,8 @@ public class Setup {
     protected String orderingHeuristic;
     protected String orderedCurrentPathString;
 
+    protected ArrayList<ArrayList<MyVariable>> cliques;
+
     /**
      * This is the constructor for all the backtrack searches
      * 
@@ -61,6 +63,7 @@ public class Setup {
         this.current_path = new ArrayList<MyVariable>();
         this.assignments = new int[variables.size() + 1];
         this.orderingHeuristic = ordering_heursitic;
+        this.cliques = new ArrayList<ArrayList<MyVariable>>();
 
         System.out.println("Search: " + searchType);
         System.out.println("variable-order-heuristic: " + ordering_heursitic);
@@ -143,6 +146,19 @@ public class Setup {
                     Maxcard mc = new Maxcard();
                     this.current_path = mc.maxCardinality(this.current_path);
                     break;
+                case ("MQ"):
+                    Minfill mf1 = new Minfill();
+                    this.current_path = mf1.minfill(this.current_path);
+                    System.out.println("PEO : " + this.current_path);
+                    Maxcard mc1 = new Maxcard();
+                    this.current_path = mc1.maxCardinality(this.current_path);
+                    Collections.reverse(this.current_path);
+                    System.out.println("After Max Card: " + this.current_path);
+                    MaxClique mq = new MaxClique();
+                    cliques = mq.getMaxClique(this.current_path);
+                    System.out.println(cliques.size());
+
+                    break;
                 // Collections.reverse(this.current_path);
 
             }
@@ -155,7 +171,7 @@ public class Setup {
                 orderedCurrentPathString += (this.current_path.get(i).getName() + ",");
             }
             orderedCurrentPathString += (this.current_path.get(this.current_path.size() - 1)).getName() + "]";
-            System.out.println(orderedCurrentPathString);
+            // System.out.println(orderedCurrentPathString);
         }
     }
 

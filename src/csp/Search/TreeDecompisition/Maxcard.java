@@ -15,6 +15,7 @@ public class Maxcard {
 
         // initalizing the neighbor counter
         for (MyVariable v : input) {
+            v.resetNeighbors();
             neighbor_counter.put(v.getName(), 0);
         }
 
