@@ -62,14 +62,23 @@ public class Setup {
         this.orderingHeuristic = ordering_heursitic;
         this.cliques = new ArrayList<MyClique>();
 
-        System.out.println("Search: " + searchType);
-        System.out.println("variable-order-heuristic: " + ordering_heursitic);
-
         // if we are using static ordering
         if (staticOrdering) {
-            System.out.println("var-static-dynamic: static");
-            System.out.println("value-ordering-heuristic: " + ordering_heursitic);
-            System.out.println("val-static-dynamic: static");
+
+            // printing for normal problem solving
+            if (!ordering_heursitic.contains("TD")) {
+                System.out.println("Search: " + searchType);
+                System.out.println("variable-order-heuristic: " + ordering_heursitic);
+                System.out.println("var-static-dynamic: static");
+                System.out.println("value-ordering-heuristic: " + ordering_heursitic);
+                System.out.println("val-static-dynamic: static");
+            } else {
+                // printing for stats about tree decompoisition
+                System.out.println("Number of variables: " + this.variables.size());
+                System.out.println("Number of edges: " + myProblem.getEdges());
+                System.out.println("Density: "
+                        + (2 * myProblem.getEdges() / (float) (this.variables.size() * (this.variables.size() - 1))));
+            }
 
             // running NC before running search
             ArrayList<MyConstraint> unaryConstraints = new ArrayList<MyConstraint>();
@@ -143,25 +152,12 @@ public class Setup {
                     Maxcard mc = new Maxcard();
                     this.current_path = mc.maxCardinality(this.current_path);
                     break;
-                case ("MQ"):
-                    Minfill mf1 = new Minfill();
-                    this.current_path = mf1.minfill(this.current_path);
-                    System.out.println("PEO : " + this.current_path);
-                    Maxcard mc1 = new Maxcard();
-                    this.current_path = mc1.maxCardinality(this.current_path);
-                    System.out.println("After Max Card: " + this.current_path);
-                    MaxClique mq = new MaxClique();
-                    cliques = mq.getMaxClique(this.current_path);
-                    System.out.println(cliques);
-                    JointTree jt = new JointTree();
-                    ArrayList<MyClique> c = jt.primalAcyclicity(cliques, this.current_path);
-                    for (MyClique cc : c) {
-                        System.out.println(cc + " with " + cc.getNeighbors());
-                    }
-
+                case ("TD-MC"):
+                    treeDecompisition(this.current_path, true);
                     break;
-                // Collections.reverse(this.current_path);
-
+                case ("TD"):
+                    treeDecompisition(this.current_path, false);
+                    break;
             }
 
             // for writing the order of the varialbes to a csv file
@@ -174,6 +170,39 @@ public class Setup {
             orderedCurrentPathString += (this.current_path.get(this.current_path.size() - 1)).getName() + "]";
             // System.out.println(orderedCurrentPathString);
         }
+    }
+
+    // function for tree decomposition
+    public void treeDecompisition(ArrayList<MyVariable> input, boolean runMaxCard) {
+
+        // running minfill to triangulate the graph
+        Minfill mf1 = new Minfill();
+        this.current_path = mf1.minfill(this.current_path);
+        System.out.println("Number of filled edges: " + mf1.getNumFilled());
+        // System.out.println("PEO : " + this.current_path);
+
+        // running max cardinality to get a better PEO
+        if (runMaxCard) {
+            Maxcard mc1 = new Maxcard();
+            this.current_path = mc1.maxCardinality(this.current_path);
+            // System.out.println("After Max Card: " + this.current_path);
+        }
+
+        // runing max clique to obtain all the maximal cliques
+        MaxClique mq = new MaxClique();
+        cliques = mq.getMaxClique(this.current_path);
+        System.out.println("Number of Max Cliques: " + mq.getNumberOfCliques());
+        System.out.println("Induced Width (w*): " + (mq.getLargestClique() - 1));
+        // System.out.println(cliques);
+
+        // building the joining tree
+        JointTree jt = new JointTree();
+        ArrayList<MyClique> c = jt.primalAcyclicity(cliques);
+        System.out.println("Largest Number of Variables in Seperators: " + jt.getLargestSepartor());
+        // for (MyClique cc : c) {
+        // System.out.println(cc + " with " + cc.getNeighbors());
+        // }
+
     }
 
     // function to write the order of the variables after ordering heuristic to a
@@ -199,7 +228,7 @@ public class Setup {
         // Run BCSSP
         SearchAlgorithms searchAlgorithms = new SearchAlgorithms(this.myProblem, this.current_path, this.assignments,
                 searchType);
-        // searchAlgorithms.BCSSP(this.variables.size(), "unknown");
+        searchAlgorithms.BCSSP(this.variables.size(), "unknown");
 
         // Writing the results to a csv fileSD
         // String fileContent = myProblem.getProblemName() + "," + searchType + "," +

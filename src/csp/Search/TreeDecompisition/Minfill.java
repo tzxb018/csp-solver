@@ -7,6 +7,7 @@ import csp.MainStructures.MyVariable;
 public class Minfill {
     private Map<String, Integer> fcount;
     private ArrayList<MyVariable> graph;
+    private int number_filled;
 
     public ArrayList<MyVariable> minfill(ArrayList<MyVariable> input) {
 
@@ -15,7 +16,6 @@ public class Minfill {
         graph = input;
         int n = input.size();
         fcount = fillcount(graph);
-
 
         for (int i = 0; i < n; i++) {
 
@@ -48,8 +48,6 @@ public class Minfill {
         for (MyVariable v : V) {
             LinkedList<MyVariable> neigh = new LinkedList<>();
             neigh = v.getNeighbors(); // getting the neighbors of each variable
-            if (v.getName().equals("Kool"))
-                System.out.println(neigh);
             int count = 0;
 
             for (int i = 0; i < neigh.size(); i++) {
@@ -110,7 +108,7 @@ public class Minfill {
                     // adding the edge <v', v''>
                     v_prime.addNeighbors(v_double_prime);
                     v_double_prime.addNeighbors(v_prime);
-                    System.out.println("<" + v_double_prime + "," + v_prime + ">");
+                    number_filled++;
 
                 }
 
@@ -153,5 +151,9 @@ public class Minfill {
         } else {
             return false;
         }
+    }
+
+    public int getNumFilled() {
+        return this.number_filled;
     }
 }

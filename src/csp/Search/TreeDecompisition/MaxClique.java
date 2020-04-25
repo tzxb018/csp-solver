@@ -7,6 +7,8 @@ import csp.MainStructures.MyVariable;
 
 public class MaxClique {
 
+    protected ArrayList<MyClique> cliques;
+
     /**
      * This is the method for finding the number of cliques in the CSP
      * 
@@ -16,7 +18,7 @@ public class MaxClique {
      */
     public ArrayList<MyClique> getMaxClique(ArrayList<MyVariable> peo) {
 
-        ArrayList<MyClique> cliques = new ArrayList<MyClique>();
+        cliques = new ArrayList<MyClique>();
         Map<String, Integer> S = new HashMap<>();
 
         // Initalize S(v) for all variables
@@ -43,13 +45,13 @@ public class MaxClique {
             if (v.getNeighbors().isEmpty()) {
                 clique.addToClique(v);
                 cliques.add(clique);
-                System.out.println("New clique: " + clique);
+                // System.out.println("New clique: " + clique);
                 continue;
             }
 
             // if v has neighbors, but all of them comve before v in the ordering, terminate
             if (X.isEmpty()) {
-                System.out.println("DONE");
+                // System.out.println("DONE");
                 break;
             }
 
@@ -60,18 +62,33 @@ public class MaxClique {
 
             // determining if there is a clique
             if (S.get(v.getName()) < X.size()) {
-                
+
                 clique.addToClique(v);
                 // adding the union of X and v to the new clique
                 for (MyVariable var : X) {
                     clique.addToClique(var);
                 }
                 cliques.add(clique);
-                System.out.println("New clique: " + clique);
+                // System.out.println("New clique: " + clique);
             }
 
         }
         return cliques;
+    }
+
+    public int getNumberOfCliques() {
+        return this.cliques.size();
+    }
+
+    public int getLargestClique() {
+        int max = 0;
+        for (MyClique c : this.cliques) {
+            if (c.getVariables_in_clique().size() > max) {
+                max = c.getVariables_in_clique().size();
+            }
+        }
+
+        return max;
     }
 
 }

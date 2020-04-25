@@ -16,6 +16,7 @@ public class MyProblem {
     public ArrayList<MyVariable> variables;
     public ArrayList<MyConstraint> constraints;
     public boolean extension; // determines if the problem is intension or extension
+    protected int edges;
 
     // Stores the important informations about the problem, the variables (which
     // have their own domains) and the constraints (the three compoennets of a csp)
@@ -44,9 +45,14 @@ public class MyProblem {
                 }
                 for (MyVariable v : this.variables) {
                     if (v.equals(scope1)) {
-                        v.addNeighbors(scope2);
+                        if (!v.getNeighbors().contains(scope2)) {
+                            v.addNeighbors(scope2);
+                            edges++;
+                        }
                     } else if (v.equals(scope2)) {
-                        v.addNeighbors(scope1);
+                        if (!v.getNeighbors().contains(scope1)) {
+                            v.addNeighbors(scope1);
+                        }
                     }
                 }
             }
@@ -68,6 +74,10 @@ public class MyProblem {
 
         this.extension = (constraints.get(0).getClass().toString().contains("Extension"));
 
+    }
+
+    public int getEdges() {
+        return this.edges;
     }
 
     // public void normalizeConstraints(ArrayList<MyConstraint> list_constraints) {

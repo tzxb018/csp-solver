@@ -6,6 +6,8 @@ import csp.MainStructures.MyVariable;
 
 public class JointTree {
 
+    protected int largestSeperator;
+
     /**
      * This is the method for finding the joint tree of all the cliques found
      * earlier
@@ -16,7 +18,7 @@ public class JointTree {
      *                variable highest in the ordering in the peo)
      * @return the joint tree of all the cliques
      */
-    public ArrayList<MyClique> primalAcyclicity(ArrayList<MyClique> cliques, ArrayList<MyVariable> ordering) {
+    public ArrayList<MyClique> primalAcyclicity(ArrayList<MyClique> cliques) {
         // since we are returning a peo, we assume that it is chordial
         // need to start from the end of the clique ordering
         Collections.reverse(cliques);
@@ -53,6 +55,10 @@ public class JointTree {
                     potential_neighbors.clear();
                     potential_neighbors.add(next_clique);
                     shared_var_num = common.size();
+
+                    if (shared_var_num > this.largestSeperator) {
+                        this.largestSeperator = shared_var_num;
+                    }
                 } else if (common.size() == shared_var_num) {
                     // if they are the same, just add to the neighbors list (can have more than 1
                     // neighbor)
@@ -69,6 +75,10 @@ public class JointTree {
         }
 
         return cliques;
+    }
+
+    public int getLargestSepartor() {
+        return this.largestSeperator;
     }
 
 }
