@@ -60,9 +60,9 @@
         <constraint name="C24" arity="2" scope="K L" reference="dist2"/>
         <constraint name="C25" arity="2" scope="M N" reference="dist2"/>
         <constraint name="C26" arity="2" scope="D H" reference="dist2"/>
-        <constraint name="C28" arity="2" scope="I A" reference="dist2"/>
+        <!-- <constraint name="C28" arity="2" scope="I A" reference="dist2"/>
         <constraint name="C29" arity="2" scope="B H" reference="dist2"/>
-        <constraint name="C30" arity="2" scope="H E" reference="dist2"/>
+        <constraint name="C30" arity="2" scope="H E" reference="dist2"/> -->
 
     </constraints>
 </instance>

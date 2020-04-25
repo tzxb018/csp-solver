@@ -5,12 +5,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
 
 import csp.MyACAlgorithms;
+import csp.MainStructures.MyClique;
 import csp.MainStructures.MyConstraint;
 import csp.MainStructures.MyExtensionConstraint;
 import csp.MainStructures.MyIntensionConstraint;
@@ -42,7 +39,7 @@ public class Setup {
     protected String orderingHeuristic;
     protected String orderedCurrentPathString;
 
-    protected ArrayList<ArrayList<MyVariable>> cliques;
+    protected ArrayList<MyClique> cliques;
 
     /**
      * This is the constructor for all the backtrack searches
@@ -63,7 +60,7 @@ public class Setup {
         this.current_path = new ArrayList<MyVariable>();
         this.assignments = new int[variables.size() + 1];
         this.orderingHeuristic = ordering_heursitic;
-        this.cliques = new ArrayList<ArrayList<MyVariable>>();
+        this.cliques = new ArrayList<MyClique>();
 
         System.out.println("Search: " + searchType);
         System.out.println("variable-order-heuristic: " + ordering_heursitic);
@@ -152,11 +149,15 @@ public class Setup {
                     System.out.println("PEO : " + this.current_path);
                     Maxcard mc1 = new Maxcard();
                     this.current_path = mc1.maxCardinality(this.current_path);
-                    Collections.reverse(this.current_path);
                     System.out.println("After Max Card: " + this.current_path);
                     MaxClique mq = new MaxClique();
                     cliques = mq.getMaxClique(this.current_path);
-                    System.out.println(cliques.size());
+                    System.out.println(cliques);
+                    JointTree jt = new JointTree();
+                    ArrayList<MyClique> c = jt.primalAcyclicity(cliques, this.current_path);
+                    for (MyClique cc : c) {
+                        System.out.println(cc + " with " + cc.getNeighbors());
+                    }
 
                     break;
                 // Collections.reverse(this.current_path);

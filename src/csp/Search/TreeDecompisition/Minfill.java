@@ -11,9 +11,11 @@ public class Minfill {
     public ArrayList<MyVariable> minfill(ArrayList<MyVariable> input) {
 
         ArrayList<MyVariable> ordered = new ArrayList<>();
+        Collections.sort(input, MyVariable.LX_COMPARATOR);
         graph = input;
         int n = input.size();
         fcount = fillcount(graph);
+
 
         for (int i = 0; i < n; i++) {
 
@@ -93,6 +95,7 @@ public class Minfill {
                                 assert fcount.get(x.getName()) >= 0;
                         } else {
                             fcount.replace(v_prime.getName(), fcount.get(v_prime.getName()) + 1);
+
                         }
                     }
 
@@ -107,6 +110,7 @@ public class Minfill {
                     // adding the edge <v', v''>
                     v_prime.addNeighbors(v_double_prime);
                     v_double_prime.addNeighbors(v_prime);
+                    System.out.println("<" + v_double_prime + "," + v_prime + ">");
 
                 }
 

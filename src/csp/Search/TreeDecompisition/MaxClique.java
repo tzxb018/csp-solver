@@ -2,6 +2,7 @@ package csp.Search.TreeDecompisition;
 
 import java.util.*;
 
+import csp.MainStructures.MyClique;
 import csp.MainStructures.MyVariable;
 
 public class MaxClique {
@@ -13,9 +14,9 @@ public class MaxClique {
      *            ordering after running minfill or max cardinality
      * @return the cliques found in the problem
      */
-    public ArrayList<ArrayList<MyVariable>> getMaxClique(ArrayList<MyVariable> peo) {
+    public ArrayList<MyClique> getMaxClique(ArrayList<MyVariable> peo) {
 
-        ArrayList<ArrayList<MyVariable>> cliques = new ArrayList<ArrayList<MyVariable>>();
+        ArrayList<MyClique> cliques = new ArrayList<MyClique>();
         Map<String, Integer> S = new HashMap<>();
 
         // Initalize S(v) for all variables
@@ -28,7 +29,6 @@ public class MaxClique {
         for (int i = 0; i < peo.size(); i++) {
 
             MyVariable v = peo.get(i);
-            System.out.println(v);
 
             // finding the variables adjacent to v that come after v in the ordering
             ArrayList<MyVariable> X = new ArrayList<>();
@@ -39,9 +39,9 @@ public class MaxClique {
             }
 
             // if v has no neighbors, then put it in its own clique
-            ArrayList<MyVariable> clique = new ArrayList<MyVariable>();
+            MyClique clique = new MyClique();
             if (v.getNeighbors().isEmpty()) {
-                clique.add(v);
+                clique.addToClique(v);
                 cliques.add(clique);
                 System.out.println("New clique: " + clique);
                 continue;
@@ -60,18 +60,17 @@ public class MaxClique {
 
             // determining if there is a clique
             if (S.get(v.getName()) < X.size()) {
-
+                
+                clique.addToClique(v);
                 // adding the union of X and v to the new clique
                 for (MyVariable var : X) {
-                    clique.add(var);
+                    clique.addToClique(var);
                 }
-                clique.add(v);
                 cliques.add(clique);
                 System.out.println("New clique: " + clique);
             }
 
         }
-        
         return cliques;
     }
 

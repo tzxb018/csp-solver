@@ -12,6 +12,7 @@ public class Maxcard {
     public ArrayList<MyVariable> maxCardinality(ArrayList<MyVariable> input) {
 
         Collections.sort(input, MyVariable.LX_COMPARATOR);
+        // Collections.reverse(input);
 
         // initalizing the neighbor counter
         for (MyVariable v : input) {
@@ -41,6 +42,8 @@ public class Maxcard {
             ordered.add(nextVariable);
 
         }
+
+        Collections.reverse(ordered);
         return ordered;
     }
 
