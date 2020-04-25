@@ -192,7 +192,7 @@ public class Setup {
         MaxClique mq = new MaxClique();
         cliques = mq.getMaxClique(this.current_path);
         System.out.println("Number of Max Cliques: " + mq.getNumberOfCliques());
-        System.out.println("Induced Width (w*): " + (mq.getLargestClique() - 1));
+        System.out.println("Treewidth: " + (mq.getLargestClique()));
         // System.out.println(cliques);
 
         // building the joining tree
