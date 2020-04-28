@@ -8,11 +8,43 @@ To read the README.md file in the formatted version: go to this link: https://gi
 
 ## Homework Reports
 
+<details><summary>Final Homework Report (4/28/2020) </summary>
+
+### Overview
+
+For my final project, I chose to create a tree decompisition of the CSP and to determine whether it was necessary to run the max-cardinality algorithm before running the max-clique algorithm. From class, we learned that the trees decomposed from this process can be used to efficiently find the solutions to the CSP in a backtrack-free manner. To create these decompisitions, I first need to manifest the CSP into a graph with vertecies and edges. To do this, each variable is represented as a vertex in the graph and every binary constraint is represented as an edge. The unary constraints are excluded from this graph, as they would not create an edge in the graph. For every edge, the two vertecies of the edge are the two variables in the corresponding scope of the constraint. 
+
+Once this was accomplished, the next task was to implement the min-fill heuristic to triangluate the graph. Not only does the min-fill algorithm put the variables in the perfect elimination ordereing (PEO), but it also adds in edges to the graph to make sure that the graph is triangluated in a manner that minimzies the number of edges filled in. 
+
+With the graph triangluated, the next task was to implement the max-cardinality ordering. This algorithm also returns the variables in a PEO. The reason I implemented max-cardinality was to determine whether a triangluated graph already in PEO needed to be put through the max-cardinality algorithm to return a joining tree. 
+
+With the two algorithms for getting a PEO established, the next task was to implement the max-clique alogirhtm. This algorithm takes the variable in the PEO and returns the clusters with the largest amount of variables in each cluster. 
+
+Lastly, I then implemented the joining tree algoirithm to get the desired tree decomposisition structure of the CSP. The joining tree takes all the max-cliques from before, finds the most optimal tree strucutre so that all the clusters are connected. 
+
+### Experimental Method
+
+To determine whether max-cardinality was necessary, I ran two simulations, one where the ordering from min-fill is used in the max-clique, which is then used in the joining tree algoirhtm, and the second that takes the ordering from max-cardinality after running min-fill and using that ordering in max-clique to build the joining tree. These two methods were then tested on both the CSPs we have been using for class assignments and some benchmark problems from the 2008 CSP Competition (https://cse.unl.edu/~consystlab/resources/CPAI08benchmarkstats.html).
+
+### Evaluation and Conclusion
+
+The number of edges filled in by min-fill, the number of maximal cliques returned from the max-clique algorithm, the tree width (size of the largest clique - 1), and the largest number of variables in the seperators of the joining tree. The basic CSPs from our class assignments as well as some benchmark problems were tested and their data from this evaluation method was then put into an excel sheet (found in /csp-solver/Output Excel Files/Bessho-TreeDecomp-Results-Updated.xlsx). In addition, the number of variables, edges, and the density of the problem was reported as well.
+
+When running the two different methods, the results of all 4 of these categories of data showed that there is *no difference* between running minfill and going direclty to max-clique and running both min-fill and max-cardinality before going to max-clique. To see this, I created a column called Match? (Column P of Sheet 'Benchmark Problems') that returns true if the values in each column for running tree decompisition without max-cardinality matches every value in the columns for running tree decompoisition with max-cardinality. From all the problems I ran, this column has been calculated to be true, meaning their results are all the same regardless of running max-cardinality or not. 
+
+The error column (column T) compares my results with those in the 2008 site's results. There are some cases where the seperator or the treewidth is off by 1 or 2 (please look at notes below regarding these minimal errors). 
+
+#### Important Notes Regarding Results
+
+The results I obtained from the Benchmark had incorreclty calculated the treewidth. Instead of calculating the treewidth by finding the size of the largest clique and subtracting 1, they simply reported the treewidth to be size of the largest clique. In addition, some of the results from the 2008 site doesn't match the Stampede database (http://consystlab.unl.edu/benchmarks/); however, in the cases where my results do not match the 2008 site, my results match with the Stampede's database exactly. 
+
+</p>
+</details>
 <details><summary>Final Homework Progress Report (4/21/2020) </summary>
 
 ### Overview
 
-For my final project, I chose to do the tree decomposition project. The goal of this projec tis to generate a tree decompisition and compute the tree width of the given CSPs. In each CSP, a graph can be drawn with the given variables and constraints. Each variable is represented as a vertex in the graph and every binary constraint is represented as an edge. For every edge, the two endpoints are the two variables in the scope of the constraint. For this project, there are five main tasks that need to be completed: 
+For my final project, I chose to do the tree decomposition project. The goal of this project is to generate a tree decompisition and compute the tree width of the given CSPs. In each CSP, a graph can be drawn with the given variables and constraints. Each variable is represented as a vertex in the graph and every binary constraint is represented as an edge. For every edge, the two endpoints are the two variables in the scope of the constraint. For this project, there are five main tasks that need to be completed: 
 
 - Implement the min-fill heuristic to triangulate a graph 
 - Implement the Max Cardinality Ordering to get a PEO (or use the PEO provided by the min-fill heuristic)
