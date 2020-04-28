@@ -196,7 +196,9 @@ public class MyParser {
             }
         } else if (args.length > 0 && args[0].equals("tree")) {
             new FileWriter("C:\\Users\\14022\\Documents\\VS Code Projects\\csp-solver\\tree_stats.csv", false).close();
-            File[] files = new File("C:\\Users\\14022\\Documents\\VS Code Projects\\csp-solver\\problems").listFiles();
+            File[] files = new File(
+                    "C:\\Users\\14022\\Documents\\VS Code Projects\\csp-solver\\Benchmark Problems for Tree Decompisition\\random")
+                            .listFiles();
 
             for (File f : files) {
                 String[] argsString = { "-f", f.getAbsolutePath(), "-s", "FCCBJ", "-u", "TD" };

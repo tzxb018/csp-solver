@@ -176,38 +176,54 @@ public class Setup {
     // function for tree decomposition
     public void treeDecompisition(ArrayList<MyVariable> input, boolean runMaxCard) throws IOException {
 
-        // running minfill to triangulate the graph
-        Minfill mf1 = new Minfill();
-        this.current_path = mf1.minfill(this.current_path);
-        System.out.println("Number of filled edges: " + mf1.getNumFilled());
-        // System.out.println("PEO : " + this.current_path);
+        // finding all the components of the graph (can be disconnected)
+        ComponentClassifier cc = new ComponentClassifier();
+        ArrayList<ArrayList<MyVariable>> components = cc.connectedComponents(input);
+        this.current_path.clear();
 
-        // running max cardinality to get a better PEO
-        if (runMaxCard) {
-            Maxcard mc1 = new Maxcard();
-            this.current_path = mc1.maxCardinality(this.current_path);
-            // System.out.println("After Max Card: " + this.current_path);
+        for (ArrayList<MyVariable> component : components) {
+
+            // running minfill to triangulate the graph
+            Minfill mf1 = new Minfill();
+            component = mf1.minfill(component);
+            System.out.println("Number of filled edges: " + mf1.getNumFilled());
+            // System.out.println("PEO : " + component);
+
+            // running max cardinality to get a better PEO
+            if (runMaxCard) {
+                Maxcard mc1 = new Maxcard();
+                component = mc1.maxCardinality(component);
+                // System.out.println("After Max Card: " + component);
+            }
+
+            // runing max clique to obtain all the maximal cliques
+            MaxClique mq = new MaxClique();
+            cliques = mq.getMaxClique(component);
+            System.out.println("Number of Max Cliques: " + mq.getNumberOfCliques());
+            System.out.println("Treewidth: " + (mq.getLargestClique()));
+            // System.out.println(cliques);
+
+            // building the joining tree
+            JointTree jt = new JointTree();
+            ArrayList<MyClique> c = jt.primalAcyclicity(cliques);
+            System.out.println("Largest Number of Variables in Seperators: " + jt.getLargestSepartor());
+            // for (MyClique cc : c) {
+            // System.out.println(cc + " with " + cc.getNeighbors());
+            // }
+
+            // writing to csv
+            // csvTreeDecomp(this.variables.size(), myProblem.getEdges(),
+            // (2 * myProblem.getEdges() / (float) (this.variables.size() *
+            // (this.variables.size() - 1))),
+            // mf1.getNumFilled(), mq.getNumberOfCliques(), mq.getLargestClique(),
+            // jt.getLargestSepartor());
+
+            // combining the components into one after running tree decomp for further use
+            // (future)
+            for (MyVariable v : component) {
+                this.current_path.add(v);
+            }
         }
-
-        // runing max clique to obtain all the maximal cliques
-        MaxClique mq = new MaxClique();
-        cliques = mq.getMaxClique(this.current_path);
-        System.out.println("Number of Max Cliques: " + mq.getNumberOfCliques());
-        System.out.println("Treewidth: " + (mq.getLargestClique()));
-        // System.out.println(cliques);
-
-        // building the joining tree
-        JointTree jt = new JointTree();
-        ArrayList<MyClique> c = jt.primalAcyclicity(cliques);
-        System.out.println("Largest Number of Variables in Seperators: " + jt.getLargestSepartor());
-        // for (MyClique cc : c) {
-        // System.out.println(cc + " with " + cc.getNeighbors());
-        // }
-
-        // writing to csv
-        csvTreeDecomp(this.variables.size(), myProblem.getEdges(),
-                (2 * myProblem.getEdges() / (float) (this.variables.size() * (this.variables.size() - 1))),
-                mf1.getNumFilled(), mq.getNumberOfCliques(), mq.getLargestClique(), jt.getLargestSepartor());
     }
 
     // function to write the stats for tree decompisition

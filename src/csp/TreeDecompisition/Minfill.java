@@ -107,9 +107,6 @@ public class Minfill {
                     // adding the edge <v', v''>
                     v_prime.addNeighbors(v_double_prime);
                     v_double_prime.addNeighbors(v_prime);
-                    System.out.println(v_double_prime + " " + v_prime);
-                    System.out.println(v_prime + " " + v_double_prime);
-
                     number_filled++;
 
                 }
