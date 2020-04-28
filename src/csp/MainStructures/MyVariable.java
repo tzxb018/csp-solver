@@ -5,6 +5,7 @@ import java.lang.String;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * 
@@ -23,7 +24,8 @@ public class MyVariable {
 	public ArrayList<Integer> currentDomain;
 	protected ArrayList<MyConstraint> constraints;
 	protected ArrayList<MyConstraint> constraints_static;
-	protected ArrayList<MyVariable> neighbors;
+	protected LinkedList<MyVariable> neighbors;
+	protected LinkedList<MyVariable> neighbors_static;
 
 	// Creating a lexiographic comparator for the comparator by looking at the
 	// variable's name
@@ -109,7 +111,8 @@ public class MyVariable {
 		}
 
 		constraints = new ArrayList<MyConstraint>();
-		neighbors = new ArrayList<MyVariable>();
+		neighbors = new LinkedList<MyVariable>();
+		neighbors_static = new LinkedList<MyVariable>();
 
 	}
 
@@ -126,7 +129,24 @@ public class MyVariable {
 	}
 
 	public void addNeighbors(MyVariable var) {
-		neighbors.add(var);
+		if (!this.neighbors.contains(var)) {
+			this.neighbors.add(var);
+			this.neighbors_static.add(var);
+		}
+	}
+
+	public void removeNeighbor(MyVariable var) {
+		if (this.neighbors.contains((var))) {
+			this.neighbors.remove(var);
+		}
+	}
+
+	public LinkedList<MyVariable> getNeighborsStatic() {
+		return this.neighbors_static;
+	}
+
+	public void resetNeighbors() {
+		this.neighbors = this.neighbors_static;
 	}
 
 	public ArrayList<MyConstraint> getConstraints() {
@@ -134,17 +154,13 @@ public class MyVariable {
 
 	}
 
-	public ArrayList<MyVariable> getNeighbors() {
+	public LinkedList<MyVariable> getNeighbors() {
 		return this.neighbors;
 	}
 
 	public void setConstraints(ArrayList<MyConstraint> constraints) {
 		this.constraints = constraints;
 		this.constraints_static = constraints;
-	}
-
-	public void setNeighbors(ArrayList<MyVariable> neighbors) {
-		this.neighbors = neighbors;
 	}
 
 	public ArrayList<Integer> getCurrentDomain() {
@@ -214,27 +230,41 @@ public class MyVariable {
 	}
 
 	public String toString() {
-		String s = "Name: " + name + ", domain: {";
+		return this.name;
+		// String s = "Name: " + name + ", domain: {";
 
-		for (int i = 0; i < currentDomain.size() - 1; i++) {
-			s += currentDomain.get(i);
-			s += ",";
+		// for (int i = 0; i < currentDomain.size() - 1; i++) {
+		// s += currentDomain.get(i);
+		// s += ",";
+		// }
+		// s += currentDomain.get(currentDomain.size() - 1) + "}, ";
+		// s += "constraints: {";
+
+		// for (int i = 0; i < constraints.size() - 1; i++) {
+		// s += constraints.get(i).getName() + ",";
+		// }
+		// s += constraints.get(constraints.size() - 1).getName() + "}";
+		// s += ", neighbors: {";
+
+		// for (int i = 0; i < neighbors.size() - 1; i++) {
+		// s += neighbors.get(i).getName() + ",";
+		// }
+		// s += neighbors.get(neighbors.size() - 1).getName() + "}";
+
+		// return s;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this)
+			return true;
+
+		MyVariable v = (MyVariable) o;
+		if (v.getName().equals(this.getName())) {
+			return true;
+		} else {
+			return false;
 		}
-		s += currentDomain.get(currentDomain.size() - 1) + "}, ";
-		s += "constraints: {";
-
-		for (int i = 0; i < constraints.size() - 1; i++) {
-			s += constraints.get(i).getName() + ",";
-		}
-		s += constraints.get(constraints.size() - 1).getName() + "}";
-		s += ", neighbors: {";
-
-		for (int i = 0; i < neighbors.size() - 1; i++) {
-			s += neighbors.get(i).getName() + ",";
-		}
-		s += neighbors.get(neighbors.size() - 1).getName() + "}";
-
-		return s;
 	}
 
 }

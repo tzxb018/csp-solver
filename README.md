@@ -8,7 +8,22 @@ To read the README.md file in the formatted version: go to this link: https://gi
 
 ## Homework Reports
 
-<details><summary> Homework 6 (4/11/2020) </summary>
+<details><summary>Final Homework Progress Report (4/21/2020) </summary>
+
+### Overview
+
+For my final project, I chose to do the tree decomposition project. The goal of this projec tis to generate a tree decompisition and compute the tree width of the given CSPs. In each CSP, a graph can be drawn with the given variables and constraints. Each variable is represented as a vertex in the graph and every binary constraint is represented as an edge. For every edge, the two endpoints are the two variables in the scope of the constraint. For this project, there are five main tasks that need to be completed: 
+
+- Implement the min-fill heuristic to triangulate a graph 
+- Implement the Max Cardinality Ordering to get a PEO (or use the PEO provided by the min-fill heuristic)
+- Implement the Max-Clique Algorithm for computing the maximal cliques
+- Using the max-cliques, build the joing tree 
+- Evaluation on binary CSPs, report: (1) number of minfills, (2) number of max cliques, (3) size of the largest clique, and (4) largest number of variables in seperators 
+
+As of now, I have successfully implemented the min-fill heuristic and have also implemented the Max Cardinality Ordering. I have tested all the example CSPs and compared the orderings to those of previous year's work, and my results have matched exactly to those of the previous year's work. My next goal is to work on implemnting the Max-Clique Algorithm; however, I am having some trouble understanding the algorithm. I will work with Dr. Choueiry to understand how this works and how to correctly implement this. 
+
+</details>
+<details><summary>Homework 6 (4/11/2020) </summary>
 
 ### Overview
 
@@ -28,7 +43,7 @@ For this analysis, I chose to use width ordering as my variable ordering, as it 
 </p>
 </details>
 
-<details><summary> Homework 6 Progress Reports (4/6/2020) </summary>
+<details><summary>Homework 6 Progress Reports (4/6/2020) </summary>
 
 ### Overview
 

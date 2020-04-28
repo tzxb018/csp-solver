@@ -16,6 +16,7 @@ public class MyProblem {
     public ArrayList<MyVariable> variables;
     public ArrayList<MyConstraint> constraints;
     public boolean extension; // determines if the problem is intension or extension
+    protected int edges;
 
     // Stores the important informations about the problem, the variables (which
     // have their own domains) and the constraints (the three compoennets of a csp)
@@ -27,11 +28,45 @@ public class MyProblem {
         // assigning all the constraints and neighbors for each variable
         for (MyVariable myVar : variables) {
             setConstraintsForVariable(myVar);
-            setNeighborsForVariable(myVar);
+        }
+
+        // adding "edges" for each constraint by adding neighbors for each constraint
+        // for the two corresponding variables
+        for (MyConstraint c : this.constraints) {
+            if (c.getScope().size() > 1) {
+                MyVariable scope1 = null;
+                MyVariable scope2 = null;
+                for (MyVariable v : this.variables) {
+                    if (v.equals(c.getScope().get(0))) {
+                        scope1 = v;
+                    } else if (v.equals(c.getScope().get(1))) {
+                        scope2 = v;
+                    }
+                }
+                for (MyVariable v : this.variables) {
+                    if (v.equals(scope1)) {
+                        if (!v.getNeighbors().contains(scope2)) {
+                            v.addNeighbors(scope2);
+                            edges++;
+                        }
+                    } else if (v.equals(scope2)) {
+                        if (!v.getNeighbors().contains(scope1)) {
+                            v.addNeighbors(scope1);
+                        }
+                    }
+                }
+            }
         }
 
         // sorting the two lists, constraints and variables lexiographically
         for (MyVariable myVar : variables) {
+            // System.out.println(myVar + ": " + myVar.getNeighbors());
+            // if (myVar.getNeighbors().size() > 0) {
+            // for (MyVariable v : myVar.getNeighbors()) {
+            // System.out.println(v + ": " + v.getNeighbors());
+            // }
+            // }
+            // System.out.println();
             ArrayList<MyConstraint> toSortConstraints = myVar.getConstraints();
             Collections.sort(toSortConstraints, MyConstraint.ConstraintComparer);
             myVar.setConstraints(toSortConstraints);
@@ -41,23 +76,31 @@ public class MyProblem {
 
     }
 
+    public int getEdges() {
+        return this.edges;
+    }
+
     // public void normalizeConstraints(ArrayList<MyConstraint> list_constraints) {
-    //     ArrayList<MyConstraint> normalizedConstraints = new ArrayList<MyConstraint>();
+    // ArrayList<MyConstraint> normalizedConstraints = new
+    // ArrayList<MyConstraint>();
 
-    //     Iterator<MyConstraint> constraintIterator = list_constraints.iterator();
+    // Iterator<MyConstraint> constraintIterator = list_constraints.iterator();
 
-    //     while (constraintIterator.hasNext()) {
-    //         MyConstraint unnomralizedConstraint = constraintIterator.next();
+    // while (constraintIterator.hasNext()) {
+    // MyConstraint unnomralizedConstraint = constraintIterator.next();
 
-    //         for (MyConstraint c : list_constraints) {
-    //             if (c.getScope().size() > 1) {
-    //                 if (c.getScope().get(0).getName().equals(unnomralizedConstraint.getScope().get(0).getName()) && c
-    //                         .getScope().get(1).getName().equals(unnomralizedConstraint.getScope().get(1).getName())) {
+    // for (MyConstraint c : list_constraints) {
+    // if (c.getScope().size() > 1) {
+    // if
+    // (c.getScope().get(0).getName().equals(unnomralizedConstraint.getScope().get(0).getName())
+    // && c
+    // .getScope().get(1).getName().equals(unnomralizedConstraint.getScope().get(1).getName()))
+    // {
 
-    //                 }
-    //             }
-    //         }
-    //     }
+    // }
+    // }
+    // }
+    // }
 
     // }
 
@@ -76,11 +119,26 @@ public class MyProblem {
 
     // Sets all the neighbors of the variable
     public void setNeighborsForVariable(MyVariable myVar) {
-        // Looping through the variables and adding all the variables that are not
-        // itself
-        for (MyVariable v : variables) {
-            if (!v.getName().equals(myVar.getName())) {
-                myVar.addNeighbors(v);
+        // Looping through the constraints to see if there is a constraint (not unary)
+        // that has a scope with it in it
+        // Add the other variable in the scope as its neighbor
+        for (MyConstraint c : this.constraints) {
+            if (c.getScope().size() > 1) {
+                if (c.getScope().get(0).getName().equals(myVar.getName())) {
+                    for (MyVariable v : this.variables) {
+                        if (v.getName().equals(c.getScope().get(1).getName())) {
+                            myVar.addNeighbors(v);
+                        }
+                    }
+                    // myVar.addNeighbors(c.getScope().get(1));
+                } else if (c.getScope().get(1).getName().equals(myVar.getName())) {
+                    for (MyVariable v : this.variables) {
+                        if (v.getName().equals(c.getScope().get(0).getName())) {
+                            myVar.addNeighbors(v);
+                        }
+                    }
+                    // myVar.addNeighbors(c.getScope().get(0));
+                }
             }
         }
     }
