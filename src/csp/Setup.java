@@ -3,6 +3,8 @@ package csp;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -176,6 +178,8 @@ public class Setup {
     // function for tree decomposition
     public void treeDecompisition(ArrayList<MyVariable> input, boolean runMaxCard) throws IOException {
 
+        long captureTime;
+
         // finding all the components of the graph (can be disconnected)
         ComponentClassifier cc = new ComponentClassifier();
         ArrayList<ArrayList<MyVariable>> components = cc.connectedComponents(input);
@@ -206,17 +210,15 @@ public class Setup {
             // building the joining tree
             JointTree jt = new JointTree();
             ArrayList<MyClique> c = jt.primalAcyclicity(cliques);
-            System.out.println("Largest Number of Variables in Seperators: " + jt.getLargestSepartor());
+            System.out.println("Largest Seperator: " + jt.getLargestSepartor());
             // for (MyClique cc : c) {
             // System.out.println(cc + " with " + cc.getNeighbors());
             // }
 
             // writing to csv
-            // csvTreeDecomp(this.variables.size(), myProblem.getEdges(),
-            // (2 * myProblem.getEdges() / (float) (this.variables.size() *
-            // (this.variables.size() - 1))),
-            // mf1.getNumFilled(), mq.getNumberOfCliques(), mq.getLargestClique(),
-            // jt.getLargestSepartor());
+            csvTreeDecomp(this.variables.size(), myProblem.getEdges(),
+                    (2 * myProblem.getEdges() / (float) (this.variables.size() * (this.variables.size() - 1))),
+                    mf1.getNumFilled(), mq.getNumberOfCliques(), mq.getLargestClique(), jt.getLargestSepartor());
 
             // combining the components into one after running tree decomp for further use
             // (future)
@@ -274,6 +276,31 @@ public class Setup {
         // writer.write(fileContent);
         // writer.close();
 
+    }
+
+    /** Get cpu time in nanoseconds. */
+    public long getCpuTime() {
+        ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+        if (!bean.isThreadCpuTimeSupported())
+            return 0L;
+        return bean.getThreadCpuTime(java.lang.Thread.currentThread().getId());
+    }
+
+    /** Get user time in nanoseconds. */
+    public long getUserTime(long[] ids) {
+        ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+        if (!bean.isThreadCpuTimeSupported())
+            return 0L;
+        return bean.getThreadUserTime(java.lang.Thread.currentThread().getId());
+    }
+
+    /** Get system time in nanoseconds. */
+    public long getSystemTime(long[] ids) {
+        ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+        if (!bean.isThreadCpuTimeSupported())
+            return 0L;
+        return bean.getThreadCpuTime(java.lang.Thread.currentThread().getId())
+                + bean.getThreadUserTime(java.lang.Thread.currentThread().getId());
     }
 
 }
