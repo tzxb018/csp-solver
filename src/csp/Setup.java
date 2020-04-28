@@ -178,7 +178,7 @@ public class Setup {
     // function for tree decomposition
     public void treeDecompisition(ArrayList<MyVariable> input, boolean runMaxCard) throws IOException {
 
-        long captureTime;
+        long capture = getCpuTime();
 
         // finding all the components of the graph (can be disconnected)
         ComponentClassifier cc = new ComponentClassifier();
@@ -215,10 +215,15 @@ public class Setup {
             // System.out.println(cc + " with " + cc.getNeighbors());
             // }
 
+            // float cpu = ((long) ((float) (getCpuTime() - capture)));
+            // System.out.println("CPU Time: " + cpu);
+
             // writing to csv
-            csvTreeDecomp(this.variables.size(), myProblem.getEdges(),
-                    (2 * myProblem.getEdges() / (float) (this.variables.size() * (this.variables.size() - 1))),
-                    mf1.getNumFilled(), mq.getNumberOfCliques(), mq.getLargestClique(), jt.getLargestSepartor());
+            // csvTreeDecomp(this.variables.size(), myProblem.getEdges(),
+            // (2 * myProblem.getEdges() / (float) (this.variables.size() *
+            // (this.variables.size() - 1))),
+            // mf1.getNumFilled(), mq.getNumberOfCliques(), mq.getLargestClique(),
+            // jt.getLargestSepartor());
 
             // combining the components into one after running tree decomp for further use
             // (future)
@@ -226,6 +231,8 @@ public class Setup {
                 this.current_path.add(v);
             }
         }
+
+        System.out.println();
     }
 
     // function to write the stats for tree decompisition
