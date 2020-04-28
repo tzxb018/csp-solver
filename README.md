@@ -193,9 +193,14 @@ From the static variable orderings, it seems that min-width ordering does the be
 The main method to use to compile this project is still the same. The MyParser.java file should be used to compile the projects. In the MyParser.java file, the file will look for all the flags given and the agruments behind the flags, which should be seperated by spaces. The flag needs to be placed before the agrument itself; however, the ordering of the which flags does not matter. Here is an example: -f ~/xmls/zebra-supports2.xml -s BT -u LX. The following are the flags built into the MyParser class:
 
 - -f: path to the xcsp file
-- -s: type of search algorithm (currently, the options include: "BT" (backtracking), and "CBJ" (conflicted-backtracking))
-- -u: type of variable sorting heurisitc (options include: LX (lexiographical ordering), LD (least domains), DEG (degree ordering), and DD (domain to degree ratio ordering)
-- -a: type of arc consistency algorithm (options include: ac1, ac3) (not used in this assignment)
+- -s: type of search algorithm (currently, the options include: BT (backtracking), CBJ (conflicted-backtracking), FC (forward checking), FCCBJ (hybrid between FC and CBJ))
+- -u: type of variable sorting heurisitc (options include: LX (lexiographical ordering), LD (least domains), DEG (degree ordering), and DD (domain to degree ratio ordering), W (min-width ordering), MF (min-fill ordering), MC (max-cardinality ordering))
+- -a: type of arc consistency algorithm (options include: ac1, ac3)
+- -t: type of tree decompisition (options include: TD (for tree decompisition without Max-Cardinality), and TD-MC (for tree decompisition with Max-Cardinality)) 
+
+## Future Work
+
+Although I have spent a lot of time on this assignment, there is still more that could be done. First, implementing dynamic variable ordering is a task that coudl be worked on. Currently, running arc-consistency to filter out incosistent values before running the search algorithms is a task that could be easily implemented here. Lastly, using the tree decompisitiont to solve the CSPs is another task that could be done. As stated before, the tree decompisition algorithms currenlty only find and output the results of the tree decompisition and doesn't use these strucutres to solve the CSP. 
 
 ## Acknowledgements
 
