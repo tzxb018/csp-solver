@@ -54,9 +54,13 @@ public class MyParser {
         } else if (args.length == 4 && args[0].equals("-f") && args[2].equals("-a")) {
             filename = args[1];
             ACAlgorithmString = args[3];
+        } else if (args.length == 4 && args[0].equals("-f") && args[2].equals("-t")) {
+            filename = args[1];
+            orderingHeuristic = args[3];
         } else {
             System.out.println(
-                    "Invalid arguments given. \nThey should be in the following form: \n -f <filename> -s <search algorithm> -u <ordering herusitic> \nor\n -a <AC algorithm type>");
+                    "Invalid arguments given. \nTo run the CSP search algorithm with a variable ordering heuristic, run the following: \n -f <filename> -s <search algorithm> -u <ordering herusitic> \nor\n To run arc-consistency on a CSP, run the following: -f <filename> -a <AC algorithm type> \nor\n To run tree-decompisition on a CSP, run the following: -f <filename> -t <Tree Decompisition type>");
+            return;
         }
 
         InstanceParser parser = new InstanceParser();
@@ -122,10 +126,12 @@ public class MyParser {
                 ac.AC1(myProblem);
             else if (ACAlgorithmString.equals("ac3"))
                 ac.AC3(myProblem);
-
+            if (orderingHeuristic.contains("TD")){
+                Setup st = new Setup(myProblem, orderingHeuristic, true, searchAlgorithm);
+            }
+            
             if (!orderingHeuristic.equals("") && !searchAlgorithm.equals("")) {
                 Setup st = new Setup(myProblem, orderingHeuristic, true, searchAlgorithm);
-
                 if (!orderingHeuristic.contains("TD"))
                     st.runSearch(searchAlgorithm);
 
@@ -201,7 +207,7 @@ public class MyParser {
                             .listFiles();
 
             for (File f : files) {
-                String[] argsString = { "-f", f.getAbsolutePath(), "-s", "FCCBJ", "-u", "TD" };
+                String[] argsString = { "-f", f.getAbsolutePath(), "-t", "TD" };
                 MyParser parser = new MyParser(argsString);
 
             }
