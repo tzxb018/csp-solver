@@ -88,7 +88,7 @@ public class MaxClique {
             }
         }
 
-        return max;
+        return max - 1; // tree width is largest clique size - 1
     }
 
 }
