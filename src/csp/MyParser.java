@@ -2,8 +2,10 @@ package csp;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Stack;
 
@@ -17,7 +19,7 @@ import abscon.instance.components.PExtensionConstraint;
 import abscon.instance.components.PIntensionConstraint;
 import abscon.instance.components.PVariable;
 import abscon.instance.tools.InstanceParser;
-import csp.Search.Setup;
+import csp.Setup;
 import csp.Search.SetFunctions;
 import csp.MainStructures.MyConstraint;
 import csp.MainStructures.MyExtensionConstraint;
@@ -67,54 +69,67 @@ public class MyParser {
         Element presentationElement = (Element) document.getDocumentElement()
                 .getElementsByTagName(InstanceTokens.PRESENTATION).item(0);
         String problemName = presentationElement.getAttribute(InstanceTokens.NAME);
-
-        // Use the parser to obtain the list of variables and assign them to an
-        // arrayList
-        for (int i = 0; i < parser.getVariables().length; i++) {
-            PVariable tempVar = parser.getVariables()[i];
-            MyVariable newVar = new MyVariable(tempVar);
-            variables.add(newVar);
+        if (problemName.equals("")) {
+            problemName = args[1];
+            problemName = problemName.replace(
+                    "C:\\Users\\14022\\Documents\\VS Code Projects\\csp-solver\\problems\\Benchmark Problems for Tree Decompisition\\random\\",
+                    "");
         }
+        if (parser.getMaxConstraintArity() == 2) {
+            System.out.println("Instance name: " + problemName);
 
-        // Determining if the problem is extension or intension
-        boolean extension = parser.getConstraintsCategory().contains("E");
-
-        // An arraylist to hold all the constraints parsed by the parser
-        constraints = new ArrayList<MyConstraint>();
-
-        // Going through the map of constraints made by the parser to obtain the
-        // correct constraint
-        for (String key : parser.getMapOfConstraints().keySet()) {
-            PConstraint con = parser.getMapOfConstraints().get(key);
-
-            // Depending on the type of constraint, make a different version of the
-            // constraint
-            if (extension) {
-                MyExtensionConstraint extCon = new MyExtensionConstraint(con, (PExtensionConstraint) con);
-                constraints.add(extCon);
-            } else {
-                MyIntensionConstraint intcon = new MyIntensionConstraint(con, (PIntensionConstraint) con);
-                constraints.add(intcon);
+            // Use the parser to obtain the list of variables and assign them to an
+            // arrayList
+            for (int i = 0; i < parser.getVariables().length; i++) {
+                PVariable tempVar = parser.getVariables()[i];
+                MyVariable newVar = new MyVariable(tempVar);
+                variables.add(newVar);
             }
-        }
 
-        // An instance of the problem to store the variables and constraints in one
-        // place
-        MyProblem myProblem = new MyProblem(problemName, variables, constraints);
-        System.out.println("Instance name: " + problemName);
-        MyACAlgorithms ac = new MyACAlgorithms();
+            // Determining if the problem is extension or intension
+            boolean extension = parser.getConstraintsCategory().contains("E");
 
-        if (ACAlgorithmString.equals("ac1"))
-            ac.AC1(myProblem);
-        else if (ACAlgorithmString.equals("ac3"))
-            ac.AC3(myProblem);
+            // An arraylist to hold all the constraints parsed by the parser
+            constraints = new ArrayList<MyConstraint>();
 
-        if (!orderingHeuristic.equals("") && !searchAlgorithm.equals("")) {
-            Setup st = new Setup(myProblem, orderingHeuristic, true, searchAlgorithm);
+            // Going through the map of constraints made by the parser to obtain the
+            // correct constraint
+            for (String key : parser.getMapOfConstraints().keySet()) {
+                PConstraint con = parser.getMapOfConstraints().get(key);
 
-            if (!orderingHeuristic.contains("TD"))
-                st.runSearch(searchAlgorithm);
+                try {
+                    // Depending on the type of constraint, make a different version of the
+                    // constraint
+                    if (extension) {
+                        MyExtensionConstraint extCon = new MyExtensionConstraint(con, (PExtensionConstraint) con);
+                        constraints.add(extCon);
+                    } else {
+                        MyIntensionConstraint intcon = new MyIntensionConstraint(con, (PIntensionConstraint) con);
+                        constraints.add(intcon);
+                    }
+                } catch (Exception e) {
+                    System.out.println(e);
+                    return;
+                }
+            }
 
+            // An instance of the problem to store the variables and constraints in one
+            // place
+            MyProblem myProblem = new MyProblem(problemName, variables, constraints);
+            MyACAlgorithms ac = new MyACAlgorithms();
+
+            if (ACAlgorithmString.equals("ac1"))
+                ac.AC1(myProblem);
+            else if (ACAlgorithmString.equals("ac3"))
+                ac.AC3(myProblem);
+
+            if (!orderingHeuristic.equals("") && !searchAlgorithm.equals("")) {
+                Setup st = new Setup(myProblem, orderingHeuristic, true, searchAlgorithm);
+
+                if (!orderingHeuristic.contains("TD"))
+                    st.runSearch(searchAlgorithm);
+
+            }
         }
 
     }
@@ -179,8 +194,16 @@ public class MyParser {
 
                 }
             }
-        } else {
+        } else if (args.length > 0 && args[0].equals("tree")) {
+            new FileWriter("C:\\Users\\14022\\Documents\\VS Code Projects\\csp-solver\\tree_stats.csv", false).close();
+            File[] files = new File("C:\\Users\\14022\\Documents\\VS Code Projects\\csp-solver\\problems").listFiles();
 
+            for (File f : files) {
+                String[] argsString = { "-f", f.getAbsolutePath(), "-s", "FCCBJ", "-u", "TD" };
+                MyParser parser = new MyParser(argsString);
+
+            }
+        } else {
             MyParser parser = new MyParser(args);
 
         }
