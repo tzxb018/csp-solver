@@ -24,6 +24,48 @@ Lastly, I then implemented the joining tree algorithm to get the desired tree de
 
 ### Pseudocodes 
 
+#### Minfill Algorithm
+![minfill](minfill1.png)
+![minfill](minfill2.png)
+
+#### Max-Cardinality Algorithm *Dechter Fig. 4.5*
+![maxcard](maxcard.png)
+
+Figure 4.5, page 90, *Constraint Processing*, by Rina Dechter, 2003
+
+#### Max-Clique Algorithm 
+
+![maxclique](maxclique.png)
+
+Figure 4.8, page 99, *Algorithmic Graph Theory and Perfect Graphs*, by Martin Charles Golumbic, Second edition, Annals of Discrete Mathematics 57, Elsevier, 2004.
+
+#### Joint Tree Algorithm
+![jointree](jointree.png)
+
+Figure 9.4, page 252, *Constraint Processing*, by Rina Dechter, 2003
+
+#### Component Classifier Algorithm
+```
+PROGRAM Component Classifier:
+  Mark all variables as unvisited
+  FOR every variable 'v':
+    IF variable has not been visited yet:
+      NEW component
+      RUN DFS(v) starting at this variable
+      ADD all variables visited during DFS to component
+  
+  DFS(v)
+    Mark 'v' as visited
+    Add 'v' to the new component
+    For every neighbor 'n' of 'v':
+      IF 'n' has not been visisted:
+        DFS(n)
+END.
+```
+
+Adapted from https://www.geeksforgeeks.org/connected-components-in-an-undirected-graph/
+
+
 ### Experimental Method
 
 To determine whether max-cardinality was necessary, I ran two simulations, one where the ordering from min-fill is used in the max-clique, which is then used in the joining tree algorithm, and the second that takes the ordering from max-cardinality after running min-fill and using that ordering in max-clique to build the joining tree. These two methods were then tested on both the CSPs we have been using for class assignments and some benchmark problems from the 2008 CSP Competition (https://cse.unl.edu/~consystlab/resources/CPAI08benchmarkstats.html).
@@ -47,6 +89,10 @@ The error column (column T) compares my results with those in the 2008 site's re
 #### Important Notes Regarding Results
 
 The results I obtained from the Benchmark had incorrectly calculated the treewidth. Instead of calculating the treewidth by finding the size of the largest clique and subtracting 1, they simply reported the treewidth to be the size of the largest clique. Also, some of the results from the 2008 site doesn't match the Stampede database (http://consystlab.unl.edu/benchmarks/); however, in the cases where my results do not match the 2008 site, my results match with the Stampede's database exactly. 
+
+### Future Work 
+
+Although this program sucessfully decomposes the CSP into a tree, it still doesn't acutally solve the CSP. Thus, using the tree decomposition to solve the CSPs is another task that could be done. As stated before, the tree decomposition algorithms currently only find and output the results of the tree decomposition and don't use these structures to solve the CSP. By solving a subproblem of the CSP in each cluster and taking advantage of the tree strucutre to prevent backtracking during search, the CSP could be solved much more efficiently than the previous search algorithms, such as BT, CBJ, FC, etc. 
 
 </p>
 </details>
