@@ -22,6 +22,8 @@ With the two algorithms for getting a PEO established, the next task was to impl
 
 Lastly, I then implemented the joining tree algorithm to get the desired tree decomposition structure of the CSP. The joining tree takes all the max-cliques from before, finds the most optimal tree structure so that all the clusters are connected. 
 
+### Pseudocodes 
+
 ### Experimental Method
 
 To determine whether max-cardinality was necessary, I ran two simulations, one where the ordering from min-fill is used in the max-clique, which is then used in the joining tree algorithm, and the second that takes the ordering from max-cardinality after running min-fill and using that ordering in max-clique to build the joining tree. These two methods were then tested on both the CSPs we have been using for class assignments and some benchmark problems from the 2008 CSP Competition (https://cse.unl.edu/~consystlab/resources/CPAI08benchmarkstats.html).
