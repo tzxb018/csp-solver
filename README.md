@@ -24,27 +24,23 @@ Lastly, I then implemented the joining tree algorithm to get the desired tree de
 
 ### Pseudocodes 
 
-#### Minfill Algorithm
+In this section, I have outlined all the pseudocodes I have used in this assignment. The minfill algorithm has a total of 3 algorithms, where Algorithm 1 is defined as the main function and Algorithm 2 and 3 are used as helper functions for Algorithm 1. Similarly, the Component Classifier Algorithm uses a helper function defined as DFS(v) that the main function utilizes to run DFS (depth-first search) from a vertex. 
+
+#### Minfill Algorithm [Kjærulff, 1990]
 ![minfill](minfill1.png)
 ![minfill](minfill2.png)
 
-#### Max-Cardinality Algorithm *Dechter Fig. 4.5*
+#### Max-Cardinality Algorithm [Tarjan and Yannakakis, 1984]
 ![maxcard](maxcard.png)
 
-Figure 4.5, page 90, *Constraint Processing*, by Rina Dechter, 2003
-
-#### Max-Clique Algorithm 
+#### Max-Clique Algorithm [Golumbic, 1980]
 
 ![maxclique](maxclique.png)
 
-Figure 4.8, page 99, *Algorithmic Graph Theory and Perfect Graphs*, by Martin Charles Golumbic, Second edition, Annals of Discrete Mathematics 57, Elsevier, 2004.
-
-#### Joint Tree Algorithm
+#### Joint Tree Algorithm [Dechter, 2003a]
 ![jointree](jointree.png)
 
-Figure 9.4, page 252, *Constraint Processing*, by Rina Dechter, 2003
-
-#### Component Classifier Algorithm
+#### Component Classifier Algorithm [Hopcroft, 1973]
 ```
 PROGRAM Component Classifier:
   Mark all variables as unvisited
@@ -62,9 +58,9 @@ PROGRAM Component Classifier:
         DFS(n)
 END.
 ```
+### Compiling
 
-Adapted from https://www.geeksforgeeks.org/connected-components-in-an-undirected-graph/
-
+To run the tree decomposition, only the file name flag and the method of tree decomposition needs to be inputted in the arguments. For example, the following is how one can run tree decomposition: -f <path/to/file.xml> -t TD (see more details in the compiling section down below). 
 
 ### Experimental Method
 
@@ -93,6 +89,17 @@ The results I obtained from the Benchmark had incorrectly calculated the treewid
 ### Future Work 
 
 Although this program sucessfully decomposes the CSP into a tree, it still doesn't acutally solve the CSP. Thus, using the tree decomposition to solve the CSPs is another task that could be done. As stated before, the tree decomposition algorithms currently only find and output the results of the tree decomposition and don't use these structures to solve the CSP. By solving a subproblem of the CSP in each cluster and taking advantage of the tree strucutre to prevent backtracking during search, the CSP could be solved much more efficiently than the previous search algorithms, such as BT, CBJ, FC, etc. 
+
+### Citations
+Hopcroft, J.; Tarjan, R. (1973), "Algorithm 447: efficient algorithms for graph manipulation", Communications of the ACM, 16 (6): 372–378.
+
+Martin C. Golumbic. Algorithmic Graph Theory and Perfect Graphs. Academic Press Inc., New York, NY, 1980.
+
+Rina Dechter. Constraint Processing. Morgan Kaufmann, 2003.	
+
+Robert Endre Tarjan and Mihalis Yannakakis. Simple Linear-Time Algorithms to Test Chordality of Graphs, Test Acyclicity of Hyper- graphs, and Selectively Reduce Acyclic Hypergraphs. SIAM Journal on Computing, 13(3):566–579, 1984.
+
+U. Kjærulff. Triagulation of Graphs - Algorithms Giving Small Total State Space. Research Report R-90-09, Aalborg University, Denmark, 1990.
 
 </p>
 </details>
