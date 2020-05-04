@@ -1,4 +1,9 @@
 # CSP Solver with Java (CSCE 421)
+![GitHub top language](https://img.shields.io/github/languages/top/tzxb018/csp-solver?style=plastic)
+![Languages](https://img.shields.io/github/languages/count/tzxb018/csp-solver?style=plastic)
+![Size](https://img.shields.io/github/repo-size/tzxb018/csp-solver?style=plastic)
+![Issues](https://img.shields.io/github/issues/tzxb018/csp-solver?style=plastic)
+![Commit](https://img.shields.io/github/commit-activity/m/tzxb018/csp-solver?style=plastic)
 
 To read the README.md file in the formatted version: go to this link: https://github.com/tzxb018/csp-solver
 
